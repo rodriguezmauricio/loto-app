@@ -12,7 +12,9 @@ import {
 const Sidebar = () => {
   return (
     <aside className={styles.container}>
-      <h1>SMART LOTO APP</h1>
+      <div className={styles.logo}>
+        <h1>SMART LOTO APP</h1>
+      </div>
       <div className={styles.menuDivisions}>
         {sidebarLinksHome.map((item) => {
           return (
@@ -23,6 +25,7 @@ const Sidebar = () => {
           );
         })}
       </div>
+      <div className={styles.divider}></div>
       <div className={styles.menuDivisions}>
         {sidebarLinksSorteios.map((item) => {
           return (
@@ -33,6 +36,7 @@ const Sidebar = () => {
           );
         })}
       </div>
+      <div className={styles.divider}></div>
       <div className={styles.menuDivisions}>
         {sidebarLinksPremios.map((item) => {
           return (
@@ -43,6 +47,7 @@ const Sidebar = () => {
           );
         })}
       </div>
+      <div className={styles.divider}></div>
       <div className={styles.menuDivisions}>
         {sidebarLinksSettings.map((item) => {
           return (

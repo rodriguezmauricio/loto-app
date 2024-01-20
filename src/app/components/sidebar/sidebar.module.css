@@ -1,0 +1,31 @@
+.container {
+  background-color: var(--color-dark-mid);
+  height: 100vh;
+  max-width: 300px;
+  padding: 20px;
+}
+
+.menuDivisions {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid white;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  gap: 5px;
+}
+
+.menuLink {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  /* color: blueviolet; */
+  padding: 10px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-main);
+}

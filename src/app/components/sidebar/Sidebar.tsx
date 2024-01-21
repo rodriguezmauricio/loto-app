@@ -18,7 +18,7 @@ const Sidebar = () => {
       <div className={styles.menuDivisions}>
         {sidebarLinksHome.map((item) => {
           return (
-            <Link href={"/"} key={item.linkName} className={styles.menuLink}>
+            <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
               {item.linkName}
             </Link>
@@ -29,7 +29,7 @@ const Sidebar = () => {
       <div className={styles.menuDivisions}>
         {sidebarLinksSorteios.map((item) => {
           return (
-            <Link href={"/"} key={item.linkName} className={styles.menuLink}>
+            <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
               {item.linkName}
             </Link>
@@ -40,7 +40,7 @@ const Sidebar = () => {
       <div className={styles.menuDivisions}>
         {sidebarLinksPremios.map((item) => {
           return (
-            <Link href={"/"} key={item.linkName} className={styles.menuLink}>
+            <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
               {item.linkName}
             </Link>
@@ -51,7 +51,7 @@ const Sidebar = () => {
       <div className={styles.menuDivisions}>
         {sidebarLinksSettings.map((item) => {
           return (
-            <Link href={"/"} key={item.linkName} className={styles.menuLink}>
+            <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
               {item.linkName}
             </Link>

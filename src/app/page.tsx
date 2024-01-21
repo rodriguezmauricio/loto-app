@@ -6,7 +6,6 @@ import Sidebar from "./components/sidebar/Sidebar";
 export default function Home() {
   return (
     <main className={styles.main}>
-      <Sidebar />
       <DashboardPage />
     </main>
   );

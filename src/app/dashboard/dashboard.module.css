@@ -1,0 +1,29 @@
+/* .header {
+  padding: 20px;
+} */
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.fullWidth {
+  width: 100%;
+  display: block;
+}
+
+.section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.h2 {
+  font-weight: 300;
+  width: 100%;
+}

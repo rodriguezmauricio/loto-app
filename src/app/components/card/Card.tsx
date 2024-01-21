@@ -5,9 +5,10 @@ interface ICard {
   value: number;
   big: boolean;
   color: "green" | "red" | "yellow" | "none";
+  money?: boolean;
 }
 
-const Card = ({ title, value, big, color }: ICard) => {
+const Card = ({ title, value, big, color, money = true }: ICard) => {
   const styleCombination = (big: boolean, color: string) => {
     if (color === "green") {
       return styles.container, styles.borderLeftGreen;
@@ -26,7 +27,7 @@ const Card = ({ title, value, big, color }: ICard) => {
     <div className={styleCombination(big, color)}>
       <h2 className={styles.h2}>{title}</h2>
       <h3 className={big ? styles.h3Main : styles.h3}>
-        {value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+        {money ? value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : value}
       </h3>
     </div>
   );

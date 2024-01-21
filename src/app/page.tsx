@@ -4,9 +4,5 @@ import DashboardPage from "./dashboard/page";
 import Sidebar from "./components/sidebar/Sidebar";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <DashboardPage />
-    </main>
-  );
+  return <DashboardPage />;
 }

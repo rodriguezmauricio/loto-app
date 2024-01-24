@@ -1,11 +1,11 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
-import styles from "./vendedor.module.css";
+import styles from "./apostador.module.css";
 import Title from "@/app/components/title/Title";
 import Buttons from "@/app/components/buttons/Buttons";
 import Filter from "@/app/components/filter/Filter";
 
-const Vendedor = () => {
+const Apostador = () => {
   const filtersArr = ["todos", "premiados", "excluídos"];
 
   const usersArr = [
@@ -29,7 +29,7 @@ const Vendedor = () => {
 
   return (
     <main className={styles.main}>
-      <PageHeader title="Vendedor" subpage />
+      <PageHeader title="Apostador" subpage />
 
       <section className={styles.row}>
         <IconCard
@@ -54,7 +54,9 @@ const Vendedor = () => {
           <Filter filtersArr={filtersArr} />
           <div className={styles.divider}></div>
           <div className={styles.buttonRow}>
+            <Buttons type="add" />
             <Buttons type="delete" />
+            <Buttons type="repeat" />
             <Buttons type="share" />
           </div>
         </section>
@@ -79,4 +81,4 @@ const Vendedor = () => {
   );
 };
 
-export default Vendedor;
+export default Apostador;

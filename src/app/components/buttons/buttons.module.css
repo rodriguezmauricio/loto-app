@@ -8,7 +8,7 @@
 }
 
 .addButton {
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--accent-main);
   background-color: transparent;
@@ -22,7 +22,7 @@
 }
 
 .shareButton {
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--accent-blue);
   background-color: transparent;
@@ -36,7 +36,7 @@
 }
 
 .deleteButton {
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--accent-danger);
   background-color: transparent;
@@ -50,9 +50,49 @@
 }
 
 .repeatButton {
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   border: 2px solid var(--accent-repeat);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addMoney {
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-main);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.removeMoney {
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-danger);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.deactivateWallet {
+  padding: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-danger);
   background-color: transparent;
   margin-bottom: 5px;
   color: var(--color-light-light);
@@ -75,6 +115,15 @@
 .repeatButton:hover {
   background-color: var(--accent-repeat);
 }
+.addMoney:hover {
+  background-color: var(--accent-main);
+}
+.removeMoney:hover {
+  background-color: var(--accent-danger);
+}
+.deactivateWallet:hover {
+  background-color: var(--accent-danger);
+}
 
 .addButton:active {
   background-color: var(--accent-main);
@@ -90,6 +139,18 @@
 }
 .repeatButton:active {
   background-color: var(--accent-repeat);
+  transform: scale(0.9);
+}
+.addMoney:active {
+  background-color: var(--accent-main);
+  transform: scale(0.9);
+}
+.removeMoney:active {
+  background-color: var(--accent-danger);
+  transform: scale(0.9);
+}
+.deactivateWallet:active {
+  background-color: var(--accent-danger);
   transform: scale(0.9);
 }
 

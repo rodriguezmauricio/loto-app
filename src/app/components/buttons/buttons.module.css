@@ -76,6 +76,23 @@
   background-color: var(--accent-repeat);
 }
 
+.addButton:active {
+  background-color: var(--accent-main);
+  transform: scale(0.9);
+}
+.shareButton:active {
+  background-color: var(--accent-blue);
+  transform: scale(0.9);
+}
+.deleteButton:active {
+  background-color: var(--accent-danger);
+  transform: scale(0.9);
+}
+.repeatButton:active {
+  background-color: var(--accent-repeat);
+  transform: scale(0.9);
+}
+
 .col {
   display: flex;
   flex-direction: column;

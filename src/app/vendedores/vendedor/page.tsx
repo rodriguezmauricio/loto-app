@@ -10,8 +10,13 @@ const Vendedor = () => {
       <PageHeader title="Vendedor" subpage />
 
       <section className={styles.row}>
-        <UserCard title="Usuário exemplo 1" description="(21)99999-9999" icon="vendor" />
-        <UserCard title="Carteira" description="Saldo e transações" icon="wallet" />
+        <UserCard
+          title="Usuário exemplo 1"
+          description="(21)99999-9999"
+          icon="vendor"
+          inIcon={false}
+        />
+        <UserCard title="Carteira" description="Saldo e transações" icon="wallet" inIcon />
       </section>
 
       <section>
@@ -26,6 +31,7 @@ const Vendedor = () => {
           title="Filtros"
           description="Selecione a forma de exibir as apostas"
           icon="filter"
+          inIcon={true}
         />
       </section>
     </main>

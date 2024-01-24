@@ -6,9 +6,10 @@ interface IIconCard {
   title: string;
   description: string;
   icon: "user" | "vendor" | "wallet" | "filter";
+  inIcon: boolean;
 }
 
-const IconCard = ({ title, description, icon }: IIconCard) => {
+const IconCard = ({ title, description, icon, inIcon }: IIconCard) => {
   const ICON_SIZE = 30;
 
   const renderIcon = (icon: string) => {
@@ -27,15 +28,15 @@ const IconCard = ({ title, description, icon }: IIconCard) => {
   };
 
   return (
-    <div className={styles.container}>
+    <button className={styles.container}>
       <div className={styles.icon}>{renderIcon(icon)}</div>
       <div className={styles.divider}></div>
       <div className={styles.infos}>
-        <p>{title}</p>
+        <p className={styles.title}>{title}</p>
         <p>{description}</p>
       </div>
-      <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>
-    </div>
+      {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
+    </button>
   );
 };
 

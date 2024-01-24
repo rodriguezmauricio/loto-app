@@ -9,6 +9,8 @@ const Buttons = ({ type }: IButtons) => {
   const renderIcon = (type: string) => {
     const ICON_SIZE = 30;
     if (type === "add") {
+      //TODO: Add functionality
+
       return (
         <div className={styles.container}>
           <button className={styles.addButton}>
@@ -22,6 +24,8 @@ const Buttons = ({ type }: IButtons) => {
       );
     }
     if (type === "share") {
+      //TODO: Add functionality
+
       return (
         <div className={styles.container}>
           <button className={styles.shareButton}>
@@ -35,6 +39,8 @@ const Buttons = ({ type }: IButtons) => {
       );
     }
     if (type === "delete") {
+      //TODO: Add functionality
+
       return (
         <div className={styles.container}>
           <button className={styles.deleteButton}>
@@ -48,6 +54,8 @@ const Buttons = ({ type }: IButtons) => {
       );
     }
     if (type === "repeat") {
+      //TODO: Add functionality
+
       return (
         <div className={styles.container}>
           <button className={styles.repeatButton}>

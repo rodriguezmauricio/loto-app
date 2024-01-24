@@ -33,12 +33,13 @@
   gap: 15px;
   padding: 10px;
   /* background-color: aqua; */
+  /* border-left: 5px solid transparent; */
   transition: all 0.2s;
 }
 
 .menuLink:hover {
-  background-color: var(--accent-main);
-  /* border-right: 5px solid white; */
+  background-color: var(--color-dark-dark);
+  border-left: 5px solid var(--accent-main);
   /* background-color: var(--color-dark-light); */
 }
 
@@ -52,5 +53,5 @@
 }
 
 .menuLink:hover > .icon {
-  color: var(--color-light-light);
+  color: var(--accent-main);
 }

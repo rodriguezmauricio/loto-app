@@ -9,36 +9,32 @@
   cursor: pointer;
   border: 2px solid var(--color-dark-light);
   transition: all 0.2s;
-  width: 30rem;
+  /* width: 30rem; */
 }
 
 .container:hover {
-  /* background-color: var(--accent-main); */
   border: 2px solid var(--accent-main);
-
-  /* border-bottom: 2px solid var(--accent-main); */
 }
-/* 
 .container:hover > .icon {
-  color: var(--color-light-light);
-} */
-
-/* .container:hover > .divider {
-  background-color: var(--color-light-light);
-} */
+  color: var(--accent-main);
+}
 
 .divider {
   height: 50px;
   width: 1px;
-  background-color: var(--accent-main);
+  background-color: var(--color-dark-light);
 }
 
 .infos {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  flex: 1;
 }
 
 .icon {
-  color: var(--accent-main);
+  color: var(--color-dark-light);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
 }

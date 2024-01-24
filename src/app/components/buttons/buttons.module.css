@@ -1,0 +1,88 @@
+.container {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.addButton {
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-main);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shareButton {
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-blue);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.deleteButton {
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-danger);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.repeatButton {
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid var(--accent-repeat);
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addButton:hover {
+  background-color: var(--accent-main);
+}
+.shareButton:hover {
+  background-color: var(--accent-blue);
+}
+.deleteButton:hover {
+  background-color: var(--accent-danger);
+}
+.repeatButton:hover {
+  background-color: var(--accent-repeat);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.text {
+  font-size: 12px;
+}

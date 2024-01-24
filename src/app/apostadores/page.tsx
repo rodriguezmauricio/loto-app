@@ -1,16 +1,15 @@
 import PageHeader from "../components/pageHeader/PageHeader";
-import UserCard from "../components/userCard/UserCard";
+import UserCard from "../components/iconCard/IconCard";
 import styles from "./apostadores.module.css";
 
 const ApostadoresPage = () => {
   return (
     <section className={styles.main}>
-      <PageHeader title="Apostadores" />
-      <div className={styles.row}>
-        <div className={styles.fullWidth}>
-          <UserCard username="Usuário exemplo 1" phone="(21)99999-9999" />
-        </div>
-      </div>
+      <PageHeader title="Apostadores" subpage={false} />
+
+      <section>
+        <UserCard title="Usuário exemplo 1" description="(21)99999-9999" icon="user" />
+      </section>
     </section>
   );
 };

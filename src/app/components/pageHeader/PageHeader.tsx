@@ -1,15 +1,20 @@
+import { BsBoxArrowLeft } from "react-icons/bs";
 import Title from "../title/Title";
 import styles from "./pageHeader.module.css";
 import { FaUser, FaPhone } from "react-icons/fa6";
 
 interface IHeader {
   title: string;
+  subpage: boolean;
 }
 
-const PageHeader = ({ title }: IHeader) => {
+const PageHeader = ({ title, subpage }: IHeader) => {
   return (
     <header className={styles.header}>
-      <Title h={1}>{title}</Title>
+      <div className={styles.row}>
+        {subpage && <BsBoxArrowLeft size={40} />}
+        <Title h={1}>{title}</Title>
+      </div>
       <div>
         <div className={styles.user}>
           <p>

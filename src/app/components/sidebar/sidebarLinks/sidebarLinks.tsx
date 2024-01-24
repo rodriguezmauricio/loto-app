@@ -1,30 +1,30 @@
 import {
-  FaArrowRightFromBracket,
-  FaBell,
-  FaChartSimple,
-  FaCircleDollarToSlot,
-  FaDeleteLeft,
-  FaGear,
-  FaListUl,
-  FaTableList,
-  FaUser,
-  FaUserCheck,
-  FaUserTie,
-  FaWallet,
-} from "react-icons/fa6";
+  BsBell,
+  BsWallet2,
+  BsPerson,
+  BsPersonBadge,
+  BsListUl,
+  BsTable,
+  BsGear,
+  BsBoxArrowRight,
+  BsTrophy,
+  BsColumnsGap,
+  BsPeople,
+  BsPersonDash,
+} from "react-icons/bs";
 
-const iconSize = 22;
+const iconSize = 20;
 
 export const sidebarLinksHome = [
   {
     linkName: "Home",
     href: "/",
-    icon: <FaChartSimple size={iconSize} />,
+    icon: <BsColumnsGap size={iconSize} />,
   },
   {
     linkName: "Carteira",
     href: "/carteira",
-    icon: <FaWallet size={iconSize} />,
+    icon: <BsWallet2 size={iconSize} />,
   },
 ];
 
@@ -32,22 +32,22 @@ export const sidebarLinksSorteios = [
   {
     linkName: "Sorteios",
     href: "/sorteios",
-    icon: <FaListUl size={iconSize} />,
+    icon: <BsListUl size={iconSize} />,
   },
   {
     linkName: "Apostadores",
     href: "/apostadores",
-    icon: <FaUser size={iconSize} />,
+    icon: <BsPerson size={iconSize} />,
   },
   {
     linkName: "Vendedores",
     href: "/vendedores",
-    icon: <FaUserTie size={iconSize} />,
+    icon: <BsPersonBadge size={iconSize} />,
   },
   {
     linkName: "Gerenciador de exclusão",
     href: "/gerenciador-de-exclusao",
-    icon: <FaDeleteLeft size={iconSize} />,
+    icon: <BsPersonDash size={iconSize} />,
   },
 ];
 
@@ -55,22 +55,22 @@ export const sidebarLinksPremios = [
   {
     linkName: "Tabela de Premiações",
     href: "/tabela-de-premiacoes",
-    icon: <FaTableList size={iconSize} />,
+    icon: <BsTable size={iconSize} />,
   },
   {
     linkName: "Resultados",
     href: "/resultados",
-    icon: <FaCircleDollarToSlot size={iconSize} />,
+    icon: <BsTrophy size={iconSize} />,
   },
   {
     linkName: "Ganhadores",
     href: "/ganhadores",
-    icon: <FaUserCheck size={iconSize} />,
+    icon: <BsPeople size={iconSize} />,
   },
   {
     linkName: "Novidades",
     href: "/novidades",
-    icon: <FaBell size={iconSize} />,
+    icon: <BsBell size={iconSize} />,
   },
 ];
 
@@ -78,11 +78,11 @@ export const sidebarLinksSettings = [
   {
     linkName: "Configurações",
     href: "/configuracoes",
-    icon: <FaGear size={iconSize} />,
+    icon: <BsGear size={iconSize} />,
   },
   {
     linkName: "Logout",
     href: "/logout",
-    icon: <FaArrowRightFromBracket size={iconSize} />,
+    icon: <BsBoxArrowRight size={iconSize} />,
   },
 ];

@@ -1,5 +1,5 @@
 import PageHeader from "../components/pageHeader/PageHeader";
-import UserCard from "../components/iconCard/IconCard";
+import IconCard from "../components/iconCard/IconCard";
 import styles from "./apostadores.module.css";
 
 const ApostadoresPage = () => {
@@ -8,7 +8,7 @@ const ApostadoresPage = () => {
       <PageHeader title="Apostadores" subpage={false} />
 
       <section>
-        <UserCard title="Usuário exemplo 1" description="(21)99999-9999" icon="user" />
+        <IconCard title="Usuário exemplo 1" description="(21)99999-9999" icon="user" inIcon />
       </section>
     </section>
   );

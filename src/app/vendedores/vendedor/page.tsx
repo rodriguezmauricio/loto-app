@@ -1,5 +1,5 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
-import UserCard from "@/app/components/iconCard/IconCard";
+import IconCard from "@/app/components/iconCard/IconCard";
 import styles from "./vendedor.module.css";
 import Title from "@/app/components/title/Title";
 import Buttons from "@/app/components/buttons/Buttons";
@@ -10,13 +10,13 @@ const Vendedor = () => {
       <PageHeader title="Vendedor" subpage />
 
       <section className={styles.row}>
-        <UserCard
+        <IconCard
           title="Usuário exemplo 1"
           description="(21)99999-9999"
           icon="vendor"
           inIcon={false}
         />
-        <UserCard title="Carteira" description="Saldo e transações" icon="wallet" inIcon />
+        <IconCard title="Carteira" description="Saldo e transações" icon="wallet" inIcon />
       </section>
 
       <section>
@@ -27,7 +27,7 @@ const Vendedor = () => {
           <Buttons type="repeat" />
           <Buttons type="share" />
         </section>
-        <UserCard
+        <IconCard
           title="Filtros"
           description="Selecione a forma de exibir as apostas"
           icon="filter"

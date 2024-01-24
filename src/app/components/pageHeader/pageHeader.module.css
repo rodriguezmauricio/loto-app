@@ -22,3 +22,19 @@
   gap: 30px;
   align-items: center;
 }
+
+.button {
+  background-color: transparent;
+  border: none;
+  color: var(--color-light-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button:hover {
+  color: var(--accent-main);
+}
+
+.button:active {
+  transform: scale(0.9);
+}

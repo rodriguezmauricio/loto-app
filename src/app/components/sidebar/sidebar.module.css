@@ -1,9 +1,10 @@
 .container {
   background-color: var(--color-dark-mid);
   height: 100vh;
-  min-width: 270px;
+  min-width: 280px;
   padding-top: 20px;
   padding-bottom: 10px;
+  border-right: 2px solid var(--color-dark-light);
 }
 
 .logo {
@@ -20,8 +21,8 @@
 }
 
 .divider {
-  height: 1px;
-  background-color: var(--color-light-dark);
+  height: 2px;
+  background-color: var(--color-dark-dark);
   margin: 0 15px 0 15px;
 }
 

@@ -15,9 +15,13 @@
   --accent-warn: #faa356;
   --accent-danger: #fa7970;
 
-  --color-dark-dark: #0d1117;
+  /* --color-dark-dark: #0d1117;
   --color-dark-mid: #161b22;
-  --color-dark-light: #21262d;
+  --color-dark-light: #21262d; */
+
+  --color-dark-dark: #101011;
+  --color-dark-mid: #1b1b1d;
+  --color-dark-light: #2e3033;
 
   --color-light-dark: #89929b;
   --color-light-mid: #c6cdd5;

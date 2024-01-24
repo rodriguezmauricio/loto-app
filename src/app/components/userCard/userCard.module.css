@@ -3,24 +3,29 @@
   flex-direction: row;
   align-items: center;
   gap: 15px;
-  background-color: var(--color-dark-light);
+  background-color: var(--color-dark-mid);
   padding: 10px 20px 10px 20px;
   border-radius: 8px;
   cursor: pointer;
+  border: 2px solid var(--color-dark-light);
+  transition: all 0.2s;
+  width: 30rem;
 }
 
 .container:hover {
-  background-color: var(--accent-main);
-  transition: all 0.2s;
-}
+  /* background-color: var(--accent-main); */
+  border: 2px solid var(--accent-main);
 
+  /* border-bottom: 2px solid var(--accent-main); */
+}
+/* 
 .container:hover > .icon {
   color: var(--color-light-light);
-}
+} */
 
-.container:hover > .divider {
+/* .container:hover > .divider {
   background-color: var(--color-light-light);
-}
+} */
 
 .divider {
   height: 50px;

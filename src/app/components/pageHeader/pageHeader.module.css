@@ -3,6 +3,9 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid var(--color-dark-light);
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 
 .user {

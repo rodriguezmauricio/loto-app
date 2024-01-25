@@ -7,7 +7,7 @@ import ResultsTable from "../components/resultsTable/ResultsTable";
 const page = () => {
   return (
     <main className={styles.main}>
-      <PageHeader title="Tabela de Premiações" subpage />
+      <PageHeader title="Tabela de Premiações" subpage={false} />
       <section className={styles.container}>
         <div>
           <TabsWithFilters />

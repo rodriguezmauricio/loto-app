@@ -1,0 +1,45 @@
+.container {
+  background-color: var(--color-dark-mid);
+  border-radius: 15px;
+  padding: 40px 20px;
+}
+
+.header {
+  text-align: center;
+}
+
+.cellsHeader {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  border-radius: 15px 15px 0 0;
+}
+
+.cellsLine {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-bottom: 1px solid var(--color-light-dark);
+  border-top: 1px solid var(--color-light-dark);
+}
+
+.cellsLineContent {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cellsLine:last-child {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 0 0 15px 15px;
+}
+
+.money {
+  padding: 5px 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}

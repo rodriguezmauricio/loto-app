@@ -5,7 +5,7 @@ import styles from "./dashboard.module.css";
 
 const DashboardPage = () => {
   return (
-    <main className={styles.main}>
+    <main className="main">
       <PageHeader title="Dashboard" subpage={false} />
 
       <section>

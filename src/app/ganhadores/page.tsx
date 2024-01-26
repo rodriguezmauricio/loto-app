@@ -33,7 +33,7 @@ const GanhadoresPage = () => {
   ];
 
   return (
-    <section className={styles.main}>
+    <section className="main">
       <PageHeader title="Ganhadores" subpage={false} />
 
       <section>

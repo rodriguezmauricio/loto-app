@@ -4,7 +4,7 @@ import styles from "./vendedores.module.css";
 
 const VendedoresPage = () => {
   return (
-    <section className={styles.main}>
+    <section className="main">
       <PageHeader title="Vendedores" subpage={false} />
 
       <section>

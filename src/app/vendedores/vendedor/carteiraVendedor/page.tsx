@@ -59,15 +59,15 @@ const CarteiraVendedor = () => {
   ];
 
   return (
-    <main className={styles.main}>
+    <main className="main">
       <PageHeader title="Carteira Vendedor" subpage />
 
       <section className={styles.row}>
         <Card big title="Saldo disponível para apostas" color="green" money value={30} />
         <div className={styles.buttonRow}>
-          <Buttons type="addMoney" />
-          <Buttons type="removeMoney" />
-          <Buttons type="deactivateWallet" />
+          <Buttons buttonType="addMoney" />
+          <Buttons buttonType="removeMoney" />
+          <Buttons buttonType="deactivateWallet" />
         </div>
       </section>
 

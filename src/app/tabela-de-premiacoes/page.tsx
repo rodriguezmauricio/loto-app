@@ -6,7 +6,7 @@ import ResultsTable from "../components/resultsTable/ResultsTable";
 
 const page = () => {
   return (
-    <main className={styles.main}>
+    <main className="main">
       <PageHeader title="Tabela de Premiações" subpage={false} />
       <section className={styles.container}>
         <div>

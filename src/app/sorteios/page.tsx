@@ -3,21 +3,21 @@ import PageHeader from "../components/pageHeader/PageHeader";
 import Buttons from "../components/buttons/Buttons";
 import Filter from "../components/filter/Filter";
 
-const GanhadoresPage = () => {
+const SorteiosPage = () => {
   //TODO: Fetch data from the winners
 
   const filters = ["modalidade caixa", "modalidade sabedoria", "modalidade personalizada"];
 
   return (
-    <section className={styles.main}>
+    <section className="main">
       <PageHeader title="Sorteios" subpage={false} />
 
       <section>
-        <Buttons buttonType="add" />
+        <Buttons buttonType="addSorteio" />
         <Filter filtersArr={filters} />
       </section>
     </section>
   );
 };
 
-export default GanhadoresPage;
+export default SorteiosPage;

@@ -4,7 +4,7 @@ import styles from "./apostadores.module.css";
 
 const ApostadoresPage = () => {
   return (
-    <section className={styles.main}>
+    <section className="main">
       <PageHeader title="Apostadores" subpage={false} />
 
       <section>

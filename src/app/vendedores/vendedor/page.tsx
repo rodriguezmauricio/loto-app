@@ -28,7 +28,7 @@ const Vendedor = () => {
   ];
 
   return (
-    <main className={styles.main}>
+    <main className="main">
       <PageHeader title="Vendedor" subpage />
 
       <section className={styles.row}>

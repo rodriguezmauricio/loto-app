@@ -28,7 +28,7 @@ const Apostador = () => {
   ];
 
   return (
-    <main className={styles.main}>
+    <main className="main">
       <PageHeader title="Apostador" subpage />
 
       <section className={styles.row}>

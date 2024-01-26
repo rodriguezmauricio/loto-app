@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+}
+
+.buttonsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-bottom: 15px;
+}

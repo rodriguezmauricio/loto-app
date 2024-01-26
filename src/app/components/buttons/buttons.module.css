@@ -7,10 +7,10 @@
   margin-bottom: 10px;
 }
 
-.addButton {
+.button {
   padding: 10px;
   border-radius: 8px;
-  border: 2px solid var(--accent-main);
+  /* border: 2px solid var(--accent-main); */
   background-color: transparent;
   margin-bottom: 5px;
   color: var(--color-light-light);
@@ -19,88 +19,42 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.addButton {
+  border: 2px solid var(--accent-main);
 }
 
 .shareButton {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-blue);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .deleteButton {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-danger);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .repeatButton {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-repeat);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .addMoney {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-main);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
+
 .removeMoney {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-danger);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
+
 .deactivateWallet {
-  padding: 10px;
-  border-radius: 8px;
   border: 2px solid var(--accent-danger);
-  background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
+}
+
+.showVendor {
+  border: 2px solid var(--accent-warn);
+}
+
+.date {
+  border: 2px solid var(--accent-purple);
 }
 
 .addButton:hover {
@@ -123,6 +77,12 @@
 }
 .deactivateWallet:hover {
   background-color: var(--accent-danger);
+}
+.showVendor:hover {
+  background-color: var(--accent-warn);
+}
+.date:hover {
+  background-color: var(--accent-purple);
 }
 
 .addButton:active {
@@ -151,6 +111,14 @@
 }
 .deactivateWallet:active {
   background-color: var(--accent-danger);
+  transform: scale(0.9);
+}
+.showVendor:active {
+  background-color: var(--accent-warn);
+  transform: scale(0.9);
+}
+.date:active {
+  background-color: var(--accent-purple);
   transform: scale(0.9);
 }
 

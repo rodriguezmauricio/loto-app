@@ -8,7 +8,13 @@ const VendedoresPage = () => {
       <PageHeader title="Vendedores" subpage={false} />
 
       <section>
-        <UserCard title="Vendedor exemplo" description="(21)99999-9999" icon="vendor" />
+        <UserCard
+          title="Vendedor exemplo"
+          description="(21)99999-9999"
+          icon="vendor"
+          fullWidth={false}
+          inIcon={false}
+        />
       </section>
     </section>
   );

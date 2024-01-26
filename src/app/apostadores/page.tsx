@@ -8,7 +8,13 @@ const ApostadoresPage = () => {
       <PageHeader title="Apostadores" subpage={false} />
 
       <section>
-        <IconCard title="Usuário exemplo 1" description="(21)99999-9999" icon="user" inIcon />
+        <IconCard
+          title="Usuário exemplo 1"
+          description="(21)99999-9999"
+          icon="user"
+          fullWidth={false}
+          inIcon
+        />
       </section>
     </section>
   );

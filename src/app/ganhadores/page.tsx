@@ -1,10 +1,12 @@
 "use client";
+
+import { useState } from "react";
+
 import styles from "./ganhadores.module.css";
 import PageHeader from "../components/pageHeader/PageHeader";
 import ResultsTable from "../components/resultsTable/ResultsTable";
 import Tabs from "../components/tabs/Tabs";
 import Buttons from "../components/buttons/Buttons";
-import { useState } from "react";
 
 const GanhadoresPage = () => {
   const [pix, setPix] = useState(true);
@@ -36,13 +38,13 @@ const GanhadoresPage = () => {
 
       <section>
         <div className={styles.buttonsRow}>
-          <Buttons type="share" onClick={() => console.log("tá funfando")} />
-          <Buttons type="date" />
-          <Buttons type="vendor" />
+          <Buttons buttonType="share" onClick={() => console.log("tá funfando")} />
+          <Buttons buttonType="date" />
+          <Buttons buttonType="vendor" />
           {pix ? (
-            <Buttons type="showPix" onClick={handleShowPix} />
+            <Buttons buttonType="showPix" onClick={handleShowPix} />
           ) : (
-            <Buttons type="hidePix" onClick={handleShowPix} />
+            <Buttons buttonType="hidePix" onClick={handleShowPix} />
           )}
         </div>
         <Tabs tabArray={testArr} />

@@ -1,3 +1,4 @@
+import { ButtonHTMLAttributes } from "react";
 import styles from "./buttons.module.css";
 import {
   BsArrowRepeat,
@@ -14,7 +15,7 @@ import {
 import { TbCurrencyDollarOff, TbWalletOff } from "react-icons/tb";
 
 interface IButtons {
-  type:
+  buttonType:
     | "add"
     | "share"
     | "delete"
@@ -28,8 +29,10 @@ interface IButtons {
     | "hidePix";
 }
 
-const Buttons = (props: any) => {
-  const { type, ...otherProps } = props;
+interface MyIButtons extends ButtonHTMLAttributes<HTMLButtonElement>, IButtons {}
+
+const Buttons: React.FC<MyIButtons> = (props: any) => {
+  const { buttonType, ...otherProps } = props;
 
   const renderIcon = (type: string) => {
     const ICON_SIZE = 30;
@@ -200,7 +203,7 @@ const Buttons = (props: any) => {
     }
   };
 
-  return renderIcon(type);
+  return renderIcon(buttonType);
 };
 
 export default Buttons;

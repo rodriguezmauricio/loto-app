@@ -25,10 +25,9 @@
   padding: 10px 20px;
 }
 
-.allButton {
+.button {
   padding: 10px 20px;
   border-radius: 8px;
-  border: 2px solid var(--accent-blue);
   background-color: transparent;
   margin-bottom: 5px;
   color: var(--color-light-light);
@@ -37,34 +36,21 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.allButton {
+  border: 2px solid var(--accent-blue);
+  background-color: transparent;
 }
 
 .winnersButton {
-  padding: 10px 20px;
-  border-radius: 8px;
   border: 2px solid var(--accent-main);
   background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .deletedButton {
-  padding: 10px 20px;
-  border-radius: 8px;
   border: 2px solid var(--accent-danger);
   background-color: transparent;
-  margin-bottom: 5px;
-  color: var(--color-light-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
 .allButton:hover {

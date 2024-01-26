@@ -6,15 +6,15 @@ interface IFilters {
 }
 
 const Filter = ({ filtersArr }: IFilters) => {
-  const renderClassNames = (filter: string) => {
-    if (filter === "todos") {
-      return styles.allButton;
+  const renderClassNames = (filterIndex: number) => {
+    if (filterIndex === 0) {
+      return `${styles.button} ${styles.allButton}`;
     }
-    if (filter === "premiados") {
-      return styles.winnersButton;
+    if (filterIndex === 1) {
+      return `${styles.button} ${styles.winnersButton}`;
     }
-    if (filter === "excluídos") {
-      return styles.deletedButton;
+    if (filterIndex === 2) {
+      return `${styles.button} ${styles.deletedButton}`;
     }
   };
 
@@ -25,9 +25,9 @@ const Filter = ({ filtersArr }: IFilters) => {
       </div>
       <div className={styles.divider}></div>
       Filtros:
-      {filtersArr.map((filter) => {
+      {filtersArr.map((filter, index) => {
         return (
-          <button className={renderClassNames(filter)} key={filter}>
+          <button className={renderClassNames(index)} key={filter}>
             {filter}
           </button>
         );

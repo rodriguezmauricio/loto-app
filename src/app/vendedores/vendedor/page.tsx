@@ -54,8 +54,8 @@ const Vendedor = () => {
           <Filter filtersArr={filtersArr} />
           <div className={styles.divider}></div>
           <div className={styles.buttonRow}>
-            <Buttons type="delete" />
-            <Buttons type="share" />
+            <Buttons buttonType="delete" />
+            <Buttons buttonType="share" />
           </div>
         </section>
 

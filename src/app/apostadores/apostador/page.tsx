@@ -54,10 +54,10 @@ const Apostador = () => {
           <Filter filtersArr={filtersArr} />
           <div className={styles.divider}></div>
           <div className={styles.buttonRow}>
-            <Buttons type="add" />
-            <Buttons type="delete" />
-            <Buttons type="repeat" />
-            <Buttons type="share" />
+            <Buttons buttonType="add" />
+            <Buttons buttonType="delete" />
+            <Buttons buttonType="repeat" />
+            <Buttons buttonType="share" />
           </div>
         </section>
 

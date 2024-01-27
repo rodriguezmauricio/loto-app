@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/sidebar/Sidebar";
 
-const inter = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"] });
+const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,9 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Sidebar />
-        {children}
+      <body className={`${poppins.className}`}>
+        <div className="sidebar">
+          <Sidebar />
+        </div>
+        <div className="content">{children}</div>
       </body>
     </html>
   );

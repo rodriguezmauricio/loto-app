@@ -1,0 +1,5 @@
+.container {
+  background-color: var(--color-dark-light);
+  padding: 20px;
+  border-radius: 15px;
+}

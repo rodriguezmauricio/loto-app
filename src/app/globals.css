@@ -29,6 +29,8 @@
   --color-light-dark: #89929b;
   --color-light-mid: #c6cdd5;
   --color-light-light: #ecf2f8;
+
+  --sidebar-width: 280px;
 }
 
 * {
@@ -70,6 +72,16 @@ main {
   flex-direction: column;
   gap: 15px;
   padding: 20px;
+}
+
+.sidebar {
+  background-color: #00a67f;
+  width: var(--sidebar-width);
+}
+
+.content {
+  display: flex;
+  flex: 1;
 }
 
 .main {

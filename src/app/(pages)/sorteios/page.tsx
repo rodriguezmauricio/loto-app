@@ -1,7 +1,7 @@
+import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./sorteios.module.css";
-import PageHeader from "../components/pageHeader/PageHeader";
-import Buttons from "../components/buttons/Buttons";
-import Filter from "../components/filter/Filter";
+import Buttons from "@/app/components/buttons/Buttons";
+import Filter from "@/app/components/filter/Filter";
 
 const SorteiosPage = () => {
   //TODO: Fetch data from the winners
@@ -10,7 +10,7 @@ const SorteiosPage = () => {
 
   return (
     <section className="main">
-      <PageHeader title="Sorteios" subpage={false} />
+      <PageHeader title="Sorteios" subpage={false} linkTo={""} />
 
       <section>
         <Buttons buttonType="addSorteio" />

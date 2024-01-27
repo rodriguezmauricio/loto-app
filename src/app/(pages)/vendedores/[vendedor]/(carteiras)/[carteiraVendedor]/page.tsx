@@ -1,11 +1,36 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
-import styles from "./carteiraApostador.module.css";
+import styles from "./carteiraVendedor.module.css";
 import Buttons from "@/app/components/buttons/Buttons";
 import Card from "@/app/components/card/Card";
 import { IIconCard } from "@/app/components/iconCard/IconCard";
 
-const CarteiraApostador = () => {
+interface VendedorParams {
+  params: { vendedor: string; carteiraVendedor: string };
+}
+
+const CarteiraVendedor = ({ params }: VendedorParams) => {
+  const filtersArr = ["todos", "premiados", "excluídos"];
+
+  const usersArr = [
+    {
+      username: "Mauricio Rodriguez",
+      phone: "+353 083 313 4686",
+    },
+    {
+      username: "Franciale Melo",
+      phone: "+353 084 265 3179",
+    },
+    {
+      username: "Roger Bond",
+      phone: "+353 083 356 8596",
+    },
+    {
+      username: "Allanah Something",
+      phone: "+353 086 215 7589",
+    },
+  ];
+
   const vendorIconCards: IIconCard[] = [
     {
       title: "Mauricio Rodriguez",
@@ -13,6 +38,13 @@ const CarteiraApostador = () => {
       fullWidth: false,
       icon: "vendor",
       inIcon: false,
+    },
+    {
+      title: "Relatório de Vendas",
+      description: "comissão: 15%",
+      fullWidth: false,
+      icon: "charts",
+      inIcon: true,
     },
     {
       title: "Relatório de Créditos",
@@ -31,8 +63,8 @@ const CarteiraApostador = () => {
   ];
 
   return (
-    <main className={styles.main}>
-      <PageHeader title="Carteira Apostador" subpage />
+    <main className="main">
+      <PageHeader title="Carteira Vendedor" subpage linkTo={`/vendedores/${params.vendedor}`} />
 
       <section className={styles.row}>
         <Card big title="Saldo disponível para apostas" color="green" money value={30} />
@@ -64,4 +96,4 @@ const CarteiraApostador = () => {
   );
 };
 
-export default CarteiraApostador;
+export default CarteiraVendedor;

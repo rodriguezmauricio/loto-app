@@ -9,6 +9,8 @@ import {
   BsCurrencyDollar,
   BsBarChart,
 } from "react-icons/bs";
+import Link from "next/link";
+import { Url } from "url";
 
 export interface IIconCard {
   title: string;
@@ -16,9 +18,10 @@ export interface IIconCard {
   icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money";
   inIcon: boolean;
   fullWidth: boolean;
+  linkTo?: Url | string;
 }
 
-const IconCard = ({ title, description, icon, inIcon, fullWidth }: IIconCard) => {
+const IconCard = ({ title, description, icon, inIcon, fullWidth, linkTo }: IIconCard) => {
   const ICON_SIZE = 30;
 
   const renderIcon = (icon: string) => {
@@ -43,15 +46,17 @@ const IconCard = ({ title, description, icon, inIcon, fullWidth }: IIconCard) =>
   };
 
   return (
-    <button className={fullWidth ? styles.containerFullWidth : styles.container}>
-      <div className={styles.icon}>{renderIcon(icon)}</div>
-      <div className={styles.divider}></div>
-      <div className={styles.infos}>
-        <p className={styles.title}>{title}</p>
-        <p>{description}</p>
-      </div>
-      {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
-    </button>
+    <Link href={linkTo || ""}>
+      <button className={fullWidth ? styles.containerFullWidth : styles.container}>
+        <div className={styles.icon}>{renderIcon(icon)}</div>
+        <div className={styles.divider}></div>
+        <div className={styles.infos}>
+          <p className={styles.title}>{title}</p>
+          <p>{description}</p>
+        </div>
+        {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
+      </button>
+    </Link>
   );
 };
 

@@ -1,46 +1,22 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
-import styles from "./carteiraVendedor.module.css";
+import styles from "./carteiraApostador.module.css";
 import Buttons from "@/app/components/buttons/Buttons";
 import Card from "@/app/components/card/Card";
 import { IIconCard } from "@/app/components/iconCard/IconCard";
 
-const CarteiraVendedor = () => {
-  const filtersArr = ["todos", "premiados", "excluídos"];
+interface ApostadorParams {
+  params: { apostador: string; carteiraApostador: string };
+}
 
-  const usersArr = [
-    {
-      username: "Mauricio Rodriguez",
-      phone: "+353 083 313 4686",
-    },
-    {
-      username: "Franciale Melo",
-      phone: "+353 084 265 3179",
-    },
-    {
-      username: "Roger Bond",
-      phone: "+353 083 356 8596",
-    },
-    {
-      username: "Allanah Something",
-      phone: "+353 086 215 7589",
-    },
-  ];
-
+const CarteiraApostador = ({ params }: ApostadorParams) => {
   const vendorIconCards: IIconCard[] = [
     {
-      title: "Mauricio Rodriguez",
+      title: params.apostador, //TODO: nota para lembrar que pode passar os params aqui
       description: "(21)99999-9999",
       fullWidth: false,
       icon: "vendor",
       inIcon: false,
-    },
-    {
-      title: "Relatório de Vendas",
-      description: "comissão: 15%",
-      fullWidth: false,
-      icon: "charts",
-      inIcon: true,
     },
     {
       title: "Relatório de Créditos",
@@ -59,8 +35,8 @@ const CarteiraVendedor = () => {
   ];
 
   return (
-    <main className="main">
-      <PageHeader title="Carteira Vendedor" subpage />
+    <main className={styles.main}>
+      <PageHeader title="Carteira Apostador" subpage linkTo={`/apostadores/${params.apostador}`} />
 
       <section className={styles.row}>
         <Card big title="Saldo disponível para apostas" color="green" money value={30} />
@@ -92,4 +68,4 @@ const CarteiraVendedor = () => {
   );
 };
 
-export default CarteiraVendedor;
+export default CarteiraApostador;

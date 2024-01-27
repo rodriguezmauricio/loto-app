@@ -1,11 +1,15 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
+import styles from "./apostador.module.css";
 import IconCard from "@/app/components/iconCard/IconCard";
-import styles from "./vendedor.module.css";
 import Title from "@/app/components/title/Title";
-import Buttons from "@/app/components/buttons/Buttons";
 import Filter from "@/app/components/filter/Filter";
+import Buttons from "@/app/components/buttons/Buttons";
 
-const Vendedor = () => {
+interface ApostadoresParams {
+  params: { apostador: string; carteiraApostador: string };
+}
+
+const Apostador = ({ params }: ApostadoresParams) => {
   const filtersArr = ["todos", "premiados", "excluídos"];
 
   const usersArr = [
@@ -29,7 +33,7 @@ const Vendedor = () => {
 
   return (
     <main className="main">
-      <PageHeader title="Vendedor" subpage />
+      <PageHeader title="Apostador" subpage linkTo={`/apostadores`} />
 
       <section className={styles.row}>
         <IconCard
@@ -45,6 +49,7 @@ const Vendedor = () => {
           icon="wallet"
           inIcon
           fullWidth={false}
+          linkTo={`/apostadores/${params.apostador}/${params.carteiraApostador}`}
         />
       </section>
 
@@ -54,7 +59,9 @@ const Vendedor = () => {
           <Filter filtersArr={filtersArr} />
           <div className={styles.divider}></div>
           <div className={styles.buttonRow}>
+            <Buttons buttonType="add" />
             <Buttons buttonType="delete" />
+            <Buttons buttonType="repeat" />
             <Buttons buttonType="share" />
           </div>
         </section>
@@ -79,4 +86,4 @@ const Vendedor = () => {
   );
 };
 
-export default Vendedor;
+export default Apostador;

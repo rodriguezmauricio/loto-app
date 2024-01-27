@@ -1,0 +1,110 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buttonsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.buttonFilter {
+  padding: 10px;
+  color: var(--color-light-light);
+  border-radius: 8px;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.errorMessage {
+  font-weight: 100;
+  font-size: 14px;
+  color: var(--accent-danger);
+}
+
+.input {
+  padding: 10px;
+  font-family: inherit;
+  border-radius: 8px;
+  border: none;
+  margin-top: -10px;
+  background-color: var(--color-dark-light);
+  color: var(--color-light-light);
+  width: 200px;
+}
+
+.input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  transform: scale(1.3);
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox:checked {
+  background-color: var(
+    --accent-main
+  ); /* Change this to the desired color when checkbox is checked */
+  border-color: var(--accent-main);
+  color: #333;
+  content: "\2713";
+}
+
+.checkbox::before {
+  content: "\2713";
+  font-size: 16px;
+  font-weight: bold;
+  color: transparent;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.checkbox:checked::before {
+  color: #000;
+}
+
+.sendButton {
+  background-color: var(--accent-main);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--color-light-light);
+  width: 200px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sendButton:hover {
+  background-color: rgb(9, 131, 111);
+}
+
+.sendButton:active {
+  transform: scale(0.9);
+}

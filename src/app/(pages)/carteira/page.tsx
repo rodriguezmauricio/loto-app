@@ -1,12 +1,12 @@
-import Card from "../components/card/Card";
-import PageHeader from "../components/pageHeader/PageHeader";
-import Title from "../components/title/Title";
+import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./carteira.module.css";
+import Title from "@/app/components/title/Title";
+import Card from "@/app/components/card/Card";
 
 const CarteiraPage = () => {
   return (
     <main className={styles.main}>
-      <PageHeader title="Carteira" />
+      <PageHeader title="Carteira" subpage={false} linkTo={""} />
 
       <section>
         <Title h={2}>Saldo</Title>

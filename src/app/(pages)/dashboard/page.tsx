@@ -1,12 +1,12 @@
-import Card from "../components/card/Card";
-import PageHeader from "../components/pageHeader/PageHeader";
-import Title from "../components/title/Title";
+import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./dashboard.module.css";
+import Title from "@/app/components/title/Title";
+import Card from "@/app/components/card/Card";
 
 const DashboardPage = () => {
   return (
     <main className="main">
-      <PageHeader title="Dashboard" subpage={false} />
+      <PageHeader title="Dashboard" subpage={false} linkTo={""} />
 
       <section>
         <Title h={2}>Banca</Title>

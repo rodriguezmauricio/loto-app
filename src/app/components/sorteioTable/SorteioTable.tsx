@@ -1,19 +1,13 @@
-import styles from "./resultsTables.module.css";
+import styles from "./sorteioTable.module.css";
 
-interface IResultsTable {}
+interface ISorteioTable {}
 
-const ResultsTable = () => {
+const SorteioTable = () => {
   return (
     <main className={styles.container}>
-      <header className={styles.header}>
-        <h2>AGS Alternativas • Dupla Sena</h2>
-
-        <p>descrição de como funciona o jogo da tabela e combinações e etc.</p>
-      </header>
-
       <section>
         {/* //TODO: Map through the data of the table */}
-        <header className={styles.cellsHeader}>10 Dezenas</header>
+        <header className={styles.cellsHeader}>26 Janeiro 2024</header>
         <div className={styles.cellsLine}>
           <div className={styles.cellsLineContent}>
             <p>Bilhete</p>
@@ -33,4 +27,4 @@ const ResultsTable = () => {
   );
 };
 
-export default ResultsTable;
+export default SorteioTable;

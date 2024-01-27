@@ -3,6 +3,7 @@ import styles from "./buttons.module.css";
 import {
   BsArrowRepeat,
   BsCalendar,
+  BsCheck,
   BsCurrencyDollar,
   BsEye,
   BsEyeSlash,
@@ -27,7 +28,8 @@ interface IButtons {
     | "vendor"
     | "showPix"
     | "hidePix"
-    | "addSorteio";
+    | "addSorteio"
+    | "check";
 }
 
 interface MyIButtons extends ButtonHTMLAttributes<HTMLButtonElement>, IButtons {}
@@ -213,6 +215,21 @@ const Buttons: React.FC<MyIButtons> = (props: any) => {
           <div className={styles.col}>
             <p className={styles.text}>Adicionar</p>
             <p className={styles.text}>Sorteio</p>
+          </div>
+        </div>
+      );
+    }
+    if (type === "check") {
+      //TODO: Add functionality
+
+      return (
+        <div className={styles.container}>
+          <button className={`${styles.button} ${styles.addButton}`} {...otherProps}>
+            <BsCheck size={ICON_SIZE} />
+          </button>
+          <div className={styles.col}>
+            <p className={styles.text}>Conferir</p>
+            <p className={styles.text}>Bilhete</p>
           </div>
         </div>
       );

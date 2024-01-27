@@ -1,5 +1,51 @@
 .container {
-  background-color: var(--color-dark-light);
-  padding: 20px;
   border-radius: 15px;
+  width: 600px;
+}
+
+.header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  background-color: var(--accent-main);
+  padding: 15px;
+  border-radius: 15px 15px 0 0;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: -10px;
+}
+
+.results {
+  background-color: var(--color-dark-mid);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  text-align: center;
+  gap: 20px;
+}
+
+.numbers {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.footer {
+  background-color: var(--color-dark-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 0 0 15px 15px;
 }

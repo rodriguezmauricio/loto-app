@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import styles from "./ganhadores.module.css";
-import ResultsTable from "@/app/components/resultsTable/ResultsTable";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import Buttons from "@/app/components/buttons/Buttons";
 import Tabs from "@/app/components/tabs/Tabs";
+import GanhadoresTable from "@/app/components/ganhadoresTable/GanhadoresTable";
 
 const GanhadoresPage = () => {
   const [pix, setPix] = useState(true);
@@ -20,15 +20,15 @@ const GanhadoresPage = () => {
   const testArr = [
     {
       tabTitle: "Caixa",
-      tabContent: <ResultsTable />,
+      tabContent: <GanhadoresTable />,
     },
     {
       tabTitle: "Sabedoria",
-      tabContent: <ResultsTable />,
+      tabContent: <GanhadoresTable />,
     },
     {
       tabTitle: "Personalizado",
-      tabContent: <ResultsTable />,
+      tabContent: <GanhadoresTable />,
     },
   ];
 

@@ -2,7 +2,7 @@ import styles from "./card.module.css";
 
 interface ICard {
   title: string;
-  value: number;
+  value: number | string;
   big: boolean;
   color: "green" | "red" | "yellow" | "none";
   money?: boolean;

@@ -1,0 +1,18 @@
+.container {
+  /* background-color: var(--color-dark-mid); */
+  background-color: var(--color-dark-dark);
+  border-radius: 15px;
+  padding: 20px 20px;
+}
+
+.header {
+}
+
+.subtitle {
+  font-style: italic;
+}
+
+.resultsRow {
+  display: flex;
+  gap: 20px;
+}

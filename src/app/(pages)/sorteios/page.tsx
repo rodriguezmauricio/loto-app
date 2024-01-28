@@ -14,7 +14,7 @@ const SorteiosPage = () => {
       <PageHeader title="Sorteios" subpage={false} linkTo={""} />
       <main className="main">
         <section>
-          <Link href={"/sorteios/adicionarSorteio"}>
+          <Link href={"/adicionarSorteio"}>
             <Buttons buttonType="addSorteio" />
           </Link>
           <Filter filtersArr={filters} />

@@ -8,20 +8,21 @@ interface VendedoresParams {
 
 const VendedoresPage = ({ params }: VendedoresParams) => {
   return (
-    <section className="main">
+    <>
       <PageHeader title="Vendedores" subpage={false} linkTo={""} />
-
-      <section>
-        <IconCard
-          title="Vendedor exemplo"
-          description="(21)99999-9999"
-          icon="vendor"
-          fullWidth={false}
-          inIcon={false}
-          linkTo={`/vendedores/${params.vendedor}`}
-        />
-      </section>
-    </section>
+      <main className="main">
+        <section>
+          <IconCard
+            title="Vendedor exemplo"
+            description="(21)99999-9999"
+            icon="vendor"
+            fullWidth={false}
+            inIcon={false}
+            linkTo={`/vendedores/${params.vendedor}`}
+          />
+        </section>
+      </main>
+    </>
   );
 };
 

@@ -25,11 +25,11 @@
   gap: 30px;
 }
 
-.divider {
+/* .divider {
   height: 75px;
   width: 2px;
   background-color: var(--color-dark-light);
-}
+} */
 
 .cardRow {
   display: flex;

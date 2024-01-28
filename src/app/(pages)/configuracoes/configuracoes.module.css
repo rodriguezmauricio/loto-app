@@ -5,3 +5,29 @@
 .section {
   margin-bottom: 20px;
 }
+
+.space {
+  padding: 20px;
+}
+
+.saveButton {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: var(--accent-main);
+  font-family: inherit;
+  color: var(--color-light-light);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: var(--accent-blue);
+}

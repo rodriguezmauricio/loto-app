@@ -6,15 +6,17 @@ import ResultsTable from "@/app/components/resultsTable/ResultsTable";
 
 const page = () => {
   return (
-    <main className="main">
+    <>
       <PageHeader title="Tabela de Premiações" subpage={false} linkTo={""} />
-      <section className={styles.container}>
-        <div>
-          <TabsWithFilters />
-        </div>
-        <ResultsTable />
-      </section>
-    </main>
+      <main className="main">
+        <section className={styles.container}>
+          <div>
+            <TabsWithFilters />
+          </div>
+          <ResultsTable />
+        </section>
+      </main>
+    </>
   );
 };
 

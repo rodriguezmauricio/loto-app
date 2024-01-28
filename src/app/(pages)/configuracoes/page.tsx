@@ -16,7 +16,9 @@ import {
   BsExclamationOctagon,
   BsEye,
   BsBell,
+  BsSave,
 } from "react-icons/bs";
+import { FaRegSave } from "react-icons/fa";
 
 const ConfiguracoesPage = () => {
   //TODO: Fetch data from the winners
@@ -24,7 +26,7 @@ const ConfiguracoesPage = () => {
   return (
     <>
       <PageHeader title="Configurações" subpage={false} linkTo={""} />
-      <section className="main">
+      <main className="main">
         <section className={styles.section}>
           <Title h={2}>Modalidades</Title>
           <div className={styles.container}>
@@ -172,7 +174,12 @@ const ConfiguracoesPage = () => {
             />
           </div>
         </section>
-      </section>
+        <button className={styles.saveButton} type="button">
+          <FaRegSave size={30} />
+          Salvar alterações
+        </button>
+        <div className={styles.space}></div>
+      </main>
     </>
   );
 };

@@ -32,55 +32,56 @@ const Vendedor = ({ params }: VendedorParams) => {
   ];
 
   return (
-    <main className="main">
+    <>
       <PageHeader title="Vendedor" subpage linkTo={"/vendedores"} />
-
-      <section className={styles.row}>
-        <IconCard
-          title="Usuário exemplo 1"
-          description="(21)99999-9999"
-          icon="vendor"
-          inIcon={false}
-          fullWidth={false}
-        />
-        <IconCard
-          title="Carteira"
-          description="Saldo e transações"
-          icon="wallet"
-          inIcon
-          fullWidth={false}
-          linkTo={`/vendedores/${params.vendedor}/${params.carteiraVendedor}`}
-        />
-      </section>
-
-      <section>
-        <Title h={2}>Bilhetes</Title>
-        <section className={styles.buttonFilterRow}>
-          <Filter filtersArr={filtersArr} />
-          <div className={styles.divider}></div>
-          <div className={styles.buttonRow}>
-            <Buttons buttonType="delete" />
-            <Buttons buttonType="share" />
-          </div>
+      <main className="main">
+        <section className={styles.row}>
+          <IconCard
+            title="Usuário exemplo 1"
+            description="(21)99999-9999"
+            icon="vendor"
+            inIcon={false}
+            fullWidth={false}
+          />
+          <IconCard
+            title="Carteira"
+            description="Saldo e transações"
+            icon="wallet"
+            inIcon
+            fullWidth={false}
+            linkTo={`/vendedores/${params.vendedor}/${params.carteiraVendedor}`}
+          />
         </section>
 
         <section>
-          {usersArr.map((user) => {
-            return (
-              <div className={styles.userRow} key={user.username}>
-                <IconCard
-                  title={user.username}
-                  description={user.phone}
-                  icon="user"
-                  inIcon={false}
-                  fullWidth
-                />
-              </div>
-            );
-          })}
+          <Title h={2}>Bilhetes</Title>
+          <section className={styles.buttonFilterRow}>
+            <Filter filtersArr={filtersArr} />
+            <div className={styles.divider}></div>
+            <div className={styles.buttonRow}>
+              <Buttons buttonType="delete" />
+              <Buttons buttonType="share" />
+            </div>
+          </section>
+
+          <section>
+            {usersArr.map((user) => {
+              return (
+                <div className={styles.userRow} key={user.username}>
+                  <IconCard
+                    title={user.username}
+                    description={user.phone}
+                    icon="user"
+                    inIcon={false}
+                    fullWidth
+                  />
+                </div>
+              );
+            })}
+          </section>
         </section>
-      </section>
-    </main>
+      </main>
+    </>
   );
 };
 

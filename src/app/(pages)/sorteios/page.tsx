@@ -10,16 +10,17 @@ const SorteiosPage = () => {
   const filters = ["modalidade caixa", "modalidade sabedoria", "modalidade personalizada"];
 
   return (
-    <section className="main">
+    <>
       <PageHeader title="Sorteios" subpage={false} linkTo={""} />
-
-      <section>
-        <Link href={"/sorteios/adicionarSorteio"}>
-          <Buttons buttonType="addSorteio" />
-        </Link>
-        <Filter filtersArr={filters} />
-      </section>
-    </section>
+      <main className="main">
+        <section>
+          <Link href={"/sorteios/adicionarSorteio"}>
+            <Buttons buttonType="addSorteio" />
+          </Link>
+          <Filter filtersArr={filters} />
+        </section>
+      </main>
+    </>
   );
 };
 

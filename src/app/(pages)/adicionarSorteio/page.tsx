@@ -114,85 +114,86 @@ const AdicionarSorteioPage = () => {
   };
 
   return (
-    <section className="main">
+    <>
       <PageHeader title="Adicionar Sorteio" subpage={true} linkTo={"/sorteios"} />
+      <main className="main">
+        <Title h={3}>
+          <label>Modalidade</label>
+        </Title>
+        <div className={styles.buttonsRow}>{renderButtons(buttonsCaixa)}</div>
 
-      <Title h={3}>
-        <label>Modalidade</label>
-      </Title>
-      <div className={styles.buttonsRow}>{renderButtons(buttonsCaixa)}</div>
-
-      <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
-        <div className={styles.fieldRow}>
-          <Title h={3}>Concurso</Title>
-          <input
-            className={styles.input}
-            type="number"
-            placeholder="3000"
-            {...register("numeroConcurso", { required: true })}
-          />
-          {errors.numeroConcurso && (
-            <span className={styles.errorMessage}>This field is required</span>
-          )}
-        </div>
-
-        <div className={styles.fieldRow}>
-          <Title h={3}>Data do Sorteio</Title>
-          <input
-            className={styles.input}
-            type="date"
-            placeholder="3000"
-            {...register("dataSorteio", { required: true })}
-          />
-          {errors.dataSorteio && (
-            <span className={styles.errorMessage}>This field is required</span>
-          )}
-        </div>
-
-        <div className={styles.fieldRow}>
-          <Title h={3}>Horário limite de apostas</Title>
-          <input
-            className={styles.input}
-            type="time"
-            {...register("horarioLimiteAposta", { required: true })}
-          />
-          {errors.horarioLimiteAposta && (
-            <span className={styles.errorMessage}>This field is required</span>
-          )}
-        </div>
-
-        <div className={styles.fieldRow}>
-          <Title h={3}>Início da venda de bilhetes</Title>
-          <div className={styles.checkboxRow}>
+        <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
+          <div className={styles.fieldRow}>
+            <Title h={3}>Concurso</Title>
             <input
-              className={styles.checkbox}
-              type="checkbox"
-              checked={checked}
-              onChange={handleChecked}
+              className={styles.input}
+              type="number"
+              placeholder="3000"
+              {...register("numeroConcurso", { required: true })}
             />
-            <label>Imediatamente</label>
+            {errors.numeroConcurso && (
+              <span className={styles.errorMessage}>This field is required</span>
+            )}
           </div>
-          {!checked && (
-            <>
-              <input
-                className={styles.input}
-                type="date"
-                {...register("inicioVendaBilhetes", {
-                  required: !checked,
-                })}
-              />
 
-              {errors.inicioVendaBilhetes && (
-                <span className={styles.errorMessage}>This field is required</span>
-              )}
-            </>
-          )}
-        </div>
-        <div className={styles.fieldRow}>
-          <input className={styles.sendButton} type="submit" />
-        </div>
-      </form>
-    </section>
+          <div className={styles.fieldRow}>
+            <Title h={3}>Data do Sorteio</Title>
+            <input
+              className={styles.input}
+              type="date"
+              placeholder="3000"
+              {...register("dataSorteio", { required: true })}
+            />
+            {errors.dataSorteio && (
+              <span className={styles.errorMessage}>This field is required</span>
+            )}
+          </div>
+
+          <div className={styles.fieldRow}>
+            <Title h={3}>Horário limite de apostas</Title>
+            <input
+              className={styles.input}
+              type="time"
+              {...register("horarioLimiteAposta", { required: true })}
+            />
+            {errors.horarioLimiteAposta && (
+              <span className={styles.errorMessage}>This field is required</span>
+            )}
+          </div>
+
+          <div className={styles.fieldRow}>
+            <Title h={3}>Início da venda de bilhetes</Title>
+            <div className={styles.checkboxRow}>
+              <input
+                className={styles.checkbox}
+                type="checkbox"
+                checked={checked}
+                onChange={handleChecked}
+              />
+              <label>Imediatamente</label>
+            </div>
+            {!checked && (
+              <>
+                <input
+                  className={styles.input}
+                  type="date"
+                  {...register("inicioVendaBilhetes", {
+                    required: !checked,
+                  })}
+                />
+
+                {errors.inicioVendaBilhetes && (
+                  <span className={styles.errorMessage}>This field is required</span>
+                )}
+              </>
+            )}
+          </div>
+          <div className={styles.fieldRow}>
+            <input className={styles.sendButton} type="submit" />
+          </div>
+        </form>
+      </main>
+    </>
   );
 };
 

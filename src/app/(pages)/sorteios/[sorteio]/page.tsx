@@ -32,55 +32,56 @@ const mockSorteio = [
 
 const SorteioPage = ({ params }: SorteioParams) => {
   return (
-    <main className={styles.main}>
+    <>
       <PageHeader title="Sorteio" subpage linkTo={`/sorteios`} />
-
-      <section className={styles.row}>
-        <IconCard
-          title={`${mockSorteio[0].modalidade}-${mockSorteio[0].numeroSorteio}`}
-          description={mockSorteio[0].dataSorteio}
-          icon="money"
-          inIcon={false}
-          fullWidth={false}
-        />
-        <IconCard
-          title={`Início das Vendas`}
-          description={mockSorteio[0].inicioVendas}
-          icon="money"
-          inIcon={false}
-          fullWidth={false}
-        />
-        <IconCard
-          title={`Horário limite de cadastro de bilhete`}
-          description={mockSorteio[0].horarioLimiteCadastro}
-          icon="money"
-          inIcon={false}
-          fullWidth={false}
-        />
-      </section>
-
-      <section>
-        <Title h={2}>Resultado</Title>
-        <div className={styles.resultadoRow}>
-          {mockSorteio[0].results?.map((num) => {
-            return <NumbersSorteio key={num} numero={num} />;
-          })}
-        </div>
-      </section>
-
-      <section className={styles.buttonRow}>
-        <Buttons buttonType="share" />
-        <Buttons buttonType="check" />
-        <Buttons buttonType="delete" />
-      </section>
-
-      <section className={styles.mainContainer}>
-        <Title h={2}>Bilhetes</Title>
-        <section className={styles.cardRow}>
-          <SorteioTable />
+      <main className="main">
+        <section className={styles.row}>
+          <IconCard
+            title={`${mockSorteio[0].modalidade}-${mockSorteio[0].numeroSorteio}`}
+            description={mockSorteio[0].dataSorteio}
+            icon="money"
+            inIcon={false}
+            fullWidth={false}
+          />
+          <IconCard
+            title={`Início das Vendas`}
+            description={mockSorteio[0].inicioVendas}
+            icon="money"
+            inIcon={false}
+            fullWidth={false}
+          />
+          <IconCard
+            title={`Horário limite de cadastro de bilhete`}
+            description={mockSorteio[0].horarioLimiteCadastro}
+            icon="money"
+            inIcon={false}
+            fullWidth={false}
+          />
         </section>
-      </section>
-    </main>
+
+        <section>
+          <Title h={2}>Resultado</Title>
+          <div className={styles.resultadoRow}>
+            {mockSorteio[0].results?.map((num) => {
+              return <NumbersSorteio key={num} numero={num} big />;
+            })}
+          </div>
+        </section>
+
+        <section className={styles.buttonRow}>
+          <Buttons buttonType="share" />
+          <Buttons buttonType="check" />
+          <Buttons buttonType="delete" />
+        </section>
+
+        <section className={styles.mainContainer}>
+          <Title h={2}>Bilhetes</Title>
+          <section className={styles.cardRow}>
+            <SorteioTable />
+          </section>
+        </section>
+      </main>
+    </>
   );
 };
 

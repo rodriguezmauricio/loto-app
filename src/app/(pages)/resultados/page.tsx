@@ -5,13 +5,14 @@ import PageHeader from "@/app/components/pageHeader/PageHeader";
 
 const ResultadosPage = () => {
   return (
-    <section className="main">
+    <>
       <PageHeader title="Resultados" subpage={false} linkTo={""} />
-
-      <section className={styles.resultsList}>
-        <ResultsCard />
-      </section>
-    </section>
+      <main className="main">
+        <section className={styles.resultsList}>
+          <ResultsCard />
+        </section>
+      </main>
+    </>
   );
 };
 

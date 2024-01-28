@@ -8,20 +8,21 @@ interface ApostadoresParams {
 
 const ApostadoresPage = ({ params }: ApostadoresParams) => {
   return (
-    <section className="main">
+    <>
       <PageHeader title="Apostadores" subpage={false} linkTo={""} />
-
-      <section>
-        <IconCard
-          title="Usuário exemplo 1"
-          description="(21)99999-9999"
-          icon="user"
-          fullWidth={false}
-          inIcon
-          linkTo={`/apostadores/${params.apostador}`}
-        />
-      </section>
-    </section>
+      <main className="main">
+        <section>
+          <IconCard
+            title="Usuário exemplo 1"
+            description="(21)99999-9999"
+            icon="user"
+            fullWidth={false}
+            inIcon
+            linkTo={`/apostadores/${params.apostador}`}
+          />
+        </section>
+      </main>
+    </>
   );
 };
 

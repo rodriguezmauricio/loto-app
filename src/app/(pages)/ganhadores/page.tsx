@@ -33,23 +33,24 @@ const GanhadoresPage = () => {
   ];
 
   return (
-    <section className="main">
+    <>
       <PageHeader title="Ganhadores" subpage={false} linkTo={""} />
-
-      <section>
-        <div className={styles.buttonsRow}>
-          <Buttons buttonType="share" onClick={() => console.log("tá funfando")} />
-          <Buttons buttonType="date" />
-          <Buttons buttonType="vendor" />
-          {pix ? (
-            <Buttons buttonType="showPix" onClick={handleShowPix} />
-          ) : (
-            <Buttons buttonType="hidePix" onClick={handleShowPix} />
-          )}
-        </div>
-        <Tabs tabArray={testArr} />
-      </section>
-    </section>
+      <main className="main">
+        <section>
+          <div className={styles.buttonsRow}>
+            <Buttons buttonType="share" onClick={() => console.log("tá funfando")} />
+            <Buttons buttonType="date" />
+            <Buttons buttonType="vendor" />
+            {pix ? (
+              <Buttons buttonType="showPix" onClick={handleShowPix} />
+            ) : (
+              <Buttons buttonType="hidePix" onClick={handleShowPix} />
+            )}
+          </div>
+          <Tabs tabArray={testArr} />
+        </section>
+      </main>
+    </>
   );
 };
 

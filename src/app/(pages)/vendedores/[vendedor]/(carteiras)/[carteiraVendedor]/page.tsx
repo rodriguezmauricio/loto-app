@@ -63,36 +63,37 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
   ];
 
   return (
-    <main className="main">
+    <>
       <PageHeader title="Carteira Vendedor" subpage linkTo={`/vendedores/${params.vendedor}`} />
-
-      <section className={styles.row}>
-        <Card big title="Saldo disponível para apostas" color="green" money value={30} />
-        <div className={styles.buttonRow}>
-          <Buttons buttonType="addMoney" />
-          <Buttons buttonType="removeMoney" />
-          <Buttons buttonType="deactivateWallet" />
-        </div>
-      </section>
-
-      <section className={styles.mainContainer}>
-        <section className={styles.cardRow}>
-          {vendorIconCards.map((card) => {
-            return (
-              <div key={card.title}>
-                <IconCard
-                  title={card.title}
-                  description={card.description}
-                  icon={card.icon}
-                  inIcon={card.inIcon}
-                  fullWidth={card.fullWidth}
-                />
-              </div>
-            );
-          })}
+      <main className="main">
+        <section className={styles.row}>
+          <Card big title="Saldo disponível para apostas" color="green" money value={30} />
+          <div className={styles.buttonRow}>
+            <Buttons buttonType="addMoney" />
+            <Buttons buttonType="removeMoney" />
+            <Buttons buttonType="deactivateWallet" />
+          </div>
         </section>
-      </section>
-    </main>
+
+        <section className={styles.mainContainer}>
+          <section className={styles.cardRow}>
+            {vendorIconCards.map((card) => {
+              return (
+                <div key={card.title}>
+                  <IconCard
+                    title={card.title}
+                    description={card.description}
+                    icon={card.icon}
+                    inIcon={card.inIcon}
+                    fullWidth={card.fullWidth}
+                  />
+                </div>
+              );
+            })}
+          </section>
+        </section>
+      </main>
+    </>
   );
 };
 

@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  background-color: var(--color-dark-light);
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--color-dark-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 50px;
+}
+
+.effects {
+  transition: all 0.2s;
+}
+
+.tableRow:first-child {
+  border-bottom: 1px solid var(--color-dark-mid);
+  border-radius: 8px 8px 0 0;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+  border-radius: 0 0 8px 8px;
+}
+
+.tableRow:hover {
+  background-color: var(--color-dark-mid);
+}
+
+.effects:active {
+  background-color: var(--color-dark-dark);
+}
+
+.textoDiv {
+  flex: 1;
+}
+
+/* INPUTS STYLE */
+
+.input {
+  height: 20px;
+  width: 160px;
+  font-family: inherit;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--color-light-mid);
+}
+
+.input:focus {
+  border: 3px solid var(--accent-main);
+  outline: none;
+  background-color: var(--color-light-light);
+}

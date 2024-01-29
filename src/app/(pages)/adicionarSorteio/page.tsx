@@ -165,7 +165,7 @@ const AdicionarSorteioPage = () => {
             <Title h={3}>Início da venda de bilhetes</Title>
             <div className={styles.checkboxRow}>
               <input
-                className={styles.checkbox}
+                className={"checkbox"}
                 type="checkbox"
                 checked={checked}
                 onChange={handleChecked}

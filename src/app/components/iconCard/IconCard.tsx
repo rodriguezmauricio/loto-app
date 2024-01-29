@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import styles from "./iconCard.module.css";
 import {
   BsPerson,
@@ -17,12 +18,27 @@ export interface IIconCard {
   description: string;
   icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money";
   inIcon: boolean;
+  hasCheckbox: boolean;
   fullWidth: boolean;
   linkTo?: Url | string;
 }
 
-const IconCard = ({ title, description, icon, inIcon, fullWidth, linkTo }: IIconCard) => {
+const IconCard = ({
+  title,
+  description,
+  icon,
+  inIcon,
+  fullWidth,
+  linkTo,
+  hasCheckbox = false,
+}: IIconCard) => {
   const ICON_SIZE = 30;
+
+  const [checked, setChecked] = useState(true);
+
+  const handleChecked = () => {
+    setChecked(!checked);
+  };
 
   const renderIcon = (icon: string) => {
     if (icon === "user") {
@@ -55,6 +71,18 @@ const IconCard = ({ title, description, icon, inIcon, fullWidth, linkTo }: IIcon
           <p>{description}</p>
         </div>
         {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
+        {hasCheckbox && (
+          <div className={"checkbox"}>
+            {
+              <input
+                className={"checkbox"}
+                type="checkbox"
+                checked={checked}
+                onChange={handleChecked}
+              />
+            }
+          </div>
+        )}
       </button>
     </Link>
   );

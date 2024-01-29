@@ -54,40 +54,6 @@
   margin-bottom: 15px;
 }
 
-.checkbox {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #333;
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
-}
-
-.checkbox:checked {
-  background-color: var(
-    --accent-main
-  ); /* Change this to the desired color when checkbox is checked */
-  border-color: var(--accent-main);
-  color: #333;
-  content: "\2713";
-}
-
-.checkbox::before {
-  content: "\2713";
-  font-size: 16px;
-  font-weight: bold;
-  color: transparent;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.checkbox:checked::before {
-  color: #000;
-}
-
 .sendButton {
   background-color: var(--accent-main);
   padding: 10px 20px;

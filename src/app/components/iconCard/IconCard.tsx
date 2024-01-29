@@ -12,11 +12,12 @@ import {
 } from "react-icons/bs";
 import Link from "next/link";
 import { Url } from "url";
+import { FaClover } from "react-icons/fa6";
 
 export interface IIconCard {
   title: string;
   description: string;
-  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money";
+  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto";
   inIcon: boolean;
   hasCheckbox: boolean;
   fullWidth: boolean;
@@ -58,6 +59,9 @@ const IconCard = ({
     }
     if (icon === "charts") {
       return <BsBarChart size={ICON_SIZE} />;
+    }
+    if (icon === "lotto") {
+      return <FaClover size={ICON_SIZE} />;
     }
   };
 

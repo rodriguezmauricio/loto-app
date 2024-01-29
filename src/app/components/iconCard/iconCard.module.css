@@ -36,16 +36,22 @@
   font-weight: bold;
 }
 
-.container:hover {
+.container:hover,
+.containerFullWidth:hover {
   border: 2px solid var(--accent-main);
 }
 
-.container:hover > .icon {
+.container:hover > .icon,
+.containerFullWidth:hover > .icon {
   color: var(--accent-main);
 }
 
 .container:active {
   transform: scale(0.9);
+}
+
+.containerFullWidth:active {
+  transform: scale(0.98);
 }
 
 .divider {

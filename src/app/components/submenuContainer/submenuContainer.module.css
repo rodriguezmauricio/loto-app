@@ -1,0 +1,27 @@
+.container {
+  background-color: var(--color-dark-mid);
+  border-left: 1px solid var(--color-light-dark);
+  max-width: 80%;
+  height: calc(100vh - 100px);
+  position: fixed;
+  z-index: 10;
+  top: var(--header-height);
+  right: -100vw;
+  padding: 20px;
+  transition: right 0.1s ease-in-out;
+  box-shadow: -10px 0px 50px black;
+}
+
+.container.open {
+  right: 0;
+}
+
+.overlay {
+  position: fixed;
+  offset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 9;
+  width: 100vw;
+  height: 100vh;
+  transition: all 0.2s;
+}

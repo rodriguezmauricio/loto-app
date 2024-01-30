@@ -1,17 +1,38 @@
-import { BsBoxArrowLeft } from "react-icons/bs";
+import { BsBoxArrowLeft, BsThreeDotsVertical } from "react-icons/bs";
 import Title from "../title/Title";
 import styles from "./pageHeader.module.css";
 import { BsPerson, BsPhone } from "react-icons/bs";
 import Link from "next/link";
 import { Url } from "url";
+import SubMenu from "../subMenu/SubMenu";
+import { TsubmenuType } from "../subMenu/SubMenu";
 
 interface IHeader {
   title: string;
   subpage: boolean;
   linkTo: Url | string;
+  hasSearch?: boolean;
+  hasSubMenu?: boolean;
+  submenuType?: TsubmenuType;
+  submenuFunction?: () => void;
 }
 
-const PageHeader = ({ title, subpage, linkTo }: IHeader) => {
+const PageHeader = ({
+  title,
+  subpage,
+  linkTo,
+  hasSearch = false,
+  hasSubMenu = false,
+  submenuType,
+  submenuFunction,
+}: IHeader) => {
+  const renderSubmenu = () => {
+    return (
+      hasSubMenu &&
+      submenuType &&
+      submenuFunction && <SubMenu type={submenuType} submenuFunction={submenuFunction} />
+    );
+  };
   return (
     <header className={styles.header}>
       <div className={styles.row}>
@@ -32,6 +53,7 @@ const PageHeader = ({ title, subpage, linkTo }: IHeader) => {
           <p>
             <BsPhone /> (21)9986-8542
           </p>
+          {renderSubmenu()}
         </div>
       </div>
     </header>

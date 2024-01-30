@@ -4,6 +4,7 @@ import Buttons from "@/app/components/buttons/Buttons";
 import Filter from "@/app/components/filter/Filter";
 import Link from "next/link";
 import IconCard from "@/app/components/iconCard/IconCard";
+import Title from "@/app/components/title/Title";
 
 const SorteiosPage = () => {
   //TODO: Fetch data from the winners
@@ -98,6 +99,7 @@ const SorteiosPage = () => {
           </Link>
           <Filter filtersArr={filters} />
         </section>
+
         <section className={styles.sorteioRow}>
           {mockData.map((concurso) => {
             return (
@@ -109,7 +111,7 @@ const SorteiosPage = () => {
                 inIcon
                 hasCheckbox={false}
                 fullWidth
-                linkTo={""}
+                linkTo={`/sorteios/${concurso.numero}`}
               />
             );
           })}

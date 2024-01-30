@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FaChartSimple } from "react-icons/fa6";
 
 import styles from "./sidebar.module.css";
 import {
@@ -13,7 +12,7 @@ const Sidebar = () => {
   return (
     <aside className={styles.container}>
       <div className={styles.logo}>
-        <h1>SMART LOTO APP</h1>
+        <h1>LOTO APP</h1>
       </div>
       <div className={styles.menuDivisions}>
         {sidebarLinksHome.map((item) => {

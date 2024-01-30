@@ -1,0 +1,18 @@
+.submenuButton {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: var(--color-dark-mid);
+  border: 2px solid var(--color-dark-light);
+  color: var(--color-light-light);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submenuButton:hover {
+  background-color: var(--color-dark-dark);
+  border: 2px solid var(--color-light-dark);
+}
+
+.submenuButton:active {
+  transform: scale(0.9);
+}

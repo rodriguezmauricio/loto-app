@@ -31,6 +31,7 @@
   --color-light-light: #ecf2f8;
 
   --sidebar-width: 280px;
+  --header-height: 100px;
 }
 
 * {

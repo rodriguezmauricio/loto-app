@@ -1,3 +1,5 @@
+"use client";
+
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./sorteio.module.css";
 import Card from "@/app/components/card/Card";
@@ -7,6 +9,8 @@ import Title from "@/app/components/title/Title";
 import NumbersSorteio from "@/app/components/numbersSorteio/NumbersSorteio";
 import ResultsTable from "@/app/components/resultsTable/ResultsTable";
 import SorteioTable from "@/app/components/sorteioTable/SorteioTable";
+import { useState } from "react";
+import SubmenuContainer from "@/app/components/submenuContainer/SubmenuContainer";
 
 interface SorteioParams {
   params: {
@@ -26,22 +30,38 @@ const mockSorteio = [
     dataSorteio: "2024-01-20",
     inicioVendas: "2024-01-15",
     horarioLimiteCadastro: "2024-01-20 20:00",
-    results: [1, 2, 3, 5, 7, 8, 9, 10, 12, 14, 25, 16, 18, 20, 21, 22, 23, 24, 25, 26, 28, 29, 30],
+    results: [1, 2, 3, 5, 7, 8, 9, 10, 12, 14, 25, 16, 18, 20, 21],
   },
 ];
 
 const SorteioPage = ({ params }: SorteioParams) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const submenuFunc = () => setIsMenuOpen(!isMenuOpen);
+
   return (
     <>
-      <PageHeader title="Sorteio" subpage linkTo={`/sorteios`} />
+      <PageHeader
+        title="Sorteio"
+        subpage
+        linkTo={`/sorteios`}
+        hasSubMenu
+        submenuType="add"
+        submenuFunction={submenuFunc}
+      />
+      <SubmenuContainer isOpen={isMenuOpen}>
+        dasdsadsjfkdsjkdskjhvjkdsnc j vcjdnbjkvnald
+      </SubmenuContainer>
+
       <main className="main">
         <section className={styles.row}>
           <IconCard
             title={`${mockSorteio[0].modalidade}-${mockSorteio[0].numeroSorteio}`}
             description={mockSorteio[0].dataSorteio}
-            icon="money"
+            icon="lotto"
             inIcon={false}
             fullWidth={false}
+            hasCheckbox={false}
+            isClickable={false}
           />
           <IconCard
             title={`Início das Vendas`}
@@ -49,13 +69,17 @@ const SorteioPage = ({ params }: SorteioParams) => {
             icon="money"
             inIcon={false}
             fullWidth={false}
+            hasCheckbox={false}
+            isClickable={false}
           />
           <IconCard
             title={`Horário limite de cadastro de bilhete`}
             description={mockSorteio[0].horarioLimiteCadastro}
-            icon="money"
+            icon="clock"
             inIcon={false}
             fullWidth={false}
+            hasCheckbox={false}
+            isClickable={false}
           />
         </section>
 

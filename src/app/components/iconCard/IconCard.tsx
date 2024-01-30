@@ -9,6 +9,7 @@ import {
   BsFilter,
   BsCurrencyDollar,
   BsBarChart,
+  BsClock,
 } from "react-icons/bs";
 import Link from "next/link";
 import { Url } from "url";
@@ -17,11 +18,12 @@ import { FaClover } from "react-icons/fa6";
 export interface IIconCard {
   title: string;
   description: string;
-  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto";
+  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto" | "clock";
   inIcon: boolean;
   hasCheckbox: boolean;
   fullWidth: boolean;
   linkTo?: Url | string;
+  isClickable?: boolean;
 }
 
 const IconCard = ({
@@ -32,6 +34,7 @@ const IconCard = ({
   fullWidth,
   linkTo,
   hasCheckbox = false,
+  isClickable = true,
 }: IIconCard) => {
   const ICON_SIZE = 30;
 
@@ -63,11 +66,28 @@ const IconCard = ({
     if (icon === "lotto") {
       return <FaClover size={ICON_SIZE} />;
     }
+    if (icon === "clock") {
+      return <BsClock size={ICON_SIZE} />;
+    }
+  };
+
+  const renderClassnames = (fullWidth: boolean, isClickable: boolean) => {
+    let appliedStyles = styles.container;
+
+    if (!isClickable) {
+      appliedStyles = styles.containerNoAnimation;
+    }
+
+    if (fullWidth) {
+      appliedStyles = styles.containerFullWidth;
+    }
+
+    return appliedStyles;
   };
 
   return (
     <Link href={linkTo || ""}>
-      <button className={fullWidth ? styles.containerFullWidth : styles.container}>
+      <button className={renderClassnames(fullWidth, isClickable)}>
         <div className={styles.icon}>{renderIcon(icon)}</div>
         <div className={styles.divider}></div>
         <div className={styles.infos}>

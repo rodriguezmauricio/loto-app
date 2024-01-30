@@ -1,6 +1,8 @@
+"use client";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./vendedores.module.css";
 import IconCard from "@/app/components/iconCard/IconCard";
+import Link from "next/link";
 
 interface VendedoresParams {
   params: { vendedor: string; carteiraVendedor: string };
@@ -9,7 +11,15 @@ interface VendedoresParams {
 const VendedoresPage = ({ params }: VendedoresParams) => {
   return (
     <>
-      <PageHeader title="Vendedores" subpage={false} linkTo={""} />
+      <PageHeader
+        title="Vendedores"
+        subpage={false}
+        linkTo={""}
+        hasSearch
+        hasSubMenu
+        submenuType="add"
+        submenuLink="/adicionarVendedor"
+      />
       <main className="main">
         <section>
           <IconCard
@@ -19,6 +29,7 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
             fullWidth={false}
             inIcon={false}
             linkTo={`/vendedores/${params.vendedor}`}
+            hasCheckbox={false}
           />
         </section>
       </main>

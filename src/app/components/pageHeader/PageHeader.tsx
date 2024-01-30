@@ -14,6 +14,7 @@ interface IHeader {
   hasSearch?: boolean;
   hasSubMenu?: boolean;
   submenuType?: TsubmenuType;
+  submenuLink: string;
   submenuFunction?: () => void;
 }
 
@@ -24,14 +25,23 @@ const PageHeader = ({
   hasSearch = false,
   hasSubMenu = false,
   submenuType,
+  submenuLink,
   submenuFunction,
 }: IHeader) => {
   const renderSubmenu = () => {
-    return (
-      hasSubMenu &&
-      submenuType &&
-      submenuFunction && <SubMenu type={submenuType} submenuFunction={submenuFunction} />
-    );
+    if (!submenuLink) {
+      return (
+        hasSubMenu &&
+        submenuType &&
+        submenuFunction && <SubMenu type={submenuType} submenuFunction={submenuFunction} />
+      );
+    } else {
+      return (
+        hasSubMenu &&
+        submenuType &&
+        submenuLink && <SubMenu type={submenuType} submenuLink={submenuLink} />
+      );
+    }
   };
   return (
     <header className={styles.header}>

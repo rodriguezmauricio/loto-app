@@ -42,6 +42,7 @@ const Vendedor = ({ params }: VendedorParams) => {
             icon="vendor"
             inIcon={false}
             fullWidth={false}
+            hasCheckbox={false}
           />
           <IconCard
             title="Carteira"
@@ -49,6 +50,7 @@ const Vendedor = ({ params }: VendedorParams) => {
             icon="wallet"
             inIcon
             fullWidth={false}
+            hasCheckbox={false}
             linkTo={`/vendedores/${params.vendedor}/${params.carteiraVendedor}`}
           />
         </section>
@@ -73,6 +75,7 @@ const Vendedor = ({ params }: VendedorParams) => {
                     description={user.phone}
                     icon="user"
                     inIcon={false}
+                    hasCheckbox={false}
                     fullWidth
                   />
                 </div>

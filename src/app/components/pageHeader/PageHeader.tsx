@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Url } from "url";
 import SubMenu from "../subMenu/SubMenu";
 import { TsubmenuType } from "../subMenu/SubMenu";
+import SearchBar from "../searchBar/SearchBar";
 
 interface IHeader {
   title: string;
@@ -43,6 +44,12 @@ const PageHeader = ({
       );
     }
   };
+
+  const renderSearchBar = () => {
+    if (hasSearch) {
+      return <SearchBar />;
+    }
+  };
   return (
     <header className={styles.header}>
       <div className={styles.row}>
@@ -57,12 +64,7 @@ const PageHeader = ({
       </div>
       <div>
         <div className={styles.user}>
-          <p>
-            <BsPerson /> Angela
-          </p>
-          <p>
-            <BsPhone /> (21)9986-8542
-          </p>
+          {renderSearchBar()}
           {renderSubmenu()}
         </div>
       </div>

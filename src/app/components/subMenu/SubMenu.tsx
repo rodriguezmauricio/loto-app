@@ -28,15 +28,19 @@ const SubMenu = ({ type, submenuLink, submenuFunction }: ISubmenu) => {
   };
 
   const renderButtonByFunction = (link: string | undefined) => {
-    return submenuLink ? (
-      <Link href={link!}>
-        <button className={styles.submenuButton}>{renderIcon(type)}</button>
-      </Link>
-    ) : (
-      <button className={styles.submenuButton} onClick={submenuFunction}>
-        {renderIcon(type)}
-      </button>
-    );
+    if (submenuLink) {
+      return (
+        <Link href={link!}>
+          <button className={styles.submenuButton}>{renderIcon(type)}</button>
+        </Link>
+      );
+    } else {
+      return (
+        <button className={styles.submenuButton} onClick={submenuFunction}>
+          {renderIcon(type)}
+        </button>
+      );
+    }
   };
 
   return renderButtonByFunction(submenuLink);

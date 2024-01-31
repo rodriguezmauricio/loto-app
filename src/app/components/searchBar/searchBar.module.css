@@ -1,0 +1,35 @@
+.container {
+  /* background-color: var(--color-light-mid); */
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 3px;
+}
+
+.input {
+  padding: 10px;
+  border: none;
+  background-color: transparent;
+  border-top: 2px solid var(--color-dark-light);
+  border-bottom: 2px solid var(--color-dark-light);
+  border-left: 2px solid var(--color-dark-light);
+  border-radius: 8px 0 0 8px;
+  height: 45px;
+  font-family: inherit;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 0 10px;
+  height: max-content;
+  background-color: var(--color-dark-mid);
+  height: 45px;
+  border-radius: 0 8px 8px 0;
+  border-top: 2px solid var(--color-dark-light);
+  border-bottom: 2px solid var(--color-dark-light);
+  border-right: 2px solid var(--color-dark-light);
+  cursor: pointer;
+}

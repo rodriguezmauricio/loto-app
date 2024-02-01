@@ -1,7 +1,6 @@
 .h1 {
   font-size: 42px;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .h2 {
@@ -12,4 +11,10 @@
 .h3 {
   font-size: 22px;
   margin-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

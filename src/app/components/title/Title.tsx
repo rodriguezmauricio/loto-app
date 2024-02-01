@@ -19,7 +19,7 @@ const Title = ({ h, children }: ITitle) => {
     }
   };
 
-  return <div className={applyStyle()}>{children}</div>;
+  return <div className={`row ${applyStyle()}`}>{children}</div>;
 };
 
 export default Title;

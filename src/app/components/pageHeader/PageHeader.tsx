@@ -15,7 +15,7 @@ interface IHeader {
   hasSearch?: boolean;
   hasSubMenu?: boolean;
   submenuType?: TsubmenuType;
-  submenuLink: string;
+  submenuLink?: string;
   submenuFunction?: () => void;
 }
 

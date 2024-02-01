@@ -39,7 +39,7 @@
   margin-top: -10px;
   background-color: var(--color-dark-light);
   color: var(--color-light-light);
-  width: 200px;
+  width: 250px;
 }
 
 .input::-webkit-calendar-picker-indicator {

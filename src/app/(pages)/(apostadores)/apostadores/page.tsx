@@ -9,16 +9,25 @@ interface ApostadoresParams {
 const ApostadoresPage = ({ params }: ApostadoresParams) => {
   return (
     <>
-      <PageHeader title="Apostadores" subpage={false} linkTo={""} />
+      <PageHeader
+        title="Apostadores"
+        subpage={false}
+        linkTo={""}
+        hasSubMenu
+        submenuType="add"
+        submenuLink="/adicionarApostador"
+      />
       <main className="main">
         <section>
+          {/* //TODO: MAP OVER THE USERS */}
           <IconCard
             title="Usuário exemplo 1"
             description="(21)99999-9999"
             icon="user"
-            fullWidth={false}
+            fullWidth={true}
             inIcon
             linkTo={`/apostadores/${params.apostador}`}
+            hasCheckbox={false}
           />
         </section>
       </main>

@@ -22,11 +22,12 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
       />
       <main className="main">
         <section>
+          {/* TODO: map over the users */}
           <IconCard
             title="Vendedor exemplo"
             description="(21)99999-9999"
             icon="vendor"
-            fullWidth={false}
+            fullWidth={true}
             inIcon={false}
             linkTo={`/vendedores/${params.vendedor}`}
             hasCheckbox={false}

@@ -9,36 +9,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-dark-mid);
   padding: 20px;
-  cursor: pointer;
+  background-color: var(--color-dark-mid);
   border: 1px solid var(--color-dark-light);
+  color: var(--color-light-dark);
+  cursor: pointer;
   width: 200px;
-  color: var(--color-light-light);
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 500;
   font-family: inherit;
 }
 
 .singleTabSelected {
   background-color: var(--color-dark-light);
   border: 1px solid var(--color-dark-light);
+  color: var(--color-light-light);
+  font-weight: bold;
 }
 
 .singleTab:first-child,
 .singleTabSelected:first-child {
-  border-radius: 15px 0 0 0;
+  border-radius: 8px 0 0 0;
 }
 
 .singleTab:last-child,
 .singleTabSelected:last-child {
-  border-radius: 0 15px 0 0;
+  border-radius: 0 8px 0 0;
 }
 
 .tabContentContainer {
   background-color: var(--color-dark-light);
   padding: 20px;
-  border-radius: 0 15px 15px 15px;
+  border-radius: 0 8px 8px 8px;
 }
 
 .buttonFiltersRow {

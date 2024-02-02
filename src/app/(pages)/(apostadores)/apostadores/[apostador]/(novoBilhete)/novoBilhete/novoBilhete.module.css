@@ -1,7 +1,21 @@
+.buttonFilterRow {
+  margin-bottom: 15px;
+}
+
 .buttonRow {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 15px;
+}
+
+.valorBilheteDiv {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px;
+  border: 2px solid var(--color-dark-light);
+  border-radius: 8px;
 }
 
 .inputsRow {
@@ -15,17 +29,17 @@
   background-color: var(--color-dark-mid);
   border: 2px solid var(--color-dark-light);
   border-radius: 8px;
-  padding: 10px;
+  padding: 2px 5px;
   font-family: inherit;
   color: var(--color-light-light);
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .jogosRow {
   display: flex;
   flex-direction: row;
-  align-items: start;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .textAreaDiv {
@@ -33,13 +47,31 @@
   flex: 1;
 }
 
+.compDiv {
+  flex: 1;
+}
+
+.instructionsDiv {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+}
+
 .textArea {
   flex: 1;
   width: 100%;
   background-color: var(--color-dark-mid);
   border: 2px solid var(--color-dark-light);
-  border-radius: 15px;
+  border-radius: 8px;
   padding: 20px;
   font-family: inherit;
+  font-size: 16px;
   color: var(--color-light-light);
+}
+
+.checkJogosDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }

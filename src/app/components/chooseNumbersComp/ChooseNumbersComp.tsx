@@ -1,26 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import NumbersSorteio from "../numbersSorteio/NumbersSorteio";
 import styles from "./chooseNumbersComp.module.css";
 
 interface IChooseNumbersComp {
   numbersToRender: number;
   selectionLimit: number;
+  numbersArr: string[];
+  numbersArrSetter: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const ChooseNumbersComp = ({ numbersToRender, selectionLimit }: IChooseNumbersComp) => {
+const ChooseNumbersComp = ({
+  numbersToRender,
+  selectionLimit,
+  numbersArr,
+  numbersArrSetter,
+}: IChooseNumbersComp) => {
   let arrNums: string[] = [];
 
-  const [selectedNumbers, setSelectedNumbers] = useState<string[]>([]);
-
   const addNumberToSelection = (selectedNumber: string, limit: number) => {
-    if (selectedNumbers.length < limit) {
-      selectedNumbers.includes(selectedNumber)
-        ? setSelectedNumbers((prev) => prev.filter((num) => selectedNumber !== num))
-        : setSelectedNumbers((prev) => [...prev, selectedNumber]);
+    if (numbersArr.length < limit) {
+      numbersArr.includes(selectedNumber)
+        ? numbersArrSetter((prev) => prev.filter((num) => selectedNumber !== num))
+        : numbersArrSetter((prev) => [...prev, selectedNumber]);
     } else {
-      setSelectedNumbers((prev) => prev.filter((num) => selectedNumber !== num));
+      numbersArrSetter((prev) => prev.filter((num) => selectedNumber !== num));
     }
   };
 
@@ -29,7 +34,7 @@ const ChooseNumbersComp = ({ numbersToRender, selectionLimit }: IChooseNumbersCo
   }
 
   const renderClasses = (num: string) => {
-    return selectedNumbers.includes(num) ? styles.numberSelected : "";
+    return numbersArr.includes(num) ? styles.numberSelected : "";
   };
 
   return (
@@ -50,7 +55,7 @@ const ChooseNumbersComp = ({ numbersToRender, selectionLimit }: IChooseNumbersCo
       </div>
 
       {/* HEADER: CODE TO SORT THE SELECTED NUMBERS */}
-      {selectedNumbers
+      {/* {numbersArr
         .sort((a, b) => {
           return Number(a) - Number(b);
         })
@@ -58,7 +63,7 @@ const ChooseNumbersComp = ({ numbersToRender, selectionLimit }: IChooseNumbersCo
           <span style={{ padding: "10px" }} key={num}>
             {num}
           </span>
-        ))}
+        ))} */}
     </>
   );
 };

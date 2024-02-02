@@ -19,9 +19,9 @@ export interface IIconCard {
   title: string;
   description: string;
   icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto" | "clock";
-  inIcon: boolean;
-  hasCheckbox: boolean;
-  fullWidth: boolean;
+  inIcon?: boolean;
+  hasCheckbox?: boolean;
+  fullWidth?: boolean;
   linkTo?: Url | string;
   isClickable?: boolean;
 }
@@ -30,9 +30,9 @@ const IconCard = ({
   title,
   description,
   icon,
-  inIcon,
-  fullWidth,
-  linkTo,
+  inIcon = false,
+  fullWidth = false,
+  linkTo = "",
   hasCheckbox = false,
   isClickable = true,
 }: IIconCard) => {
@@ -74,41 +74,67 @@ const IconCard = ({
   const renderClassnames = (fullWidth: boolean, isClickable: boolean) => {
     let appliedStyles = styles.container;
 
-    if (!isClickable) {
+    if (isClickable === false) {
       appliedStyles = styles.containerNoAnimation;
     }
 
     if (fullWidth) {
-      appliedStyles = styles.containerFullWidth;
+      appliedStyles = `${appliedStyles} ${styles.containerFullWidth}`;
     }
 
     return appliedStyles;
   };
 
   return (
-    <Link href={linkTo || ""}>
-      <button className={renderClassnames(fullWidth, isClickable)}>
-        <div className={styles.icon}>{renderIcon(icon)}</div>
-        <div className={styles.divider}></div>
-        <div className={styles.infos}>
-          <p className={styles.title}>{title}</p>
-          <p>{description}</p>
-        </div>
-        {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
-        {hasCheckbox && (
-          <div className={"checkbox"}>
-            {
-              <input
-                className={"checkbox"}
-                type="checkbox"
-                checked={checked}
-                onChange={handleChecked}
-              />
-            }
+    <>
+      {isClickable ? (
+        <Link href={linkTo}>
+          <button className={renderClassnames(fullWidth, isClickable)}>
+            <div className={styles.icon}>{renderIcon(icon)}</div>
+            <div className={styles.divider}></div>
+            <div className={styles.infos}>
+              <p className={styles.title}>{title}</p>
+              <p>{description}</p>
+            </div>
+            {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
+            {hasCheckbox && (
+              <div className={"checkbox"}>
+                {
+                  <input
+                    className={"checkbox"}
+                    type="checkbox"
+                    checked={checked}
+                    onChange={handleChecked}
+                  />
+                }
+              </div>
+            )}
+          </button>
+        </Link>
+      ) : (
+        <button className={renderClassnames(fullWidth, isClickable)}>
+          <div className={styles.icon}>{renderIcon(icon)}</div>
+          <div className={styles.divider}></div>
+          <div className={styles.infos}>
+            <p className={styles.title}>{title}</p>
+            <p>{description}</p>
           </div>
-        )}
-      </button>
-    </Link>
+          {inIcon && <div className={styles.icon}>{<BsBoxArrowInRight size={30} />}</div>}
+          {hasCheckbox && (
+            <div className={"checkbox"}>
+              {
+                <input
+                  className={"checkbox"}
+                  type="checkbox"
+                  checked={checked}
+                  onChange={handleChecked}
+                />
+              }
+            </div>
+          )}
+        </button>
+      )}
+    </>
   );
 };
 

@@ -2,20 +2,25 @@
   padding: 10px 20px;
   border-radius: 8px;
   background-color: transparent;
-  margin-bottom: 5px;
+  /* margin-bottom: 5px; */
   color: var(--color-light-light);
   border: 2px solid var(--color-dark-light);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .button:hover {
   border-color: var(--color-light-light);
+}
+
+.button:active {
+  transform: scale(0.9);
 }
 
 .selectedButton {

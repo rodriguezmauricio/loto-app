@@ -22,7 +22,6 @@
   background-color: var(--color-dark-mid);
   padding: 10px 20px 10px 20px;
   border-radius: 8px;
-  cursor: pointer;
   border: 2px solid var(--color-dark-light);
   transition: all 0.2s;
   color: var(--color-light-light);

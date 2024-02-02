@@ -2,10 +2,13 @@
 
 import styles from "./adicionarSorteio.module.css";
 
-import Title from "@/app/components/title/Title";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { ChangeEvent, useEffect, useState } from "react";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
+import Title from "@/app/components/title/Title";
+import { useState } from "react";
+import { useForm, SubmitHandler, Resolver } from "react-hook-form";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 type Inputs = {
   numeroConcurso: string;
@@ -14,17 +17,34 @@ type Inputs = {
   inicioVendaBilhetes: string;
 };
 
+const schema = yup.object().shape({
+  numeroConcurso: yup.string().required("Este campo é necessário"),
+  dataSorteio: yup.string().required("Este campo é necessário"),
+  horarioLimiteAposta: yup.string().required("Este campo é necessário"),
+  inicioVendaBilhetes: yup.string().required("Este campo é necessário"),
+});
+
+const resolver = yupResolver(schema) as Resolver<Inputs>;
+
 const AdicionarSorteioPage = () => {
   //TODO: Fetch data from the winners
 
-  const [selectedTab, setSelectedTab] = useState(0);
   const [modalidade, setModalidade] = useState("Lotofácil");
   const [checked, setChecked] = useState(true);
+
   const imediatamenteCheckbox = () => {
     const today = new Date();
     const day = today.getDate();
     const month = today.getMonth();
     const year = today.getFullYear();
+
+    const treatedDay = () => {
+      if (day.toString().length === 1) {
+        return `0${Number(day)}`;
+      } else {
+        return day;
+      }
+    };
 
     const treatedMonth = () => {
       if (month.toString().length === 1) {
@@ -34,9 +54,8 @@ const AdicionarSorteioPage = () => {
       }
     };
 
-    return `${year}-${treatedMonth()}-${day}`;
+    return `${year}-${treatedMonth()}-${treatedDay()}`;
   };
-  const [inicioVendaDate, setInicioVendaDate] = useState(imediatamenteCheckbox());
 
   const {
     register,
@@ -46,8 +65,12 @@ const AdicionarSorteioPage = () => {
     setValue,
   } = useForm<Inputs>({
     defaultValues: {
+      numeroConcurso: "",
+      dataSorteio: "",
+      horarioLimiteAposta: "",
       inicioVendaBilhetes: imediatamenteCheckbox(),
     },
+    resolver: resolver,
   });
 
   const handleChecked = () => {
@@ -131,9 +154,7 @@ const AdicionarSorteioPage = () => {
               placeholder="3000"
               {...register("numeroConcurso", { required: true })}
             />
-            {errors.numeroConcurso && (
-              <span className={styles.errorMessage}>This field is required</span>
-            )}
+            {<span className={styles.errorMessage}>{errors.numeroConcurso?.message}</span>}
           </div>
 
           <div className={styles.fieldRow}>
@@ -144,9 +165,7 @@ const AdicionarSorteioPage = () => {
               placeholder="3000"
               {...register("dataSorteio", { required: true })}
             />
-            {errors.dataSorteio && (
-              <span className={styles.errorMessage}>This field is required</span>
-            )}
+            {<span className={styles.errorMessage}>{errors.dataSorteio?.message}</span>}
           </div>
 
           <div className={styles.fieldRow}>
@@ -156,9 +175,7 @@ const AdicionarSorteioPage = () => {
               type="time"
               {...register("horarioLimiteAposta", { required: true })}
             />
-            {errors.horarioLimiteAposta && (
-              <span className={styles.errorMessage}>This field is required</span>
-            )}
+            {<span className={styles.errorMessage}>{errors.horarioLimiteAposta?.message}</span>}
           </div>
 
           <div className={styles.fieldRow}>
@@ -182,9 +199,7 @@ const AdicionarSorteioPage = () => {
                   })}
                 />
 
-                {errors.inicioVendaBilhetes && (
-                  <span className={styles.errorMessage}>This field is required</span>
-                )}
+                {<span className={styles.errorMessage}>{errors.inicioVendaBilhetes?.message}</span>}
               </>
             )}
           </div>

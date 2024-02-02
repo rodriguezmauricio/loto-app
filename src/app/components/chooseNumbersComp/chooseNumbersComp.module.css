@@ -1,0 +1,35 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  gap: 15px;
+  flex-wrap: wrap;
+
+  background-color: var(--color-dark-mid);
+  padding: 20px;
+  border: 2px solid var(--color-dark-light);
+  border-radius: 15px;
+  color: aliceblue;
+}
+
+.numberContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-dark-light);
+  border: 2px solid var(--color-light-dark);
+  width: 60px;
+  height: 60px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 20px;
+  color: var(--color-light-light);
+}
+
+.numberContainer:hover {
+  border-color: var(--color-light-light);
+}
+
+.numberSelected {
+  background-color: var(--accent-main);
+}

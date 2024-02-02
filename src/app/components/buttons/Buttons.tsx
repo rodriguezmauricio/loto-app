@@ -14,6 +14,7 @@ import {
 } from "react-icons/bs";
 
 import { TbCurrencyDollarOff, TbWalletOff } from "react-icons/tb";
+import Link from "next/link";
 
 interface IButtons {
   buttonType:
@@ -30,12 +31,13 @@ interface IButtons {
     | "hidePix"
     | "addSorteio"
     | "check";
+  linkTo?: string;
 }
 
 interface MyIButtons extends ButtonHTMLAttributes<HTMLButtonElement>, IButtons {}
 
 const Buttons: React.FC<MyIButtons> = (props: any) => {
-  const { buttonType, ...otherProps } = props;
+  const { buttonType, linkTo, ...otherProps } = props;
 
   const renderIcon = (type: string) => {
     const ICON_SIZE = 30;
@@ -44,9 +46,11 @@ const Buttons: React.FC<MyIButtons> = (props: any) => {
 
       return (
         <div className={styles.container}>
-          <button className={`${styles.button} ${styles.addButton}`} {...otherProps}>
-            <BsPlus size={ICON_SIZE} />
-          </button>
+          <Link href="/apostadores/apostador/novoBilhete">
+            <button className={`${styles.button} ${styles.addButton}`} {...otherProps}>
+              <BsPlus size={ICON_SIZE} />
+            </button>
+          </Link>
           <div className={styles.col}>
             <p className={styles.text}>Adicionar</p>
             <p className={styles.text}>Bilhete</p>

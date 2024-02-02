@@ -12,25 +12,6 @@ interface ApostadoresParams {
 const Apostador = ({ params }: ApostadoresParams) => {
   const filtersArr = ["todos", "premiados", "excluídos"];
 
-  const usersArr = [
-    {
-      username: "Mauricio Rodriguez",
-      phone: "+353 083 313 4686",
-    },
-    {
-      username: "Franciale Melo",
-      phone: "+353 084 265 3179",
-    },
-    {
-      username: "Roger Bond",
-      phone: "+353 083 356 8596",
-    },
-    {
-      username: "Allanah Something",
-      phone: "+353 086 215 7589",
-    },
-  ];
-
   return (
     <>
       <PageHeader title="Apostador" subpage linkTo={`/apostadores`} />
@@ -68,22 +49,7 @@ const Apostador = ({ params }: ApostadoresParams) => {
             </div>
           </section>
 
-          <section>
-            {usersArr.map((user) => {
-              return (
-                <div className={styles.userRow} key={user.username}>
-                  <IconCard
-                    title={user.username}
-                    description={user.phone}
-                    icon="user"
-                    inIcon={false}
-                    fullWidth
-                    hasCheckbox={false}
-                  />
-                </div>
-              );
-            })}
-          </section>
+          <section></section>
         </section>
       </main>
     </>

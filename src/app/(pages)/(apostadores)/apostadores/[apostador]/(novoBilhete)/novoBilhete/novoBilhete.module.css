@@ -1,0 +1,23 @@
+.inputsRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.input {
+  background-color: var(--color-dark-mid);
+  border: 2px solid var(--color-dark-light);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: inherit;
+  color: var(--color-light-light);
+  font-size: 20px;
+}
+
+.jogosRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}

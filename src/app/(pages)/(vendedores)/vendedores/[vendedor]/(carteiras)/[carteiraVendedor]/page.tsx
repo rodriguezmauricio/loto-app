@@ -38,6 +38,7 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
       fullWidth: false,
       icon: "vendor",
       inIcon: false,
+      hasCheckbox: false,
     },
     {
       title: "Relatório de Vendas",
@@ -45,6 +46,7 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
       fullWidth: false,
       icon: "charts",
       inIcon: true,
+      hasCheckbox: false,
     },
     {
       title: "Relatório de Créditos",
@@ -52,6 +54,7 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
       fullWidth: false,
       icon: "money",
       inIcon: true,
+      hasCheckbox: false,
     },
     {
       title: "Fechamento de Caixa",
@@ -59,6 +62,7 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
       fullWidth: false,
       icon: "wallet",
       inIcon: true,
+      hasCheckbox: false,
     },
   ];
 
@@ -86,6 +90,7 @@ const CarteiraVendedor = ({ params }: VendedorParams) => {
                     icon={card.icon}
                     inIcon={card.inIcon}
                     fullWidth={card.fullWidth}
+                    hasCheckbox={false}
                   />
                 </div>
               );

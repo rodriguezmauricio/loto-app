@@ -6,17 +6,13 @@ import {
   BsBan,
   BsClock,
   BsCurrencyDollar,
-  BsStop,
-  BsStopBtn,
   BsTicketPerforated,
   BsStack,
   BsCheck,
   BsPersonDash,
-  BsExclamation,
   BsExclamationOctagon,
   BsEye,
   BsBell,
-  BsSave,
 } from "react-icons/bs";
 import { FaRegSave } from "react-icons/fa";
 

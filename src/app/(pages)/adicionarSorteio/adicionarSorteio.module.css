@@ -21,8 +21,18 @@
   color: var(--color-light-light);
   border-radius: 8px;
   border: none;
+  border: 2px solid var(--color-dark-light);
   font-family: inherit;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.buttonFilter:hover {
+  border-color: var(--color-light-light);
+}
+
+.modalidadeSelected {
+  border: 2px solid var(--color-light-light);
 }
 
 .errorMessage {

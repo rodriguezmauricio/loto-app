@@ -1,12 +1,13 @@
 "use client";
 
 import styles from "./adicionarSorteio.module.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import Title from "@/app/components/title/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
-
+import { Bounce, ToastContainer, toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -31,6 +32,20 @@ const AdicionarSorteioPage = () => {
 
   const [modalidade, setModalidade] = useState("Lotofácil");
   const [checked, setChecked] = useState(true);
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
+
+  const promiseToast = (arg: any) =>
+    toast.success(arg, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+    });
 
   const imediatamenteCheckbox = () => {
     const today = new Date();
@@ -63,6 +78,7 @@ const AdicionarSorteioPage = () => {
     watch,
     formState: { errors },
     setValue,
+    reset,
   } = useForm<Inputs>({
     defaultValues: {
       numeroConcurso: "",
@@ -79,45 +95,58 @@ const AdicionarSorteioPage = () => {
     setValue("inicioVendaBilhetes", checked ? today : today);
   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data) =>
+  useEffect(() => {
+    reset({
+      numeroConcurso: "",
+      dataSorteio: "",
+      horarioLimiteAposta: "",
+      inicioVendaBilhetes: imediatamenteCheckbox(),
+    });
+  }, [isSubmitSuccessful, reset]);
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log({ ...data, modalidade: modalidade });
+    promiseToast("content of the toast");
+
+    setIsSubmitSuccessful(true);
+  };
 
   const buttonsCaixa = [
     {
       title: "Lotofácil",
-      color: "#1b1b1b",
+      color: "#133daf",
     },
     {
       title: "Erre X",
-      color: "#1b1b1b",
+      color: "#e96900",
     },
     {
       title: "Megasena",
-      color: "#1b1b1b",
+      color: "#c4c009",
     },
     {
       title: "Lotomania",
-      color: "#1b1b1b",
+      color: "#9b1b7f",
     },
     {
       title: "Quina",
-      color: "#1b1b1b",
+      color: "#332b7a",
     },
     {
       title: "Dupla Sena",
-      color: "#1b1b1b",
+      color: "#1abb93",
     },
     {
       title: "Dia de Sorte",
-      color: "#1b1b1b",
+      color: "#459c2b",
     },
     {
       title: "Timemania",
-      color: "#1b1b1b",
+      color: "#810000",
     },
     {
       title: "+ Milionária",
-      color: "#1b1b1b",
+      color: "#0054b3",
     },
   ];
 
@@ -125,8 +154,10 @@ const AdicionarSorteioPage = () => {
     return buttonsCaixa.map((button, index) => {
       return (
         <button
-          style={{ background: button.color }}
-          className={styles.buttonFilter}
+          style={{ background: button.title === modalidade ? button.color : "#1b1b1b" }}
+          className={`${styles.buttonFilter} ${
+            button.title === modalidade ? styles.modalidadeSelected : ""
+          }`}
           key={button.title}
           onClick={() => setModalidade(button.title)}
         >
@@ -140,6 +171,7 @@ const AdicionarSorteioPage = () => {
     <>
       <PageHeader title="Adicionar Sorteio" subpage={true} linkTo={"/sorteios"} />
       <main className="main">
+        <ToastContainer />
         <Title h={3}>
           <label>Modalidade</label>
         </Title>

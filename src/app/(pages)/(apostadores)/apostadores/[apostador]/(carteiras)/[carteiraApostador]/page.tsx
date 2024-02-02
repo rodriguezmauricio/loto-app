@@ -17,6 +17,7 @@ const CarteiraApostador = ({ params }: ApostadorParams) => {
       fullWidth: false,
       icon: "vendor",
       inIcon: false,
+      hasCheckbox: false,
     },
     {
       title: "Relatório de Créditos",
@@ -24,6 +25,7 @@ const CarteiraApostador = ({ params }: ApostadorParams) => {
       fullWidth: false,
       icon: "money",
       inIcon: true,
+      hasCheckbox: false,
     },
     {
       title: "Fechamento de Caixa",
@@ -31,6 +33,7 @@ const CarteiraApostador = ({ params }: ApostadorParams) => {
       fullWidth: false,
       icon: "wallet",
       inIcon: true,
+      hasCheckbox: false,
     },
   ];
 
@@ -58,6 +61,7 @@ const CarteiraApostador = ({ params }: ApostadorParams) => {
                     icon={card.icon}
                     inIcon={card.inIcon}
                     fullWidth={card.fullWidth}
+                    hasCheckbox={false}
                   />
                 </div>
               );

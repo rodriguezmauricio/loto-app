@@ -42,6 +42,7 @@ const Apostador = ({ params }: ApostadoresParams) => {
             icon="vendor"
             inIcon={false}
             fullWidth={false}
+            hasCheckbox={false}
           />
           <IconCard
             title="Carteira"
@@ -49,6 +50,7 @@ const Apostador = ({ params }: ApostadoresParams) => {
             icon="wallet"
             inIcon
             fullWidth={false}
+            hasCheckbox={false}
             linkTo={`/apostadores/${params.apostador}/${params.carteiraApostador}`}
           />
         </section>
@@ -76,6 +78,7 @@ const Apostador = ({ params }: ApostadoresParams) => {
                     icon="user"
                     inIcon={false}
                     fullWidth
+                    hasCheckbox={false}
                   />
                 </div>
               );

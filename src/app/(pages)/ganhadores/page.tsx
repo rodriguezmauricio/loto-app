@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import styles from "./ganhadores.module.css";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
-import Buttons from "@/app/components/buttons/Buttons";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import Tabs from "@/app/components/tabs/Tabs";
 import GanhadoresTable from "@/app/components/ganhadoresTable/GanhadoresTable";
 

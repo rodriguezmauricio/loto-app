@@ -6,8 +6,27 @@ import PageHeader from "@/app/components/pageHeader/PageHeader";
 import TabsWithFilters from "@/app/components/tabsWithFilters/TabsWithFilters";
 import IconCard from "@/app/components/iconCard/IconCard";
 import ChooseNumbersComp from "@/app/components/chooseNumbersComp/ChooseNumbersComp";
+import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
+import { useState } from "react";
+import { string } from "yup";
 
 const NovoBilhete = () => {
+  const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
+
+  const handleSelectedBilhete = (selected: string) => {
+    setAddBilheteSelectedButton(selected);
+  };
+
+  const addBilheteCompToRender = (button: string) => {
+    if (button === "importar") {
+      return <textarea className={styles.textArea} name="" id="" cols={30} rows={12}></textarea>;
+    }
+
+    if (button === "manual") {
+      return <ChooseNumbersComp numbersToRender={25} selectionLimit={10} />;
+    }
+  };
+
   return (
     <>
       <PageHeader title="Novo Bilhete" subpage linkTo={`/apostadores`} />
@@ -49,14 +68,24 @@ const NovoBilhete = () => {
           </section>
         </section>
 
-        <section>
-          <Title h={2}>Jogos</Title>
-          <Title h={3}>Adicionar manualmente</Title>
-          <section className={styles.jogosRow}>
-            <div className="">
-              <ChooseNumbersComp numbersToRender={25} selectionLimit={10} />
+        <section className={styles.jogosRow}>
+          <div>
+            {/* <Title h={2}>Jogos</Title> */}
+            <div className={styles.buttonRow}>
+              <SimpleButton
+                isSelected={addBilheteSelectedButton === "importar"}
+                btnTitle="Importar"
+                func={() => handleSelectedBilhete("importar")}
+              />
+              <SimpleButton
+                isSelected={addBilheteSelectedButton === "manual"}
+                btnTitle="Adicionar Manualmente"
+                func={() => handleSelectedBilhete("manual")}
+              />
             </div>
-          </section>
+
+            <div className="">{addBilheteCompToRender(addBilheteSelectedButton)}</div>
+          </div>
         </section>
       </main>
     </>

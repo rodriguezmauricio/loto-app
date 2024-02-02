@@ -2,7 +2,7 @@ import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
 import styles from "./vendedor.module.css";
 import Title from "@/app/components/title/Title";
-import Buttons from "@/app/components/buttons/Buttons";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import Filter from "@/app/components/filter/Filter";
 
 interface VendedorParams {

@@ -1,0 +1,24 @@
+.button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  background-color: transparent;
+  margin-bottom: 5px;
+  color: var(--color-light-light);
+  border: 2px solid var(--color-dark-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  font-size: 18px;
+}
+
+.button:hover {
+  border-color: var(--color-light-light);
+}
+
+.selectedButton {
+  background-color: var(--accent-main);
+  border-color: var(--color-light-light);
+}

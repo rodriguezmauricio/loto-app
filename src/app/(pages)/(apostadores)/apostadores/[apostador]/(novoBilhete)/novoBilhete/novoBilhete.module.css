@@ -1,3 +1,9 @@
+.buttonRow {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
 .inputsRow {
   display: flex;
   flex-direction: row;
@@ -18,6 +24,22 @@
 .jogosRow {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: start;
   gap: 10px;
+}
+
+.textAreaDiv {
+  height: 100%;
+  flex: 1;
+}
+
+.textArea {
+  flex: 1;
+  width: 100%;
+  background-color: var(--color-dark-mid);
+  border: 2px solid var(--color-dark-light);
+  border-radius: 15px;
+  padding: 20px;
+  font-family: inherit;
+  color: var(--color-light-light);
 }

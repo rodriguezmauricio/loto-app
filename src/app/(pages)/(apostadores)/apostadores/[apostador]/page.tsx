@@ -3,7 +3,7 @@ import styles from "./apostador.module.css";
 import IconCard from "@/app/components/iconCard/IconCard";
 import Title from "@/app/components/title/Title";
 import Filter from "@/app/components/filter/Filter";
-import Buttons from "@/app/components/buttons/Buttons";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 
 interface ApostadoresParams {
   params: { apostador: string; carteiraApostador: string };

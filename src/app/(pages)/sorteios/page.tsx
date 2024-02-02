@@ -1,6 +1,6 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import styles from "./sorteios.module.css";
-import Buttons from "@/app/components/buttons/Buttons";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import Filter from "@/app/components/filter/Filter";
 import Link from "next/link";
 import IconCard from "@/app/components/iconCard/IconCard";

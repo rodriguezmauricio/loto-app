@@ -1,7 +1,7 @@
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
 import styles from "./carteiraApostador.module.css";
-import Buttons from "@/app/components/buttons/Buttons";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import Card from "@/app/components/card/Card";
 import { IIconCard } from "@/app/components/iconCard/IconCard";
 

@@ -122,19 +122,25 @@ const TabsWithFilters = () => {
     <>
       <section className={styles.tabList}>
         <button
-          className={selectedTab === 0 ? styles.singleTabSelected : styles.singleTab}
+          className={
+            selectedTab === 0 ? `${styles.singleTabSelected} ${styles.singleTab}` : styles.singleTab
+          }
           onClick={() => setSelectedTab(0)}
         >
           Caixa
         </button>
         <button
-          className={selectedTab === 1 ? styles.singleTabSelected : styles.singleTab}
+          className={
+            selectedTab === 1 ? `${styles.singleTabSelected} ${styles.singleTab}` : styles.singleTab
+          }
           onClick={() => setSelectedTab(1)}
         >
           Sabedoria
         </button>
         <button
-          className={selectedTab === 2 ? styles.singleTabSelected : styles.singleTab}
+          className={
+            selectedTab === 2 ? `${styles.singleTabSelected} ${styles.singleTab}` : styles.singleTab
+          }
           onClick={() => setSelectedTab(2)}
         >
           Personalizado

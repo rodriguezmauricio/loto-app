@@ -4,16 +4,26 @@ import styles from "./adicionarApostador.module.css";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import Title from "@/app/components/title/Title";
 import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 
 type Inputs = {
   nome: string;
   telefone: string;
   nomeUsuario: string;
   pix: string;
-  comissao: number;
 };
+
+const schema = yup.object().shape({
+  nome: yup.string().required("Este campo é necessário"),
+  telefone: yup.string().required("Este campo é necessário"),
+  nomeUsuario: yup.string().required("Este campo é necessário"),
+  pix: yup.string().required("Este campo é necessário"),
+});
+
+const resolver = yupResolver(schema) as Resolver<Inputs>;
 
 const AdicionarApostador = () => {
   //TODO: Fetch data from the winners
@@ -30,12 +40,12 @@ const AdicionarApostador = () => {
       telefone: "",
       nomeUsuario: "",
       pix: "",
-      comissao: 15,
     },
+    resolver: resolver,
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // console.log({ ...data, modalidade: modalidade });
+    console.log({ ...data });
   };
 
   return (
@@ -51,7 +61,8 @@ const AdicionarApostador = () => {
               placeholder="ex.: Carlos Eduardo Silva"
               {...register("nome", { required: true })}
             />
-            {errors.nome && <span className={styles.errorMessage}>Esse campo é necessário.</span>}
+            {<span className={styles.errorMessage}>{errors.nome?.message}</span>}
+            {/* {errors.nome && <span className={styles.errorMessage}>Esse campo é necessário.</span>} */}
           </div>
 
           <div className={styles.fieldRow}>
@@ -64,9 +75,10 @@ const AdicionarApostador = () => {
               placeholder="(xx)xxxxx-xxxx"
               {...register("telefone", { required: true })}
             />
-            {errors.telefone && (
+            {<span className={styles.errorMessage}>{errors.telefone?.message}</span>}
+            {/* {errors.telefone && (
               <span className={styles.errorMessage}>Esse campo é necessário.</span>
-            )}
+            )} */}
           </div>
 
           <div className={styles.fieldRow}>
@@ -77,9 +89,22 @@ const AdicionarApostador = () => {
               placeholder="ex.: cadu_silva"
               {...register("nomeUsuario", { required: true })}
             />
-            {errors.nomeUsuario && (
+            {<span className={styles.errorMessage}>{errors.nomeUsuario?.message}</span>}
+            {/* {errors.nomeUsuario && (
               <span className={styles.errorMessage}>Esse campo é necessário.</span>
-            )}
+            )} */}
+          </div>
+
+          <div className={styles.fieldRow}>
+            <Title h={3}>Pix</Title>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="email, telefone ou cpf"
+              {...register("pix", { required: true })}
+            />
+
+            {<span className={styles.errorMessage}>{errors.pix?.message}</span>}
           </div>
 
           <div className={styles.fieldRow}>

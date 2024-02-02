@@ -39,7 +39,7 @@
   margin-top: -10px;
   background-color: var(--color-dark-light);
   color: var(--color-light-light);
-  width: 200px;
+  width: 300px;
 }
 
 .input::-webkit-calendar-picker-indicator {
@@ -52,6 +52,27 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
+}
+
+.button {
+  border: none;
+  border-radius: 8px;
+  border: 2px solid var(--color-dark-light);
+  background-color: var(--color-dark-mid);
+  transition: all 0.2s;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: var(--color-light-dark);
+  font-family: inherit;
+}
+
+.active {
+  color: var(--color-light-light);
+  border-color: var(--accent-main);
+}
+
+.fixo {
+  border-color: var(--accent-main);
 }
 
 .sendButton {

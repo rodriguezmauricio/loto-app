@@ -45,3 +45,9 @@
 .button:active {
   transform: scale(0.9);
 }
+
+@media (max-width: 768px) {
+  .header {
+    width: calc(100% - 60px);
+  }
+}

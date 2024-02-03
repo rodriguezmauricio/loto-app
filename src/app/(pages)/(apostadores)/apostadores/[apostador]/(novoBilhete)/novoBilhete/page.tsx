@@ -15,6 +15,7 @@ const NovoBilhete = () => {
   const [importedNumbersArr, setimportedNumbersArr] = useState<string[]>([]);
   const [textAreaValue, setTextAreaValue] = useState("");
 
+  //action that runs when press the "salvar jogos importados" button.
   const sendForm = (selected: string) => {
     if (selected === "importar") {
       return importedNumbersArr;

@@ -12,14 +12,14 @@ const Sidebar = () => {
   return (
     <aside className={styles.container}>
       <div className={styles.logo}>
-        <h1>LOTO APP</h1>
+        <h1>LottoApp</h1>
       </div>
       <div className={styles.menuDivisions}>
         {sidebarLinksHome.map((item) => {
           return (
             <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
-              {item.linkName}
+              <span className={styles.linkText}>{item.linkName}</span>
             </Link>
           );
         })}
@@ -30,7 +30,7 @@ const Sidebar = () => {
           return (
             <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
-              {item.linkName}
+              <span className={styles.linkText}>{item.linkName}</span>
             </Link>
           );
         })}
@@ -41,7 +41,7 @@ const Sidebar = () => {
           return (
             <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
-              {item.linkName}
+              <span className={styles.linkText}>{item.linkName}</span>
             </Link>
           );
         })}
@@ -52,7 +52,7 @@ const Sidebar = () => {
           return (
             <Link href={item.href} key={item.linkName} className={styles.menuLink}>
               <div className={styles.icon}>{item.icon}</div>
-              {item.linkName}
+              <span className={styles.linkText}>{item.linkName}</span>
             </Link>
           );
         })}

@@ -131,6 +131,16 @@ main {
 }
 /* CHECKBOX STYLE ENDING */
 
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    transition: all 0.5s;
+  }
+
+  .sidebar:hover {
+    width: var(--sidebar-width);
+  }
+}
 /* 
 @media (prefers-color-scheme: dark) {
   html {

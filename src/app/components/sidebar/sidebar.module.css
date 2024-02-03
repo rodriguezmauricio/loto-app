@@ -50,6 +50,7 @@
 
 .icon {
   margin-left: 10px;
+  padding: 3px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,4 +60,40 @@
 
 .menuLink:hover > .icon {
   color: var(--accent-main);
+}
+
+.linkText {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .container {
+    /* background-color: red; */
+    min-width: 60px;
+    max-width: 60px;
+    transition: all 0.5s;
+    overflow-x: hidden;
+  }
+
+  .container:hover {
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+  }
+
+  .container:hover > .menuDivisions > .menuLink > .linkText {
+    display: inline;
+  }
+
+  .logo {
+    transition: all 0.5s;
+    color: transparent;
+  }
+
+  .container:hover .logo {
+    color: var(--color-light-light);
+  }
+
+  .linkText {
+    display: none;
+  }
 }

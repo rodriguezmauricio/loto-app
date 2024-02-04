@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Sidebar from "./components/sidebar/Sidebar";
+import Menu from "./components/menu/Menu";
 
 const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"] });
 
@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.className}`}>
         <div className="sidebar">
-          <Sidebar />
+          <Menu />
         </div>
         <div className="content">{children}</div>
       </body>

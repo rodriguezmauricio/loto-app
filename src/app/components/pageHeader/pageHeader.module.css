@@ -7,9 +7,9 @@
   padding: 10px 20px;
   margin-bottom: 10px;
   background-color: var(--color-dark-dark);
-  width: calc(100% - var(--sidebar-width));
+  width: 100%;
   height: var(--header-height);
-  position: fixed;
+  position: sticky;
   top: 0;
   z-index: 10;
 }
@@ -48,6 +48,6 @@
 
 @media (max-width: 768px) {
   .header {
-    width: calc(100% - 60px);
+    position: static;
   }
 }

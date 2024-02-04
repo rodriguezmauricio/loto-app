@@ -1,7 +1,6 @@
-import { BsBoxArrowLeft, BsThreeDotsVertical } from "react-icons/bs";
+import { BsBoxArrowLeft } from "react-icons/bs";
 import Title from "../title/Title";
 import styles from "./pageHeader.module.css";
-import { BsPerson, BsPhone } from "react-icons/bs";
 import Link from "next/link";
 import { Url } from "url";
 import SubMenu from "../subMenu/SubMenu";

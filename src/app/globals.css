@@ -32,6 +32,7 @@
 
   --sidebar-width: 280px;
   --header-height: 100px;
+  --logo-menu-container: 50px;
 }
 
 * {
@@ -52,7 +53,6 @@
   }
 } */
 
-html,
 body {
   width: 100vw;
   overflow-x: hidden;
@@ -76,17 +76,19 @@ main {
 }
 
 .sidebar {
-  background-color: #00a67f;
+  background-color: var(--color-dark-mid);
+  border-right: 2px solid var(--color-dark-light);
+  /* background-color: red; */
   width: var(--sidebar-width);
 }
 
 .content {
   display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
 .main {
-  margin-top: 100px;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -132,13 +134,17 @@ main {
 /* CHECKBOX STYLE ENDING */
 
 @media (max-width: 768px) {
-  .sidebar {
-    width: 60px;
-    transition: all 0.5s;
+  body {
+    flex-direction: column;
   }
 
-  .sidebar:hover {
-    width: var(--sidebar-width);
+  .sidebar {
+    width: 100%;
+    /* transition: all 0.5s; */
+    height: fit-content;
+    position: sticky;
+    top: 0;
+    z-index: 15;
   }
 }
 /* 

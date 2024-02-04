@@ -15,7 +15,7 @@ import {
 
 const iconSize = 20;
 
-export const sidebarLinksHome = [
+export const menuLinksHome = [
   {
     linkName: "Home",
     href: "/",
@@ -28,7 +28,7 @@ export const sidebarLinksHome = [
   },
 ];
 
-export const sidebarLinksSorteios = [
+export const menuLinksSorteios = [
   {
     linkName: "Sorteios",
     href: "/sorteios",
@@ -51,7 +51,7 @@ export const sidebarLinksSorteios = [
   },
 ];
 
-export const sidebarLinksPremios = [
+export const menuLinksPremios = [
   {
     linkName: "Tabela de Premiações",
     href: "/tabela-de-premiacoes",
@@ -74,7 +74,7 @@ export const sidebarLinksPremios = [
   },
 ];
 
-export const sidebarLinksSettings = [
+export const menuLinksSettings = [
   {
     linkName: "Configurações",
     href: "/configuracoes",

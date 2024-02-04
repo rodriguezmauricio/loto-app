@@ -19,29 +19,6 @@ const Menu = () => {
     setToggleMenu((prev) => !prev);
   };
 
-  // State to store the screen width
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-
-  // Function to handle screen width changes
-  const handleScreenWidth = () => {
-    setScreenWidth(typeof window !== "undefined" ? window.innerWidth : 0);
-    // Your additional logic based on screen width can go here
-  };
-
-  // Effect to run on component mount and window resize
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Attach the function to the window resize event
-      window.addEventListener("resize", handleScreenWidth);
-
-      // Clean up the event listener on component unmount
-      return () => {
-        window.removeEventListener("resize", handleScreenWidth);
-      };
-    }
-    // No dependencies for this effect, so it runs only on mount and unmount
-  }, []);
-
   return (
     <div className={styles.sticky}>
       <header className={styles.logoMenuContainer}>
@@ -55,9 +32,7 @@ const Menu = () => {
 
       <nav
         className={
-          toggleMenu && screenWidth < 768
-            ? `${styles.navContainer} ${styles.hide}`
-            : styles.navContainer
+          toggleMenu ? `${styles.navContainer} ${styles.hideOnSmallScreen}` : styles.navContainer
         }
       >
         <div className={styles.menuDivisions}>

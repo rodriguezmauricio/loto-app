@@ -24,20 +24,21 @@ const Menu = () => {
 
   // Function to handle screen width changes
   const handleScreenWidth = () => {
-    setScreenWidth(window.innerWidth);
+    setScreenWidth(typeof window !== "undefined" ? window.innerWidth : 0);
     // Your additional logic based on screen width can go here
   };
 
   // Effect to run on component mount and window resize
   useEffect(() => {
-    // Attach the function to the window resize event
-    window.addEventListener("resize", handleScreenWidth);
+    if (typeof window !== "undefined") {
+      // Attach the function to the window resize event
+      window.addEventListener("resize", handleScreenWidth);
 
-    // Clean up the event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleScreenWidth);
-    };
-
+      // Clean up the event listener on component unmount
+      return () => {
+        window.removeEventListener("resize", handleScreenWidth);
+      };
+    }
     // No dependencies for this effect, so it runs only on mount and unmount
   }, []);
 

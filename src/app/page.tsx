@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 export default function Home() {
   return (
     <>
-      <DashboardPage />;
+      <DashboardPage />
       <ToastContainer />
     </>
   );

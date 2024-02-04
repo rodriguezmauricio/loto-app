@@ -55,7 +55,7 @@ const PageHeader = ({
         {subpage && (
           <button className={styles.button}>
             <Link href={linkTo}>
-              <BsBoxArrowLeft size={40} />
+              <BsBoxArrowLeft size={30} />
             </Link>
           </button>
         )}

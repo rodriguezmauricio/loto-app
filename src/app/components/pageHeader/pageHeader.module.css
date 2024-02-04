@@ -8,7 +8,7 @@
   margin-bottom: 10px;
   background-color: var(--color-dark-dark);
   width: 100%;
-  height: var(--header-height);
+  min-height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -49,5 +49,6 @@
 @media (max-width: 768px) {
   .header {
     position: static;
+    min-height: 60px;
   }
 }

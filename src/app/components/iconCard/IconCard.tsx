@@ -10,6 +10,7 @@ import {
   BsCurrencyDollar,
   BsBarChart,
   BsClock,
+  BsTicketPerforated,
 } from "react-icons/bs";
 import Link from "next/link";
 import { Url } from "url";
@@ -18,7 +19,7 @@ import { FaClover } from "react-icons/fa6";
 export interface IIconCard {
   title: string;
   description: string;
-  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto" | "clock";
+  icon: "user" | "vendor" | "wallet" | "filter" | "charts" | "money" | "lotto" | "clock" | "ticket";
   inIcon?: boolean;
   hasCheckbox?: boolean;
   fullWidth?: boolean;
@@ -68,6 +69,9 @@ const IconCard = ({
     }
     if (icon === "clock") {
       return <BsClock size={ICON_SIZE} />;
+    }
+    if (icon === "ticket") {
+      return <BsTicketPerforated size={ICON_SIZE} />;
     }
   };
 

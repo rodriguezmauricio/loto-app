@@ -11,6 +11,7 @@ import {
   BsPlus,
   BsShare,
   BsTrash2,
+  BsXCircle,
 } from "react-icons/bs";
 
 import { TbCurrencyDollarOff, TbWalletOff } from "react-icons/tb";
@@ -30,6 +31,7 @@ interface IButtons {
     | "showPix"
     | "hidePix"
     | "addSorteio"
+    | "cancelDelete"
     | "check";
   linkTo?: string;
 }
@@ -234,6 +236,22 @@ const Buttons: React.FC<MyIButtons> = (props: any) => {
           <div className={styles.col}>
             <p className={styles.text}>Conferir</p>
             <p className={styles.text}>Bilhete</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "cancelDelete") {
+      //TODO: Add functionality
+
+      return (
+        <div className={styles.container}>
+          <button className={`${styles.button} ${styles.repeatButton}`} {...otherProps}>
+            <BsXCircle size={ICON_SIZE} />
+          </button>
+          <div className={styles.col}>
+            <p className={styles.text}>Cancelar</p>
+            <p className={styles.text}>Exclusão</p>
           </div>
         </div>
       );

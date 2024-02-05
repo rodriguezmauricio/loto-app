@@ -10,7 +10,7 @@ import {
   menuLinksSorteios,
 } from "./menuLinks/menuLinks";
 import { BsList, BsXLg } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 const Menu = () => {

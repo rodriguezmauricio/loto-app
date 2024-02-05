@@ -46,7 +46,7 @@ export const menuLinksSorteios = [
   },
   {
     linkName: "Gerenciador de exclusão",
-    href: "/gerenciador-de-exclusao",
+    href: "/gerenciadorDeExclusao",
     icon: <BsPersonDash size={iconSize} />,
   },
 ];
@@ -54,7 +54,7 @@ export const menuLinksSorteios = [
 export const menuLinksPremios = [
   {
     linkName: "Tabela de Premiações",
-    href: "/tabela-de-premiacoes",
+    href: "/tabelaDePremiacoes",
     icon: <BsTable size={iconSize} />,
   },
   {

@@ -1,0 +1,25 @@
+{
+  "lotteries": [
+    {
+      "id": "l01",
+      "nome": "Lotofácil",
+      "cor": "purple"
+    },
+    {
+      "id": "l02",
+      "nome": "Megasena",
+      "cor": "green"
+    },
+    {
+      "id": "l03",
+      "nome": "Lotomania",
+      "cor": "yellow"
+    }
+  ],
+  "users": [
+    {
+      "id": "u01",
+      "name": "Mauricio"
+    }
+  ]
+}

@@ -16,10 +16,181 @@
       "cor": "yellow"
     }
   ],
+  "admins": [
+    {
+      "id": "a01",
+      "name": "Mauricio"
+    },
+    {
+      "id": "a02",
+      "name": "Fran"
+    }
+  ],
+  "sellers": [
+    {
+      "adminId": "a01",
+      "id": "a01s01",
+      "name": "Mauricinho",
+      "wallet": 100,
+      "comissionType": "percent",
+      "comissionValue": 0.15
+    },
+    {
+      "adminId": "u01",
+      "id": "a01s02",
+      "name": "Mo",
+      "wallet": 150,
+      "comissionType": "percent",
+      "comissionValue": 0.15
+    },
+    {
+      "adminId": "a01",
+      "id": "a02s01",
+      "name": "Fanzinha",
+      "wallet": 200,
+      "comissionType": "percent",
+      "comissionValue": 0.1
+    },
+    {
+      "adminId": "a01",
+      "id": "a2s02",
+      "name": "Franci",
+      "wallet": 325,
+      "comissionType": "percent",
+      "comissionValue": 0.25
+    }
+  ],
   "users": [
     {
+      "superId": "a01",
       "id": "u01",
-      "name": "Mauricio"
+      "name": "Roger",
+      "wallet": 100,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a01",
+      "id": "u02",
+      "name": "Allana",
+      "wallet": 200,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a02",
+      "id": "u03",
+      "name": "Thais",
+      "wallet": 150,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a02",
+      "id": "u04",
+      "name": "Sara",
+      "wallet": 250,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a01s01",
+      "id": "u02",
+      "name": "Sally",
+      "wallet": 300,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a01s01",
+      "id": "u02",
+      "name": "Anderson",
+      "wallet": 350,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a02s01",
+      "id": "u02",
+      "name": "Johny",
+      "wallet": 400,
+      "phone": "",
+      "pix": ""
+    },
+    {
+      "superId": "a02s01",
+      "id": "u02",
+      "name": "Maddie",
+      "wallet": 450,
+      "phone": "",
+      "pix": ""
+    }
+  ],
+  "bets": [
+    {
+      "id": "betId01",
+      "userId": "u01",
+      "numbers": [1, 7, 15, 22],
+      "lottery": "Lotofácil",
+      "sorteioNumber": "3043",
+      "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
+      "result": "pending"
+    },
+    {
+      "id": "betId02",
+      "userId": "u01",
+      "numbers": [7, 12, 22, 25, 26, 28],
+      "lottery": "Lotofácil",
+      "sorteioNumber": "3043",
+      "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
+      "result": "pending"
+    },
+    {
+      "id": "betId03",
+      "userId": "u02",
+      "numbers": [1, 2, 3, 4, 5],
+      "lottery": "Lotofácil",
+      "sorteioNumber": "3043",
+      "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
+      "result": "pending"
+    }
+  ],
+  "modalidadesCaixa": [
+    {
+      "name": "Lotofácil",
+      "color": "purple"
+    },
+    {
+      "name": "ERRE X",
+      "color": "purple"
+    },
+    {
+      "name": "Megasena",
+      "color": "green"
+    },
+    {
+      "name": "Lotomania",
+      "color": "orange"
+    },
+    {
+      "name": "Quina",
+      "color": "blue"
+    },
+    {
+      "name": "Dupla Sena",
+      "color": "pink"
+    },
+    {
+      "name": "Dia de Sorte",
+      "color": "gold"
+    },
+    {
+      "name": "Timemania",
+      "color": "yellow"
+    },
+    {
+      "name": "+Milionária",
+      "color": "blue"
     }
   ]
 }

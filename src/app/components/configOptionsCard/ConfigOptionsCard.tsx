@@ -2,14 +2,16 @@ import { BsBoxArrowInRight, BsCurrencyDollar } from "react-icons/bs";
 import styles from "./configOptionsCard.module.css";
 import React from "react";
 import SwitchButton from "../switchButton/SwitchButton";
+import Link from "next/link";
 
 interface IConfigOptionsCard {
   type: "button" | "switch" | "number" | "money" | "date" | "time";
   icon: React.ReactNode;
   text: string;
+  linkTo?: URL | string | undefined;
 }
 
-const ConfigOptionsCard = ({ type, icon, text }: IConfigOptionsCard) => {
+const ConfigOptionsCard = ({ type, icon, text, linkTo }: IConfigOptionsCard) => {
   const renderFunction = (type: string) => {
     if (type === "button") {
       return <BsBoxArrowInRight size={20} />;
@@ -32,13 +34,16 @@ const ConfigOptionsCard = ({ type, icon, text }: IConfigOptionsCard) => {
   };
 
   return (
-    <div className={type === "button" ? `${styles.tableRow} ${styles.effects}` : styles.tableRow}>
+    <Link
+      href={linkTo ? linkTo : ""}
+      className={type === "button" ? `${styles.tableRow} ${styles.effects}` : styles.tableRow}
+    >
       {icon}
       <div className={styles.textoDiv}>
         <p>{text}</p>
       </div>
       {renderFunction(type)}
-    </div>
+    </Link>
   );
 };
 

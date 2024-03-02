@@ -30,6 +30,7 @@ const ConfiguracoesPage = () => {
               type="button"
               icon={<BsCurrencyDollar size={20} />}
               text="Modalidades da Caixa"
+              linkTo={`/configuracoes/Lottery-name`}
             />
             <ConfigOptionsCard
               type="button"

@@ -158,7 +158,7 @@
   "modalidadesCaixa": [
     {
       "name": "Lotofácil",
-      "color": "purple"
+      "color": "#930089"
     },
     {
       "name": "ERRE X",
@@ -166,31 +166,43 @@
     },
     {
       "name": "Megasena",
-      "color": "green"
+      "color": "#209869"
     },
     {
       "name": "Lotomania",
-      "color": "orange"
+      "color": "#F78100"
     },
     {
       "name": "Quina",
-      "color": "blue"
+      "color": "#260085"
     },
     {
       "name": "Dupla Sena",
-      "color": "pink"
+      "color": "#bf194e"
     },
     {
       "name": "Dia de Sorte",
-      "color": "gold"
+      "color": "#CB852B"
     },
     {
       "name": "Timemania",
-      "color": "yellow"
+      "color": "#02FF02"
     },
     {
       "name": "+Milionária",
-      "color": "blue"
+      "color": "#2E3078"
+    },
+    {
+      "name": "Federal",
+      "color": "#103099"
+    },
+    {
+      "name": "Loteca",
+      "color": "#fb1f00"
+    },
+    {
+      "name": "Super Sete",
+      "color": "#A8CF45"
     }
   ]
 }

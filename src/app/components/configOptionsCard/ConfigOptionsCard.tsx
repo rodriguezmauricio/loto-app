@@ -9,15 +9,16 @@ interface IConfigOptionsCard {
   icon: React.ReactNode;
   text: string;
   linkTo?: URL | string | undefined;
+  value?: boolean | number;
 }
 
-const ConfigOptionsCard = ({ type, icon, text, linkTo }: IConfigOptionsCard) => {
+const ConfigOptionsCard = ({ type, icon, text, linkTo, value }: IConfigOptionsCard) => {
   const renderFunction = (type: string) => {
     if (type === "button") {
       return <BsBoxArrowInRight size={20} />;
     }
     if (type === "switch") {
-      return <SwitchButton />;
+      return <SwitchButton value={value === true ? true : false} />;
     }
     if (type === "number") {
       return <input className={styles.input} type="number" name="number" placeholder="20" />;

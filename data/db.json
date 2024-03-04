@@ -204,5 +204,27 @@
       "name": "Super Sete",
       "color": "#A8CF45"
     }
-  ]
+  ],
+  "generalSettings": {
+    "bilhetes_horarioLimiteApotas": "20:00:00",
+    "bilhetes_valorMaximoPorBilhete": 20,
+    "bilhetes_quantidadeMaximaDeBilhetesPorCliente": 20,
+    "bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio": 20,
+    "bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorAposta": 20,
+    "bilhetes_bloquearCadastroDeBilhetesDuplicados": false,
+    "surpresinha_permitirCadastroIlimitadoDeBilhetes": true,
+    "surpresinha_permitirCadastroIlimitadoDeBilhetesDuplicados": false,
+    "app_exibirAlertaDeApostasDuplicadasNaHoraDaCriacao": true,
+    "app_iniciarFiltroDeApostasExibindoTodasAsApostas": true,
+    "app_exibirTodosOsClientesParaTodosOsVendedores": false,
+    "app_exibirListaDeGanhadoresParaOsVendedores": true,
+    "app_exibirListaDeGanhadoresParaOsClientes": false,
+    "app_exibirListaDeGanhadoresParaTodosOsUsuarios": false,
+    "app_exibirVendedoresInativos": false,
+    "permissoesAdm_ativarValidacaoDeQuantidadeMaxDeBilhetesParaOsAdmins": true,
+    "permissoesAdm_ativarValidacaoDoValorMaxPorBilhetesParaOsAdmins": true,
+    "permissoesAdm_ativarValidacaoDoBloqueioDeBilhetesDuplicadosParaOsAdmins": true,
+    "permissoesAdm_ativarValidacaoDoHorarioDeBloqueioParaOsAdmins": true,
+    "permissoesAdm_ativarValidacaoDoHorarioDeInicioDasVendasParaOsAdmins": true
+  }
 }

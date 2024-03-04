@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import Title from "@/app/components/title/Title";
 import styles from "./configuracoes.module.css";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
@@ -15,9 +17,66 @@ import {
   BsBell,
 } from "react-icons/bs";
 import { FaRegSave } from "react-icons/fa";
+import { date } from "yup";
+
+interface IGeneralSettings {
+  bilhetes_horarioLimiteApotas: number;
+  bilhetes_valorMaximoPorBilhete: number;
+  bilhetes_quantidadeMaximaDeBilhetesPorCliente: number;
+  bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio: number;
+  bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorAposta: number;
+  bilhetes_bloquearCadastroDeBilhetesDuplicados: boolean;
+  surpresinha_permitirCadastroIlimitadoDeBilhetes: boolean;
+  surpresinha_permitirCadastroIlimitadoDeBilhetesDuplicados: boolean;
+  app_exibirAlertaDeApostasDuplicadasNaHoraDaCriacao: boolean;
+  app_iniciarFiltroDeApostasExibindoTodasAsApostas: boolean;
+  app_exibirTodosOsClientesParaTodosOsVendedores: boolean;
+  app_exibirListaDeGanhadoresParaOsVendedores: boolean;
+  app_exibirListaDeGanhadoresParaOsClientes: boolean;
+  app_exibirListaDeGanhadoresParaTodosOsUsuarios: boolean;
+  app_exibirVendedoresInativos: boolean;
+  permissoesAdm_ativarValidacaoDeQuantidadeMaxDeBilhetesParaOsAdmins: boolean;
+  permissoesAdm_ativarValidacaoDoValorMaxPorBilhetesParaOsAdmins: boolean;
+  permissoesAdm_ativarValidacaoDoBloqueioDeBilhetesDuplicadosParaOsAdmins: boolean;
+  permissoesAdm_ativarValidacaoDoHorarioDeBloqueioParaOsAdmins: boolean;
+  permissoesAdm_ativarValidacaoDoHorarioDeInicioDasVendasParaOsAdmins: boolean;
+}
 
 const ConfiguracoesPage = () => {
-  //TODO: Fetch data from the winners
+  const [setting, setSettings] = useState<IGeneralSettings>({
+    bilhetes_horarioLimiteApotas: new Date().setHours(20, 0, 0, 0),
+    bilhetes_valorMaximoPorBilhete: 10,
+    bilhetes_quantidadeMaximaDeBilhetesPorCliente: 10,
+    bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio: 10,
+    bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorAposta: 10,
+    bilhetes_bloquearCadastroDeBilhetesDuplicados: false,
+    surpresinha_permitirCadastroIlimitadoDeBilhetes: false,
+    surpresinha_permitirCadastroIlimitadoDeBilhetesDuplicados: false,
+    app_exibirAlertaDeApostasDuplicadasNaHoraDaCriacao: false,
+    app_iniciarFiltroDeApostasExibindoTodasAsApostas: false,
+    app_exibirTodosOsClientesParaTodosOsVendedores: false,
+    app_exibirListaDeGanhadoresParaOsVendedores: false,
+    app_exibirListaDeGanhadoresParaOsClientes: false,
+    app_exibirListaDeGanhadoresParaTodosOsUsuarios: false,
+    app_exibirVendedoresInativos: false,
+    permissoesAdm_ativarValidacaoDeQuantidadeMaxDeBilhetesParaOsAdmins: false,
+    permissoesAdm_ativarValidacaoDoValorMaxPorBilhetesParaOsAdmins: false,
+    permissoesAdm_ativarValidacaoDoBloqueioDeBilhetesDuplicadosParaOsAdmins: false,
+    permissoesAdm_ativarValidacaoDoHorarioDeBloqueioParaOsAdmins: false,
+    permissoesAdm_ativarValidacaoDoHorarioDeInicioDasVendasParaOsAdmins: false,
+  });
+
+  const URL = "http://localhost:3500/generalSettings";
+
+  const fetchData = async () => {
+    fetch(URL)
+      .then((res) => res.json())
+      .then((data) => setSettings(data));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -42,11 +101,6 @@ const ConfiguracoesPage = () => {
               type="button"
               icon={<BsCurrencyDollar size={20} />}
               text="Modalidades Personalizadas"
-            />
-            <ConfigOptionsCard
-              type="time"
-              icon={<BsCurrencyDollar size={20} />}
-              text="Modalidades switch"
             />
           </div>
         </section>
@@ -82,6 +136,7 @@ const ConfiguracoesPage = () => {
               type="switch"
               icon={<BsBan size={20} />}
               text="Bloquear cadastro de bilhetes duplicados"
+              value={setting.bilhetes_bloquearCadastroDeBilhetesDuplicados}
             />
           </div>
         </section>
@@ -92,12 +147,14 @@ const ConfiguracoesPage = () => {
               type="switch"
               icon={<BsCheck size={20} />}
               text="Permitir cadastro ilimitado de bilhetes do tipo surpresinha"
+              value={setting.surpresinha_permitirCadastroIlimitadoDeBilhetes}
             />
 
             <ConfigOptionsCard
               type="switch"
               icon={<BsCheck size={20} />}
               text="Permitir cadastro ilimitado de bilhetes duplicados do tipo surpresinha"
+              value={setting.surpresinha_permitirCadastroIlimitadoDeBilhetesDuplicados}
             />
           </div>
         </section>
@@ -108,36 +165,43 @@ const ConfiguracoesPage = () => {
               type="switch"
               icon={<BsExclamationOctagon size={20} />}
               text="Exibir alerta de apostas duplicadas na hora da criação"
+              value={setting.app_exibirAlertaDeApostasDuplicadasNaHoraDaCriacao}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsCheck size={20} />}
               text="Iniciar o filtro de apostas exibindo todas as apostas"
+              value={setting.app_iniciarFiltroDeApostasExibindoTodasAsApostas}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsEye size={20} />}
               text="Exibir todos os clientes para todos os vendedores"
+              value={setting.app_exibirTodosOsClientesParaTodosOsVendedores}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsEye size={20} />}
               text="Exibir lista de ganhadores para os vendedores"
+              value={setting.app_exibirListaDeGanhadoresParaOsVendedores}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsEye size={20} />}
               text="Exibir lista de ganhadores para os clientes"
+              value={setting.app_exibirListaDeGanhadoresParaOsClientes}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsEye size={20} />}
               text="Exibir lista de ganhadores para todos os usuários"
+              value={setting.app_exibirListaDeGanhadoresParaTodosOsUsuarios}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsPersonDash size={20} />}
               text="Exibir vendedores inativos"
+              value={setting.app_exibirVendedoresInativos}
             />
           </div>
         </section>
@@ -148,26 +212,33 @@ const ConfiguracoesPage = () => {
               type="switch"
               icon={<BsBell size={20} />}
               text="Ativar a validação de quantidade máxima de bilhetes para os admins"
+              value={setting.permissoesAdm_ativarValidacaoDeQuantidadeMaxDeBilhetesParaOsAdmins}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsBell size={20} />}
               text="Ativar a validação do valor máximo por bilhetes para os admins"
+              value={setting.permissoesAdm_ativarValidacaoDoValorMaxPorBilhetesParaOsAdmins}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsBell size={20} />}
               text="Ativar a validação do bloqueio de bilhetes duplicados para os admins"
+              value={
+                setting.permissoesAdm_ativarValidacaoDoBloqueioDeBilhetesDuplicadosParaOsAdmins
+              }
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsBell size={20} />}
               text="Ativar a validação do horário de bloqueio para os admins"
+              value={setting.permissoesAdm_ativarValidacaoDoHorarioDeBloqueioParaOsAdmins}
             />
             <ConfigOptionsCard
               type="switch"
               icon={<BsBell size={20} />}
               text="Ativar a validação do horário de início das vendas para os admins"
+              value={setting.permissoesAdm_ativarValidacaoDoHorarioDeInicioDasVendasParaOsAdmins}
             />
           </div>
         </section>

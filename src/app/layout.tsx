@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Menu from "./components/menu/Menu";
 
-const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"] });
+const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Create Next App",

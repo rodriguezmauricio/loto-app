@@ -5,7 +5,7 @@ import styles from "./modalidadeSelection.module.css";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import ConfigOptionsCard from "@/app/components/configOptionsCard/ConfigOptionsCard";
 import { FaClover } from "react-icons/fa6";
-import { useEffect, useState } from "react";
+import useFetchData from "@/app/utils/useFetchData";
 
 type Modalidades = {
   name: string;
@@ -13,29 +13,11 @@ type Modalidades = {
 };
 
 const ModalidadeSelection = () => {
-  const [modalidadeList, setModalidadeList] = useState([]);
-
   const URL = "http://localhost:3500/modalidadesCaixa";
 
   const getModalidadeName = URL.split("modalidades")[1];
 
-  const fetchData = async () => {
-    try {
-      await fetch(URL)
-        .then((response) => response.json())
-        .then((data) => {
-          setModalidadeList(data);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  console.log(modalidadeList);
+  const { data } = useFetchData(URL);
 
   return (
     <>
@@ -44,8 +26,8 @@ const ModalidadeSelection = () => {
         <section className={styles.section}>
           <Title h={2}>Modalidades</Title>
           <div className={styles.container}>
-            {modalidadeList.length > 0 &&
-              modalidadeList.map((modalidade: Modalidades) => {
+            {data?.length > 0 &&
+              data.map((modalidade: Modalidades) => {
                 return (
                   <ConfigOptionsCard
                     key={modalidade.name}

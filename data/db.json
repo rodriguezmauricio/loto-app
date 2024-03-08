@@ -19,11 +19,13 @@
   "admins": [
     {
       "id": "a01",
-      "name": "Mauricio"
+      "name": "Mauricio",
+      "wallet": 500
     },
     {
       "id": "a02",
-      "name": "Fran"
+      "name": "Fran",
+      "wallet": 320
     }
   ],
   "sellers": [
@@ -31,6 +33,7 @@
       "adminId": "a01",
       "id": "a01s01",
       "name": "Mauricinho",
+      "phone": "(21)99999-9999",
       "wallet": 100,
       "comissionType": "percent",
       "comissionValue": 0.15
@@ -39,6 +42,7 @@
       "adminId": "u01",
       "id": "a01s02",
       "name": "Mo",
+      "phone": "(21)88888-8888",
       "wallet": 150,
       "comissionType": "percent",
       "comissionValue": 0.15
@@ -47,6 +51,7 @@
       "adminId": "a01",
       "id": "a02s01",
       "name": "Fanzinha",
+      "phone": "(21)77777-7777",
       "wallet": 200,
       "comissionType": "percent",
       "comissionValue": 0.1
@@ -55,6 +60,7 @@
       "adminId": "a01",
       "id": "a2s02",
       "name": "Franci",
+      "phone": "(21)66666-6666",
       "wallet": 325,
       "comissionType": "percent",
       "comissionValue": 0.25

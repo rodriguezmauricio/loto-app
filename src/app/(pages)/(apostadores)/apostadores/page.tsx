@@ -23,7 +23,7 @@ const ApostadoresPage = ({ params }: ApostadoresParams) => {
     dataUsers &&
     dataUsers.filter(
       (users: IReduxUsers) =>
-        users.superId === dataSellers?.id || users.superId === dataAdmin[0]?.id
+        users.superId === dataSellers?.id || users?.superId === dataAdmin[0]?.id
     );
 
   console.log("users:", dataSellers);
@@ -41,7 +41,7 @@ const ApostadoresPage = ({ params }: ApostadoresParams) => {
         submenuLink="/adicionarApostador"
       />
       <main className="main">
-        <section>
+        <section className={styles.usersList}>
           {/* //TODO: MAP OVER THE USERS */}
           {usersFromSellers?.map((user: IReduxUsers) => {
             return (

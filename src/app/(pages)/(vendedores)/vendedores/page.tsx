@@ -26,7 +26,7 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
 
   const sellersFromAdmin =
     dataSellers &&
-    dataSellers.filter((sellers: IReduxSellers) => sellers.adminId === dataAdmin[0].id);
+    dataSellers.filter((sellers: IReduxSellers) => sellers?.adminId === dataAdmin[0]?.id);
 
   console.log(sellersFromAdmin);
 
@@ -42,7 +42,7 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
         submenuLink="/adicionarVendedor"
       />
       <main className="main">
-        <section>
+        <section className={styles.usersList}>
           {/* TODO: map over the users */}
           {sellersFromAdmin?.map((seller: IReduxSellers) => {
             return (
@@ -53,7 +53,7 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
                 icon="vendor"
                 fullWidth={true}
                 inIcon={false}
-                linkTo={`/vendedores/${params.vendedor}`}
+                linkTo={`/vendedores/${seller.name}`}
                 hasCheckbox={false}
               />
             );

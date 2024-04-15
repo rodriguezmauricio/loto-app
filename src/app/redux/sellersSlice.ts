@@ -4,11 +4,13 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 export interface IReduxSellers {
   adminId: string;
   id: string;
-  name: string;
-  phone: string;
-  wallet: number;
-  comissionType: string;
-  comissionValue: number;
+  nome: string;
+  telefone: string;
+  nomeUsuario: "";
+  pix: string;
+  saldo: number;
+  tipoComissao: string;
+  valorComissao: number;
 }
 
 export const sellersSlice = createSlice({
@@ -17,13 +19,13 @@ export const sellersSlice = createSlice({
   reducers: {
     updateSellers: (state, action: PayloadAction<IReduxSellers>) => {
       state = action.payload;
-      // const { adminId, id, name, wallet, comissionType, comissionValue } = action.payload;
+      // const { adminId, id, name, wallet, tipoComissao, valorComissao } = action.payload;
       // state.adminId = adminId;
       // state.id = id;
       // state.name = name;
       // state.wallet = wallet;
-      // state.comissionType = comissionType;
-      // state.comissionValue = comissionValue;
+      // state.tipoComissao = tipoComissao;
+      // state.valorComissao = valorComissao;
     },
   },
 });

@@ -19,16 +19,16 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
   const dispatch = useDispatch();
 
   const URLADMIN = "http://localhost:3500/admins";
-  const dataAdmin = useFetchData(URLADMIN).data;
+  const dataAdmin = useFetchData(URLADMIN)?.data;
 
   const URLSELLERS = "http://localhost:3500/sellers";
-  const dataSellers = useFetchData(URLSELLERS).data;
+  const dataSellers = useFetchData(URLSELLERS)?.data;
 
   const sellersFromAdmin =
     dataSellers &&
     dataSellers.filter((sellers: IReduxSellers) => sellers?.adminId === dataAdmin[0]?.id);
 
-  console.log(sellersFromAdmin);
+  console.log(dataAdmin);
 
   return (
     <>

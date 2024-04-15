@@ -3,20 +3,25 @@
 import styles from "./adicionarVendedor.module.css";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import Title from "@/app/components/title/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
+import { updateSellers } from "@/app/redux/sellersSlice";
+import useFetchData from "@/app/utils/useFetchData";
 
 type Inputs = {
   nome: string;
   telefone: string;
   nomeUsuario: string;
   pix: string;
-  isComissaoPercent: boolean;
-  comissao: number;
+  saldo: number;
+  tipoComissao: string;
+  valorComissao: number;
 };
 
 const schema = yup.object().shape({
@@ -24,8 +29,9 @@ const schema = yup.object().shape({
   telefone: yup.string().required("Este campo é necessário"),
   nomeUsuario: yup.string().required("Este campo é necessário"),
   pix: yup.string().required("Este campo é necessário"),
-  isComissaoPercent: yup.boolean(),
-  comissao: yup
+  saldo: yup.number(),
+  tipoComissao: yup.string(),
+  valorComissao: yup
     .number()
     .required("Este campo é necessário e maior que zero")
     .positive("O valor precisa ser maior que zero"),
@@ -33,8 +39,19 @@ const schema = yup.object().shape({
 
 const AdicionarVendedor = () => {
   //TODO: Fetch data from the winners
+  const dispatch = useDispatch();
 
-  const [isComissaoPercent, setisComissaoPercent] = useState(true);
+  const [isComissaoPercent, setisComissaoPercent] = useState("percent");
+
+  //fetch data from server
+  const URL = "http://localhost:3500/sellers";
+  const { data } = useFetchData(URL);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      dispatch(updateSellers(data[0]));
+    }
+  }, [data, dispatch]);
 
   const resolver = yupResolver(schema) as Resolver<Inputs>;
 
@@ -50,21 +67,24 @@ const AdicionarVendedor = () => {
       telefone: "",
       nomeUsuario: "",
       pix: "",
-      isComissaoPercent,
-      comissao: 0,
+      saldo: 0,
+      tipoComissao: "percent",
+      valorComissao: 0,
     },
     resolver: resolver,
   });
 
   const handleChecked = (comissaoPercent: boolean) => {
-    setisComissaoPercent(comissaoPercent);
+    setisComissaoPercent(comissaoPercent ? "percent" : "absolute");
   };
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log({
-      ...data,
-      isComissaoPercent,
-    });
+    dispatch(
+      updateSellers({
+        ...data,
+        tipoComissao: isComissaoPercent,
+      })
+    );
   };
 
   return (
@@ -137,7 +157,7 @@ const AdicionarVendedor = () => {
               <input
                 className={styles.input}
                 type="number"
-                {...register("comissao", {
+                {...register("valorComissao", {
                   required: true,
                   setValueAs(value) {
                     return value;
@@ -145,7 +165,7 @@ const AdicionarVendedor = () => {
                 })}
               />
 
-              {<span className={styles.errorMessage}>{errors.comissao?.message}</span>}
+              {<span className={styles.errorMessage}>{errors.valorComissao?.message}</span>}
 
               {/* {errors.comissao && (
                 <span className={styles.errorMessage}>Esse campo é necessário.</span>

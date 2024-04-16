@@ -1,3 +1,5 @@
+"use client";
+
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import IconCard from "@/app/components/iconCard/IconCard";
 import styles from "./vendedor.module.css";
@@ -33,7 +35,14 @@ const Vendedor = ({ params }: VendedorParams) => {
 
   return (
     <>
-      <PageHeader title="Vendedor" subpage linkTo={"/vendedores"} />
+      <PageHeader
+        title="Vendedor"
+        subpage
+        linkTo={"/vendedores"}
+        hasSubMenu
+        submenuType="removeUser"
+        submenuFunction={() => console.log("remover usuario")}
+      />
       <main className="main">
         <section className={styles.row}>
           <IconCard

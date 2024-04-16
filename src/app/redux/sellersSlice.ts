@@ -6,7 +6,7 @@ export interface IReduxSellers {
   id: string;
   nome: string;
   telefone: string;
-  nomeUsuario: "";
+  nomeUsuario: string;
   pix: string;
   saldo: number;
   tipoComissao: string;
@@ -27,8 +27,13 @@ export const sellersSlice = createSlice({
       // state.tipoComissao = tipoComissao;
       // state.valorComissao = valorComissao;
     },
+
+    addSellers: (state, action: PayloadAction<IReduxSellers>) => {
+      //add a seller to the database
+      state.push(action.payload);
+    },
   },
 });
 
-export const { updateSellers } = sellersSlice.actions;
+export const { updateSellers, addSellers } = sellersSlice.actions;
 export default sellersSlice.reducer;

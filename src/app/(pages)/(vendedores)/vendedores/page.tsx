@@ -48,12 +48,12 @@ const VendedoresPage = ({ params }: VendedoresParams) => {
             return (
               <IconCard
                 key={seller.id}
-                title={seller.name}
-                description={seller.phone}
+                title={seller.nome}
+                description={seller.telefone}
                 icon="vendor"
                 fullWidth={true}
                 inIcon={false}
-                linkTo={`/vendedores/${seller.name}`}
+                linkTo={`/vendedores/${seller.nome}`}
                 hasCheckbox={false}
               />
             );

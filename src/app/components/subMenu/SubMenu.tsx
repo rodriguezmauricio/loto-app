@@ -1,4 +1,4 @@
-import { BsDownload, BsPerson, BsPlus, BsThreeDotsVertical } from "react-icons/bs";
+import { BsDownload, BsPerson, BsPersonDash, BsPlus, BsThreeDotsVertical } from "react-icons/bs";
 import styles from "./subMenu.module.css";
 import Link from "next/link";
 
@@ -9,7 +9,7 @@ interface ISubmenu {
   submenuLink?: string;
 }
 
-export type TsubmenuType = "menu" | "user" | "download" | "add";
+export type TsubmenuType = "menu" | "user" | "download" | "add" | "removeUser";
 
 const SubMenu = ({ type, submenuLink, submenuFunction }: ISubmenu) => {
   const renderIcon = (type: TsubmenuType) => {
@@ -24,6 +24,9 @@ const SubMenu = ({ type, submenuLink, submenuFunction }: ISubmenu) => {
     }
     if (type === "add") {
       return <BsPlus size={22} />;
+    }
+    if (type === "removeUser") {
+      return <BsPersonDash size={22} />;
     }
   };
 

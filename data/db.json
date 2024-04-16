@@ -32,38 +32,71 @@
     {
       "adminId": "a01",
       "id": "a01s01",
-      "name": "Mauricinho",
-      "phone": "(21)99999-9999",
-      "wallet": 100,
-      "comissionType": "percent",
-      "comissionValue": 0.15
+      "nome": "Mauricinho",
+      "telefone": "(21)99999-9999",
+      "saldo": 100,
+      "tipoComissao": "percent",
+      "valorComissao": 0.15
     },
     {
       "adminId": "u01",
       "id": "a01s02",
-      "name": "Mo",
-      "phone": "(21)88888-8888",
-      "wallet": 150,
-      "comissionType": "percent",
-      "comissionValue": 0.15
+      "nome": "Mo",
+      "telefone": "(21)88888-8888",
+      "saldo": 150,
+      "tipoComissao": "percent",
+      "valorComissao": 0.15
     },
     {
       "adminId": "a01",
       "id": "a02s01",
-      "name": "Franzinha",
-      "phone": "(21)77777-7777",
-      "wallet": 200,
-      "comissionType": "percent",
-      "comissionValue": 0.1
+      "nome": "Franzinha",
+      "telefone": "(21)77777-7777",
+      "saldo": 200,
+      "tipoComissao": "percent",
+      "valorComissao": 0.1
     },
     {
       "adminId": "a01",
       "id": "a2s02",
-      "name": "Franci",
-      "phone": "(21)66666-6666",
-      "wallet": 325,
-      "comissionType": "percent",
-      "comissionValue": 0.25
+      "nome": "Franci",
+      "telefone": "(21)66666-6666",
+      "saldo": 325,
+      "tipoComissao": "percent",
+      "valorComissao": 0.25
+    },
+    {
+      "adminId": "a01",
+      "id": "d083b486-9417-471e-8c00-41228f54325d",
+      "nome": "first test",
+      "telefone": "1111111111111111111111",
+      "nomeUsuario": "firsTest",
+      "pix": "123123123123123",
+      "saldo": 0,
+      "tipoComissao": "percent",
+      "valorComissao": 0.09
+    },
+    {
+      "nome": "teste2",
+      "telefone": "999999999",
+      "nomeUsuario": "teste2",
+      "pix": "jalapenho",
+      "saldo": 0,
+      "tipoComissao": "absolute",
+      "valorComissao": 0.15,
+      "adminId": "a01",
+      "id": "682797aa-1cdc-4cf1-80fb-4b87bfdf7e78"
+    },
+    {
+      "valorComissao": 12,
+      "tipoComissao": "absolute",
+      "saldo": 0,
+      "pix": "21321321",
+      "nomeUsuario": "comAbsolute",
+      "telefone": "dsadsd",
+      "nome": "comissao Abosute",
+      "adminId": "a01",
+      "id": "ef1adacd-db36-477c-bcff-e010dd44ffab"
     }
   ],
   "users": [
@@ -136,7 +169,12 @@
     {
       "id": "betId01",
       "userId": "u01",
-      "numbers": [1, 7, 15, 22],
+      "numbers": [
+        1,
+        7,
+        15,
+        22
+      ],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
@@ -145,7 +183,14 @@
     {
       "id": "betId02",
       "userId": "u01",
-      "numbers": [7, 12, 22, 25, 26, 28],
+      "numbers": [
+        7,
+        12,
+        22,
+        25,
+        26,
+        28
+      ],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
@@ -154,7 +199,13 @@
     {
       "id": "betId03",
       "userId": "u02",
-      "numbers": [1, 2, 3, 4, 5],
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",

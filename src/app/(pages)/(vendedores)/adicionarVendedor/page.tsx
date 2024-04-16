@@ -8,10 +8,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/redux/store";
+import { v4 as uuidv4 } from "uuid";
 
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
-import { updateSellers } from "@/app/redux/sellersSlice";
+import { updateSellers, addSellers } from "@/app/redux/sellersSlice";
 import useFetchData from "@/app/utils/useFetchData";
 
 type Inputs = {
@@ -59,6 +60,7 @@ const AdicionarVendedor = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
     setValue,
   } = useForm<Inputs>({
@@ -78,18 +80,42 @@ const AdicionarVendedor = () => {
     setisComissaoPercent(comissaoPercent ? "percent" : "absolute");
   };
 
+  const calcComissao = (comissaoType: string, value: number) => {
+    if (comissaoType === "percent") {
+      return value / 100;
+    }
+
+    return value;
+  };
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(
-      updateSellers({
-        ...data,
-        tipoComissao: isComissaoPercent,
-      })
-    );
+    const newUser = {
+      ...data,
+      adminId: "a01",
+      id: uuidv4(),
+      tipoComissao: isComissaoPercent,
+    };
+
+    fetch("http://localhost:3500/sellers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((response) => response.json())
+      .then((user) => console.log(user));
+
+    reset();
+
+    // dispatch(
+    //   addSellers()
+    // );
   };
 
   return (
     <>
-      <PageHeader title="Adicionar Vendedor" subpage={true} linkTo={"/sorteios"} />
+      <PageHeader title="Adicionar Vendedor" subpage={true} linkTo={"/vendedores"} />
       <main className="main">
         <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
           <div className={styles.fieldRow}>
@@ -139,14 +165,18 @@ const AdicionarVendedor = () => {
             <div className={styles.checkboxRow}>
               <button
                 type="button"
-                className={`${styles.button} ${isComissaoPercent ? styles.active : ""}`}
+                className={`${styles.button} ${
+                  isComissaoPercent === "percent" ? styles.active : ""
+                }`}
                 onClick={() => handleChecked(true)}
               >
                 Percentual
               </button>
               <button
                 type="button"
-                className={`${styles.button} ${isComissaoPercent ? "" : styles.active}`}
+                className={`${styles.button} ${
+                  isComissaoPercent === "percent" ? "" : styles.active
+                }`}
                 onClick={() => handleChecked(false)}
               >
                 Fixo
@@ -160,7 +190,7 @@ const AdicionarVendedor = () => {
                 {...register("valorComissao", {
                   required: true,
                   setValueAs(value) {
-                    return value;
+                    return calcComissao(isComissaoPercent, value);
                   },
                 })}
               />

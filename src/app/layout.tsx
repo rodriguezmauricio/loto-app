@@ -5,6 +5,8 @@ import "./globals.css";
 import Menu from "./components/menu/Menu";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import { useState } from "react";
+import LoginPage from "./(pages)/login/page";
 
 const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"], display: "swap" });
 
@@ -18,14 +20,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
   return (
     <Provider store={store}>
       <html lang="en">
         <body className={`${poppins.className}`}>
-          <div className="sidebar">
-            <Menu />
-          </div>
-          <div className="content">{children}</div>
+          {isUserLoggedIn ? (
+            <>
+              <div className="sidebar">
+                <Menu />
+              </div>
+              <div className="content">{children}</div>
+            </>
+          ) : (
+            <LoginPage />
+          )}
         </body>
       </html>
     </Provider>

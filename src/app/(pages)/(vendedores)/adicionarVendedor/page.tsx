@@ -15,6 +15,8 @@ import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
 import { updateSellers, addSellers } from "@/app/redux/sellersSlice";
 import useFetchData from "@/app/utils/useFetchData";
 
+import { sql } from "@vercel/postgres";
+
 type Inputs = {
   nome: string;
   telefone: string;
@@ -88,11 +90,11 @@ const AdicionarVendedor = () => {
     return value;
   };
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const newUser = {
       ...data,
       adminId: "a01",
-      id: uuidv4(),
+      // id: uuidv4(),
       tipoComissao: isComissaoPercent,
     };
 
@@ -107,6 +109,11 @@ const AdicionarVendedor = () => {
       .then((user) => console.log(user));
 
     reset();
+
+    //TODO: add the logic to insert people in the database
+    const { rows, fields } = await sql`INSERT INTO users (
+      name, id_type, wallet, phone, pix)
+      VALUES("Mo", "0", 150, "+3530833134686", "mo@email.com");`;
 
     // dispatch(
     //   addSellers()

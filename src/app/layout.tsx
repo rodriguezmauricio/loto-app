@@ -20,7 +20,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   return (
     <Provider store={store}>

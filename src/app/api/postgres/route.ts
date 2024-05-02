@@ -6,9 +6,7 @@ export async function GET(request: Request) {
   //Create all tables if they don`t exist
 
   try {
-    const credentials =
-      // await sql`CREATE TABLE IF NOT EXISTS users ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS credentials (
+    const credentials = await sql`CREATE TABLE IF NOT EXISTS credentials (
         credential_id SERIAL PRIMARY KEY,
         user_id INT REFERENCES users(user_id),
         username VARCHAR(50) UNIQUE,
@@ -16,9 +14,8 @@ export async function GET(request: Request) {
         password_hash VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );`;
-    const users =
-      // await sql`CREATE TABLE IF NOT EXISTS users ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS users (
+
+    const users = await sql`CREATE TABLE IF NOT EXISTS users (
             user_id SERIAL PRIMARY KEY,
             name VARCHAR(100),
             id_type INTEGER,
@@ -27,20 +24,17 @@ export async function GET(request: Request) {
             pix VARCHAR(50),
             isComissionPercentual BOOLEAN,
             comissionValue NUMERIC(5));`;
-    const user_type =
-      // await sql`CREATE TABLE IF NOT EXISTS user_type ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS user_type (
+
+    const user_type = await sql`CREATE TABLE IF NOT EXISTS user_type (
               id_type BIGSERIAL PRIMARY KEY,
               name VARCHAR(100) NOT NULL);`;
-    const lotteries =
-      // await sql`CREATE TABLE IF NOT EXISTS lotteries ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS lotteries (
+
+    const lotteries = await sql`CREATE TABLE IF NOT EXISTS lotteries (
               id BIGSERIAL PRIMARY KEY,
               name VARCHAR(20) NOT NULL,
               color VARCHAR(20) NOT NULL);`;
-    const bets =
-      // await sql`CREATE TABLE IF NOT EXISTS bets ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS bets (
+
+    const bets = await sql`CREATE TABLE IF NOT EXISTS bets (
               user_id BIGINT NOT NULL,
               bet_numbers CHAR(20)[] NOT NULL,
               lottery_code BIGINT NOT NULL,
@@ -49,27 +43,27 @@ export async function GET(request: Request) {
               result CHAR(20)[],
               bet_id BIGINT NOT NULL,
               CONSTRAINT bets_pkey PRIMARY KEY (bet_id));`;
-    const modalidades_caixa =
-      // await sql`CREATE TABLE IF NOT EXISTS modalidades_caixa ( name VARCHAR(255), phone VARCHAR(20) );`;
-      await sql`CREATE TABLE IF NOT EXISTS modalidades_caixa (
+
+    const modalidades_caixa = await sql`CREATE TABLE IF NOT EXISTS modalidades_caixa (
               id_modalidade BIGINT NOT NULL,
               name VARCHAR(50) NOT NULL,
               color VARCHAR(50) NOT NULL,
               CONSTRAINT modalidades_caixa_pkey PRIMARY KEY (id_modalidade));`;
+
     const modalidades_com_sabedoria =
-      // await sql`CREATE TABLE IF NOT EXISTS modalidades_com_sabedoria ( name VARCHAR(255), phone VARCHAR(20) );`;
       await sql`CREATE TABLE IF NOT EXISTS modalidades_com_sabedoria (
               id_modalidade BIGINT NOT NULL,
               name VARCHAR(50) NOT NULL,
               color VARCHAR(50) NOT NULL,
               CONSTRAINT modalidades_com_sabedoria_pkey PRIMARY KEY (id_modalidade));`;
+
     const modalidades_personalizadas =
-      // await sql`CREATE TABLE IF NOT EXISTS modalidades_personalizadas ( name VARCHAR(255), phone VARCHAR(20) );`;
       await sql`CREATE TABLE IF NOT EXISTS modalidades_personalizadas (
               id_modalidade BIGINT NOT NULL,
               name VARCHAR(50) NOT NULL,
               color VARCHAR(50) NOT NULL,
               CONSTRAINT modalidades_personalizadas_pkey PRIMARY KEY (id_modalidade));`;
+
     const configuracoes = await sql`CREATE TABLE IF NOT EXISTS configuracoes (
             ticket_bet_hour_limit TIME WITH TIME ZONE,
             ticket_max_value_per_ticket NUMERIC(15),
@@ -91,6 +85,7 @@ export async function GET(request: Request) {
             permit_enable_duplicate_ticket_blocking_validation_for_admins BOOLEAN NOT NULL,
             permit_enable_block_time_validation_for_admins BOOLEAN NOT NULL,
             permit_enable_sales_start_time_validation_for_admins BOOLEAN NOT NULL);`;
+
     return NextResponse.json(
       {
         credentials,

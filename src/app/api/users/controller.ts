@@ -1,18 +1,36 @@
 import { sql } from "@vercel/postgres";
 import { hashPassword } from "@/app/utils/utils";
 
-export async function insertUser(name: string, email: string, password: string) {
+interface IInsertUser {
+  name: string;
+  password: string;
+  pix: string;
+  email: string;
+  isComissionPercentual: boolean;
+  comissionValue: number | null | undefined;
+}
+
+export async function insertUser(
+  name: string,
+  email: string,
+  password: string,
+  pix: string,
+  isComissionPercentual: boolean,
+  comissionValue: number
+) {
   //hash users password before storing in the database
   const hashedPassword = await hashPassword(password);
 
   try {
     //sql query to enter new user
-    const result = await sql`
-    INSERT INTO users(name, email, password)
-    VALUES(${name}, ${email}, ${hashedPassword})
+    const insertUser = await sql`
+    INSERT INTO users(name, email, password, pix, isComissionPercentual, comissionValue)
+    VALUES(${name}, ${email}, ${hashedPassword}, ${pix || undefined},${
+      isComissionPercentual || undefined
+    }, ${comissionValue || undefined})
     RETURNING *;`;
 
-    return result.rows[0];
+    return insertUser.rows[0];
   } catch (error) {
     console.error("Error inserting user: ", error);
     throw error;

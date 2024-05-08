@@ -9,9 +9,9 @@ import * as yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { v4 as uuidv4 } from "uuid";
+import { insertUser } from "@/app/api/users/controller";
 
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
-import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
 import { updateSellers, addSellers } from "@/app/redux/sellersSlice";
 import useFetchData from "@/app/utils/useFetchData";
 
@@ -44,14 +44,26 @@ const AdicionarVendedor = () => {
   //TODO: Fetch data from the winners
   const dispatch = useDispatch();
 
-  const [isComissaoPercent, setisComissaoPercent] = useState("percent");
+  const userData = async function fetchUserData() {
+    try {
+      const result = await sql`
+      SELECT * FROM users`;
+      return result.rows[0];
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const [isComissaoPercent, setIsComissaoPercent] = useState("percent");
 
   //fetch data from server
   const URL = "http://localhost:3500/sellers";
   const { data } = useFetchData(URL);
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    const users = userData;
+
+    if (users.length > 0) {
       dispatch(updateSellers(data[0]));
     }
   }, [data, dispatch]);
@@ -78,12 +90,12 @@ const AdicionarVendedor = () => {
     resolver: resolver,
   });
 
-  const handleChecked = (comissaoPercent: boolean) => {
-    setisComissaoPercent(comissaoPercent ? "percent" : "absolute");
+  const handleChecked = (comissionPercent: boolean) => {
+    setIsComissaoPercent(comissionPercent ? "percent" : "absolute");
   };
 
-  const calcComissao = (comissaoType: string, value: number) => {
-    if (comissaoType === "percent") {
+  const calcComissao = (comissionType: string, value: number) => {
+    if (comissionType === "percent") {
       return value / 100;
     }
 
@@ -98,15 +110,16 @@ const AdicionarVendedor = () => {
       tipoComissao: isComissaoPercent,
     };
 
-    fetch("http://localhost:3500/sellers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newUser),
-    })
-      .then((response) => response.json())
-      .then((user) => console.log(user));
+    // HEADER: fetch user data
+    // fetch("http://localhost:3500/sellers", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(newUser),
+    // })
+    //   .then((response) => response.json())
+    //   .then((user) => console.log(user));
 
     reset();
 
@@ -204,7 +217,7 @@ const AdicionarVendedor = () => {
 
               {<span className={styles.errorMessage}>{errors.valorComissao?.message}</span>}
 
-              {/* {errors.comissao && (
+              {/* {errors.comission && (
                 <span className={styles.errorMessage}>Esse campo é necessário.</span>
               )} */}
             </>

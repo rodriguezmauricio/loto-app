@@ -25,10 +25,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "POST") {
     try {
       //extract user data from request body
-      const { name, email, password } = req.body;
+      const { name, email, password, idType, pix, isComissionPercent, comissionValue } = req.body;
 
       //insert new user into the database
-      const newUser = await insertUser(name, email, password);
+      const newUser = await insertUser(
+        name,
+        email,
+        password,
+        idType,
+        pix,
+        isComissionPercent,
+        comissionValue
+      );
 
       res.status(201).json(newUser);
     } catch (error) {

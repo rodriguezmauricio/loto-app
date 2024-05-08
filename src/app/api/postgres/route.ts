@@ -7,27 +7,40 @@ export async function GET(request: Request) {
 
   try {
     const credentials = await sql`CREATE TABLE IF NOT EXISTS credentials (
-        credential_id SERIAL PRIMARY KEY,
-        user_id INT REFERENCES users(user_id),
-        username VARCHAR(50) UNIQUE,
-        email VARCHAR(255) UNIQUE,
-        password_hash VARCHAR(255),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );`;
+              credential_id SERIAL PRIMARY KEY,
+              user_id INT REFERENCES users(user_id),
+              username VARCHAR(50) UNIQUE,
+              email VARCHAR(255) UNIQUE,
+              password_hash VARCHAR(255),
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`;
+
+    const admins = await sql`CREATE TABLE IF NOT EXISTS admins (
+              user_id SERIAL PRIMARY KEY,
+              name VARCHAR(100),
+              wallet NUMERIC(15),
+              phone VARCHAR(15),
+              pix VARCHAR(50),
+              isComissionPercentual BOOLEAN,
+              comissionValue NUMERIC(5));`;
+
+    const sellers = await sql`CREATE TABLE IF NOT EXISTS sellers (
+              user_id SERIAL PRIMARY KEY,
+              admin_id NUMERIC(255),
+              name VARCHAR(100),
+              wallet NUMERIC(15),
+              phone VARCHAR(15),
+              pix VARCHAR(50),
+              isComissionPercentual BOOLEAN,
+              comissionValue NUMERIC(5));`;
 
     const users = await sql`CREATE TABLE IF NOT EXISTS users (
-            user_id SERIAL PRIMARY KEY,
-            name VARCHAR(100),
-            id_type INTEGER,
-            wallet NUMERIC(15),
-            phone VARCHAR(15),
-            pix VARCHAR(50),
-            isComissionPercentual BOOLEAN,
-            comissionValue NUMERIC(5));`;
-
-    const user_type = await sql`CREATE TABLE IF NOT EXISTS user_type (
-              id_type BIGSERIAL PRIMARY KEY,
-              name VARCHAR(100) NOT NULL);`;
+              user_id SERIAL PRIMARY KEY,
+              admin_id NUMERIC(255),
+              seller_id NUMERIC(255),
+              name VARCHAR(100),
+              wallet NUMERIC(15),
+              phone VARCHAR(15),
+              pix VARCHAR(50);`;
 
     const lotteries = await sql`CREATE TABLE IF NOT EXISTS lotteries (
               id BIGSERIAL PRIMARY KEY,
@@ -65,32 +78,33 @@ export async function GET(request: Request) {
               CONSTRAINT modalidades_personalizadas_pkey PRIMARY KEY (id_modalidade));`;
 
     const configuracoes = await sql`CREATE TABLE IF NOT EXISTS configuracoes (
-            ticket_bet_hour_limit TIME WITH TIME ZONE,
-            ticket_max_value_per_ticket NUMERIC(15),
-            ticket_max_amount_of_tickets_per_client NUMERIC NOT NULL,
-            ticket_max_amount_of_duplicataed_tickets_per_lottery_draw NUMERIC NOT NULL,
-            ticket_max_amount_of_duplicataed_tickets_per_bet NUMERIC NOT NULL,
-            ticket_block_registration_of_duplicated_tickets BOOLEAN NOT NULL,
-            surpresinha_allow_ilimited_registration_of_type_surpresinha_tickets BOOLEAN NOT NULL,
-            surpresinha_allow_ilimited_registration_of_duplicated_type_surpresinha_tickets BOOLEAN NOT NULL,
-            app_show_alert_for_duplicated_bets_during_creation BOOLEAN NOT NULL,
-            app_start_bets_filter_showing_all_bets BOOLEAN NOT NULL,
-            app_show_all_clients_to_all_sellers BOOLEAN NOT NULL,
-            app_show_list_of_winners_to_sellers BOOLEAN NOT NULL,
-            app_show_list_of_winners_to_clients BOOLEAN NOT NULL,
-            app_show_list_of_winners_to_all_users BOOLEAN NOT NULL,
-            app_show_inactive_sellers BOOLEAN NOT NULL,
-            permit_enable_maximum_ticket_quantity_validation_for_admins BOOLEAN NOT NULL,
-            permit_enable_maximum_ticket_value_validation_for_admins BOOLEAN NOT NULL,
-            permit_enable_duplicate_ticket_blocking_validation_for_admins BOOLEAN NOT NULL,
-            permit_enable_block_time_validation_for_admins BOOLEAN NOT NULL,
-            permit_enable_sales_start_time_validation_for_admins BOOLEAN NOT NULL);`;
+              ticket_bet_hour_limit TIME WITH TIME ZONE,
+              ticket_max_value_per_ticket NUMERIC(15),
+              ticket_max_amount_of_tickets_per_client NUMERIC NOT NULL,
+              ticket_max_amount_of_duplicataed_tickets_per_lottery_draw NUMERIC NOT NULL,
+              ticket_max_amount_of_duplicataed_tickets_per_bet NUMERIC NOT NULL,
+              ticket_block_registration_of_duplicated_tickets BOOLEAN NOT NULL,
+              surpresinha_allow_ilimited_registration_of_type_surpresinha_tickets BOOLEAN NOT NULL,
+              surpresinha_allow_ilimited_registration_of_duplicated_type_surpresinha_tickets BOOLEAN NOT NULL,
+              app_show_alert_for_duplicated_bets_during_creation BOOLEAN NOT NULL,
+              app_start_bets_filter_showing_all_bets BOOLEAN NOT NULL,
+              app_show_all_clients_to_all_sellers BOOLEAN NOT NULL,
+              app_show_list_of_winners_to_sellers BOOLEAN NOT NULL,
+              app_show_list_of_winners_to_clients BOOLEAN NOT NULL,
+              app_show_list_of_winners_to_all_users BOOLEAN NOT NULL,
+              app_show_inactive_sellers BOOLEAN NOT NULL,
+              permit_enable_maximum_ticket_quantity_validation_for_admins BOOLEAN NOT NULL,
+              permit_enable_maximum_ticket_value_validation_for_admins BOOLEAN NOT NULL,
+              permit_enable_duplicate_ticket_blocking_validation_for_admins BOOLEAN NOT NULL,
+              permit_enable_block_time_validation_for_admins BOOLEAN NOT NULL,
+              permit_enable_sales_start_time_validation_for_admins BOOLEAN NOT NULL);`;
 
     return NextResponse.json(
       {
         credentials,
+        admins,
+        sellers,
         users,
-        user_type,
         lotteries,
         bets,
         modalidades_caixa,

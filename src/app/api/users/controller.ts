@@ -1,36 +1,59 @@
 import { sql } from "@vercel/postgres";
 import { hashPassword } from "@/app/utils/utils";
 
-interface IInsertUser {
-  name: string;
-  password: string;
-  pix: string;
-  email: string;
-  isComissionPercentual: boolean;
-  comissionValue: number | null | undefined;
+export async function insertAdmin(
+  name: string,
+  wallet: number,
+  email: string,
+  phone: string,
+  pix: string,
+  isComissionPercentual: boolean,
+  comissionValue: number
+) {
+  //TODO: implement the add admin function (check chat GPT history)
+  try {
+    const admin = await sql`
+      INSERT INTO admins (name, wallet, email, phone, pix, isComissionPercentual, comissionValue)
+      VALUES (${name}, 0, ${wallet}, ${email}, ${phone}, ${pix}, ${isComissionPercentual}, ${comissionValue})
+      RETURNING user_id;
+    `;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function insertUser(
   name: string,
   email: string,
   password: string,
+  wallet: number,
+  phone: string,
   pix: string,
-  isComissionPercentual: boolean,
-  comissionValue: number
+  isComissionPercentual?: boolean,
+  comissionValue?: number
 ) {
   //hash users password before storing in the database
   const hashedPassword = await hashPassword(password);
 
+  //TODO: Add block to insert user in the credentials table
+
+  //TODO: RETRIEVE THE ADMIN OR SELLER ID TO ADD TO TO THE USERS TABLE
   try {
     //sql query to enter new user
-    const insertUser = await sql`
-    INSERT INTO users(name, email, password, pix, isComissionPercentual, comissionValue)
-    VALUES(${name}, ${email}, ${hashedPassword}, ${pix || undefined},${
-      isComissionPercentual || undefined
-    }, ${comissionValue || undefined})
+    const insertUserOnUsersTable = await sql`
+    INSERT INTO users(name, email, wallet, phone, pix, seller_id, admin_id)
+    VALUES(${name}, ${email}, ${wallet}, ${phone}, ${pix}, ${sellerId}, ${adminId})
     RETURNING *;`;
 
-    return insertUser.rows[0];
+    const insertUserOnCredentialsTable = await sql`
+    INSERT INTO users(name, email, password)
+    VALUES(${name}, ${email}, ${hashedPassword})
+    RETURNING *;`;
+
+    return {
+      insertInUsersTable: insertUserOnUsersTable.rows[0],
+      insertInCredentialsTable: insertUserOnCredentialsTable.rows[0],
+    };
   } catch (error) {
     console.error("Error inserting user: ", error);
     throw error;

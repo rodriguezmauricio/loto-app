@@ -1,29 +1,11 @@
 import { sql } from "@vercel/postgres";
 import { hashPassword } from "@/app/utils/utils";
 
-export async function insertAdmin(
-  name: string,
-  wallet: number,
-  email: string,
-  phone: string,
-  pix: string,
-  isComissionPercentual: boolean,
-  comissionValue: number
-) {
-  //TODO: implement the add admin function (check chat GPT history)
-  try {
-    const admin = await sql`
-      INSERT INTO admins (name, wallet, email, phone, pix, isComissionPercentual, comissionValue)
-      VALUES (${name}, 0, ${wallet}, ${email}, ${phone}, ${pix}, ${isComissionPercentual}, ${comissionValue})
-      RETURNING user_id;
-    `;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 export async function insertUser(
+  adminId: string,
+  sellerId: string,
   name: string,
+  username: string,
   email: string,
   password: string,
   wallet: number,
@@ -39,20 +21,28 @@ export async function insertUser(
 
   //TODO: RETRIEVE THE ADMIN OR SELLER ID TO ADD TO TO THE USERS TABLE
   try {
+    const insertCredentials = await sql`INSERT INTO credentials (username, email, password_hash)
+    VALUES (${username}, ${email}, ${password})
+    RETURNING user_id;
+    `;
+
+    const userId = insertCredentials.rows[0].user_id;
+    // const insertUserOnUsersTable = await sql`
+    // INSERT INTO users(user_id, name, email, wallet, phone, pix, seller_id, admin_id)
+    // VALUES(${userId}, ${name}, ${email}, ${wallet}, ${phone}, ${pix}, ${sellerId}, ${adminId})
+    // RETURNING *;`;
+
     //sql query to enter new user
     const insertUserOnUsersTable = await sql`
-    INSERT INTO users(name, email, wallet, phone, pix, seller_id, admin_id)
-    VALUES(${name}, ${email}, ${wallet}, ${phone}, ${pix}, ${sellerId}, ${adminId})
-    RETURNING *;`;
-
-    const insertUserOnCredentialsTable = await sql`
-    INSERT INTO users(name, email, password)
-    VALUES(${name}, ${email}, ${hashedPassword})
-    RETURNING *;`;
+        INSERT INTO users (user_id, admin_id, seller_id, name, wallet, phone, pix, isComissionPercentual, comissionValue)
+        VALUES (${userId}, ${adminId}, ${sellerId}, ${name}, ${wallet}, ${phone}, ${pix}, ${isComissionPercentual}, ${comissionValue})
+        RETURNING user_id;
+    `;
 
     return {
+      insertCredentials: insertCredentials.rows[0],
       insertInUsersTable: insertUserOnUsersTable.rows[0],
-      insertInCredentialsTable: insertUserOnCredentialsTable.rows[0],
+      userId: insertUserOnUsersTable.rows[0].user_id,
     };
   } catch (error) {
     console.error("Error inserting user: ", error);

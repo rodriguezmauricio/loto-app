@@ -14,33 +14,22 @@ export async function GET(request: Request) {
               password_hash VARCHAR(255),
               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`;
 
-    const admins = await sql`CREATE TABLE IF NOT EXISTS admins (
-              user_id SERIAL PRIMARY KEY,
-              name VARCHAR(100),
-              wallet NUMERIC(15),
-              phone VARCHAR(15),
-              pix VARCHAR(50),
-              isComissionPercentual BOOLEAN,
-              comissionValue NUMERIC(5));`;
-
-    const sellers = await sql`CREATE TABLE IF NOT EXISTS sellers (
-              user_id SERIAL PRIMARY KEY,
-              admin_id NUMERIC(255),
-              name VARCHAR(100),
-              wallet NUMERIC(15),
-              phone VARCHAR(15),
-              pix VARCHAR(50),
-              isComissionPercentual BOOLEAN,
-              comissionValue NUMERIC(5));`;
-
     const users = await sql`CREATE TABLE IF NOT EXISTS users (
               user_id SERIAL PRIMARY KEY,
-              admin_id NUMERIC(255),
-              seller_id NUMERIC(255),
+              admin_id INT REFERENCES users(user_id),  
+              seller_id INT REFERENCES users(user_id), 
               name VARCHAR(100),
               wallet NUMERIC(15),
               phone VARCHAR(15),
-              pix VARCHAR(50);`;
+              pix VARCHAR(50),
+              isComissionPercentual BOOLEAN,
+              comissionValue NUMERIC(5),
+              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              
+              CONSTRAINT check_comission CHECK (
+                  (isComissionPercentual IS NOT NULL AND comissionValue IS NOT NULL) OR
+                  (isComissionPercentual IS NULL AND comissionValue IS NULL)
+              ));`;
 
     const lotteries = await sql`CREATE TABLE IF NOT EXISTS lotteries (
               id BIGSERIAL PRIMARY KEY,
@@ -102,8 +91,6 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         credentials,
-        admins,
-        sellers,
         users,
         lotteries,
         bets,

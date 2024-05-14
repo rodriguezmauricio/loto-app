@@ -1,5 +1,5 @@
 import { sql } from "@vercel/postgres";
-import { hashPassword } from "@/app/utils/utils";
+import { hashPassword } from "../../utils/utils";
 
 export async function insertUser(
   adminId: string,

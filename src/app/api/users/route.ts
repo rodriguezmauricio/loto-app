@@ -25,16 +25,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "POST") {
     try {
       //extract user data from request body
-      const { name, email, password, idType, pix, isComissionPercent, comissionValue } = req.body;
+      const {
+        adminId,
+        sellerId,
+        name,
+        username,
+        email,
+        password,
+        wallet,
+        pix,
+        isComissionPercentual,
+        comissionValue,
+      } = req.body;
 
       //insert new user into the database
       const newUser = await insertUser(
+        adminId,
+        sellerId,
         name,
+        username,
         email,
         password,
-        idType,
+        wallet,
         pix,
-        isComissionPercent,
+        isComissionPercentual,
         comissionValue
       );
 

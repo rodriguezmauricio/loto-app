@@ -36,7 +36,7 @@ export async function insertUser(
     const insertUserOnUsersTable = await sql`
         INSERT INTO users (user_id, admin_id, seller_id, name, wallet, phone, pix, isComissionPercentual, comissionValue)
         VALUES (${userId}, ${adminId}, ${sellerId}, ${name}, ${wallet}, ${phone}, ${pix}, ${isComissionPercentual}, ${comissionValue})
-        RETURNING user_id;
+        RETURNING *;
     `;
 
     return {

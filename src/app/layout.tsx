@@ -6,7 +6,7 @@ import Menu from "./components/menu/Menu";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { useState } from "react";
-import LoginPage from "./(pages)/login/page";
+import LoginPage from "./pages/login/page";
 
 const poppins = Poppins({ weight: ["300", "500", "700"], subsets: ["latin"], display: "swap" });
 

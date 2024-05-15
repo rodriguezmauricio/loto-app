@@ -9,7 +9,7 @@ import * as yup from "yup";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { v4 as uuidv4 } from "uuid";
-import { insertUser } from "@/app/(pages)/api/users/controller";
+import { insertUser } from "@/app/pages/api/users/controller";
 
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { updateSellers, addSellers } from "@/app/redux/sellersSlice";

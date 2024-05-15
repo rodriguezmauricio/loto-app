@@ -21,112 +21,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { insertUser, deleteUser, updateUser, getUserById } from "./controller";
 
 // Route handler to create a new user:
-// export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-//   if (req.method === "POST") {
-//     try {
-//       //extract user data from request body
-//       const {
-//         adminId,
-//         sellerId,
-//         name,
-//         username,
-//         email,
-//         password,
-//         wallet,
-//         pix,
-//         isComissionPercentual,
-//         comissionValue,
-//       } = req.body;
-
-//       //insert new user into the database
-//       const newUser = await insertUser(
-//         adminId,
-//         sellerId,
-//         name,
-//         username,
-//         email,
-//         password,
-//         wallet,
-//         pix,
-//         isComissionPercentual,
-//         comissionValue
-//       );
-
-//       res.status(201).json(newUser);
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   } else if (req.method === "GET") {
-//     try {
-//       //extract user Id from query parameters
-//       const userId = req.query.id as string;
-
-//       //fetch user ta from database
-//       const user = await getUserById(userId);
-
-//       //respond with user data
-//       if (user) {
-//         res.status(200).json(user);
-//       } else {
-//         res.status(404).json({ error: "Usuário não encontrado." });
-//       }
-//     } catch (error) {
-//       console.error("Erro ao buscar usuário: ", error);
-//       res.status(500).json({ error: "Não foi possível encontrar o usuário." });
-//     }
-//   } else if (req.method === "PUT") {
-//     //
-//     try {
-//       const userId = req.query.id as string;
-
-//       const { name, email } = req.body;
-
-//       const updatedUser = await updateUser(userId, { name, email });
-
-//       res.status(200).json(updatedUser);
-//     } catch (error) {
-//       console.error("Erro ao atualizar usuário: ", error);
-//       res.status(500).json({ error: "Falha ao atualizar usuário." });
-//     }
-//   } else if (req.method === "DELETE") {
-//     try {
-//       //extract user Id from query parameters
-//       const userId = req.query.id as string;
-//       await deleteUser(userId);
-//       res.status(204).end();
-//     } catch (error) {
-//       console.error("Erro ao deletar usuário: ", error);
-//       res.status(500).json({ error: "Falha ao remover usuário." });
-//     }
-//   } else {
-//     res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
-//     res.status(405).end(`Method ${req.method} Not Allowed`);
-//   }
-// }
-
-export async function getHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "GET") {
-    try {
-      //extract user Id from query parameters
-      const userId = req.query.id as string;
-
-      //fetch user ta from database
-      const user = await getUserById(userId);
-
-      //respond with user data
-      if (user) {
-        res.status(200).json(user);
-      } else {
-        res.status(404).json({ error: "Usuário não encontrado." });
-      }
-    } catch (error) {
-      console.error("Erro ao buscar usuário: ", error);
-      res.status(500).json({ error: "Não foi possível encontrar o usuário." });
-    }
-  }
-}
-
-export async function postHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     try {
       //extract user data from request body
@@ -161,11 +56,25 @@ export async function postHandler(req: NextApiRequest, res: NextApiResponse) {
     } catch (error) {
       console.error(error);
     }
-  }
-}
+  } else if (req.method === "GET") {
+    try {
+      //extract user Id from query parameters
+      const userId = req.query.id as string;
 
-export async function putHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "PUT") {
+      //fetch user ta from database
+      const user = await getUserById(userId);
+
+      //respond with user data
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        res.status(404).json({ error: "Usuário não encontrado." });
+      }
+    } catch (error) {
+      console.error("Erro ao buscar usuário: ", error);
+      res.status(500).json({ error: "Não foi possível encontrar o usuário." });
+    }
+  } else if (req.method === "PUT") {
     //
     try {
       const userId = req.query.id as string;
@@ -179,11 +88,7 @@ export async function putHandler(req: NextApiRequest, res: NextApiResponse) {
       console.error("Erro ao atualizar usuário: ", error);
       res.status(500).json({ error: "Falha ao atualizar usuário." });
     }
-  }
-}
-
-export async function deleteHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "DELETE") {
+  } else if (req.method === "DELETE") {
     try {
       //extract user Id from query parameters
       const userId = req.query.id as string;
@@ -193,5 +98,100 @@ export async function deleteHandler(req: NextApiRequest, res: NextApiResponse) {
       console.error("Erro ao deletar usuário: ", error);
       res.status(500).json({ error: "Falha ao remover usuário." });
     }
+  } else {
+    res.setHeader("Allow", ["POST", "GET", "PUT", "DELETE"]);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+// export async function getHandler(req: NextApiRequest, res: NextApiResponse) {
+//   if (req.method === "GET") {
+//     try {
+//       //extract user Id from query parameters
+//       const userId = req.query.id as string;
+
+//       //fetch user ta from database
+//       const user = await getUserById(userId);
+
+//       //respond with user data
+//       if (user) {
+//         res.status(200).json(user);
+//       } else {
+//         res.status(404).json({ error: "Usuário não encontrado." });
+//       }
+//     } catch (error) {
+//       console.error("Erro ao buscar usuário: ", error);
+//       res.status(500).json({ error: "Não foi possível encontrar o usuário." });
+//     }
+//   }
+// }
+
+// export async function postHandler(req: NextApiRequest, res: NextApiResponse) {
+//   if (req.method === "POST") {
+//     try {
+//       //extract user data from request body
+//       const {
+//         adminId,
+//         sellerId,
+//         name,
+//         username,
+//         email,
+//         password,
+//         wallet,
+//         pix,
+//         isComissionPercentual,
+//         comissionValue,
+//       } = req.body;
+
+//       //insert new user into the database
+//       const newUser = await insertUser(
+//         adminId,
+//         sellerId,
+//         name,
+//         username,
+//         email,
+//         password,
+//         wallet,
+//         pix,
+//         isComissionPercentual,
+//         comissionValue
+//       );
+
+//       res.status(201).json(newUser);
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
+// }
+
+// export async function putHandler(req: NextApiRequest, res: NextApiResponse) {
+//   if (req.method === "PUT") {
+//     //
+//     try {
+//       const userId = req.query.id as string;
+
+//       const { name, email } = req.body;
+
+//       const updatedUser = await updateUser(userId, { name, email });
+
+//       res.status(200).json(updatedUser);
+//     } catch (error) {
+//       console.error("Erro ao atualizar usuário: ", error);
+//       res.status(500).json({ error: "Falha ao atualizar usuário." });
+//     }
+//   }
+// }
+
+// export async function deleteHandler(req: NextApiRequest, res: NextApiResponse) {
+//   if (req.method === "DELETE") {
+//     try {
+//       //extract user Id from query parameters
+//       const userId = req.query.id as string;
+//       await deleteUser(userId);
+//       res.status(204).end();
+//     } catch (error) {
+//       console.error("Erro ao deletar usuário: ", error);
+//       res.status(500).json({ error: "Falha ao remover usuário." });
+//     }
+//   }
+// }

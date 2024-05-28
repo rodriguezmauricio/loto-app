@@ -1,11 +1,33 @@
-import React from "react";
+"use client";
+
+import { FormEvent, ReactElement, ChangeEvent, useState } from "react";
 import Image from "next/image";
 import logo from "../../../../public/images/lotoplay_light_logo.svg";
 import styles from "./login.module.css";
 
 const LoginPage = () => {
+  const [loginData, setloginData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleUserData = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setloginData((prevState) => ({ ...prevState, [name]: value }));
+    console.log(loginData.username);
+  };
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    try {
+    } catch (err) {
+      console.log(err);
+    }
+
     console.log("test");
 
     /*
@@ -22,10 +44,12 @@ const LoginPage = () => {
         <label>E-mail</label>
         <input
           className={styles.input}
-          type="email"
-          name="email"
-          id="email"
-          placeholder="email..."
+          type="text"
+          name="username"
+          id="username"
+          placeholder="username..."
+          value={loginData.username}
+          onChange={handleUserData}
         />
         <label>Password</label>
         <input
@@ -34,6 +58,8 @@ const LoginPage = () => {
           name="senha"
           id="senha"
           placeholder="senha..."
+          value={loginData.password}
+          onChange={handleUserData}
         />
         <button className={styles.button} type="submit">
           Login

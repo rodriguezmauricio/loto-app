@@ -20,15 +20,35 @@ const LoginPage = () => {
     console.log(loginData.username);
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-    } catch (err) {
-      console.log(err);
+      const response = await fetch("/src/app/lib/auth.ts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: loginData.username,
+          password: loginData.password,
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful:", data);
+        // Handle successful login (e.g., redirect to another page or show success message)
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Login failed");
+        console.error("Login error:", errorData);
+        // Handle login error (e.g., show error message to the user)
+      }
+    } catch (error) {
+      setError("An unexpected error occurred");
+      console.error("Unexpected error:", error);
+      // Handle unexpected error
     }
-
-    console.log("test");
 
     /*
     write the code to check if the data inserted in the fields match the ones in the database.

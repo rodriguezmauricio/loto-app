@@ -9,7 +9,7 @@ interface ISubmenuContainer {
 const SubmenuContainer = ({ isOpen, children }: ISubmenuContainer) => {
   return (
     <>
-      <div className={`${styles.container} ${isOpen ? styles.open : ""}`}>{children}</div>;
+      <div className={`${styles.container} ${isOpen ? styles.open : ""}`}>{children}</div>
       <div className={isOpen ? styles.overlay : ""}></div>
     </>
   );

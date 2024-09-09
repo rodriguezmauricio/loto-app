@@ -20,7 +20,7 @@ import { FaRegSave } from "react-icons/fa";
 import { date } from "yup";
 
 interface IGeneralSettings {
-  bilhetes_horarioLimiteApotas: number;
+  bilhetes_horarioLimiteApostas: number;
   bilhetes_valorMaximoPorBilhete: number;
   bilhetes_quantidadeMaximaDeBilhetesPorCliente: number;
   bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio: number;
@@ -44,7 +44,7 @@ interface IGeneralSettings {
 
 const ConfiguracoesPage = () => {
   const [setting, setSettings] = useState<IGeneralSettings>({
-    bilhetes_horarioLimiteApotas: new Date().setHours(20, 0, 0, 0),
+    bilhetes_horarioLimiteApostas: new Date().setHours(20, 0, 0, 0),
     bilhetes_valorMaximoPorBilhete: 10,
     bilhetes_quantidadeMaximaDeBilhetesPorCliente: 10,
     bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio: 10,
@@ -66,7 +66,7 @@ const ConfiguracoesPage = () => {
     permissoesAdm_ativarValidacaoDoHorarioDeInicioDasVendasParaOsAdmins: false,
   });
 
-  const URL = "http://localhost:3500/generalSettings";
+  const URL = "http://localhost:3500/modalidadesCaixa";
 
   const fetchData = async () => {
     fetch(URL)

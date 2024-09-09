@@ -1,33 +1,4 @@
 {
-  "lotteries": [
-    {
-      "id": "l01",
-      "nome": "Lotofácil",
-      "cor": "purple"
-    },
-    {
-      "id": "l02",
-      "nome": "Megasena",
-      "cor": "green"
-    },
-    {
-      "id": "l03",
-      "nome": "Lotomania",
-      "cor": "yellow"
-    }
-  ],
-  "admins": [
-    {
-      "id": "a01",
-      "name": "Mauricio",
-      "wallet": 500
-    },
-    {
-      "id": "a02",
-      "name": "Fran",
-      "wallet": 320
-    }
-  ],
   "sellers": [
     {
       "adminId": "a01",
@@ -169,12 +140,7 @@
     {
       "id": "betId01",
       "userId": "u01",
-      "numbers": [
-        1,
-        7,
-        15,
-        22
-      ],
+      "numbers": [1, 7, 15, 22],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
@@ -183,14 +149,7 @@
     {
       "id": "betId02",
       "userId": "u01",
-      "numbers": [
-        7,
-        12,
-        22,
-        25,
-        26,
-        28
-      ],
+      "numbers": [7, 12, 22, 25, 26, 28],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
@@ -199,67 +158,139 @@
     {
       "id": "betId03",
       "userId": "u02",
-      "numbers": [
-        1,
-        2,
-        3,
-        4,
-        5
-      ],
+      "numbers": [1, 2, 3, 4, 5],
       "lottery": "Lotofácil",
       "sorteioNumber": "3043",
       "timestamp": "Sat Mar 02 2024 15:15:52 GMT+0000 (Horário do Meridiano de Greenwich)",
       "result": "pending"
     }
   ],
-  "modalidadesCaixa": [
+  "modalidades": [
     {
-      "name": "Lotofácil",
-      "color": "#930089"
+      "modalidadesCaixa": [
+        {
+          "name": "Lotofácil",
+          "color": "#930089",
+          "betNumbers": [15, 16, 17, 18, 19, 20],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "ERRE X",
+          "color": "purple",
+          "betNumbers": [1],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Megasena",
+          "color": "#209869",
+          "betNumbers": [6, 7, 8, 10, 11, 12, 13, 14, 15],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Lotomania",
+          "color": "#F78100",
+          "betNumbers": [50],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Quina",
+          "color": "#260085",
+          "betNumbers": [5, 6, 7],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Dupla Sena",
+          "color": "#bf194e",
+          "betNumbers": [6, 7, 8, 10, 11, 12, 13, 14, 15],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Dia de Sorte",
+          "color": "#CB852B",
+          "betNumbers": [7, 8, 10, 11, 12, 13, 14, 15],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Timemania",
+          "color": "#02FF02",
+          "betNumbers": [10],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "+Milionária",
+          "color": "#2E3078",
+          "betNumbers": [6, 7, 8, 10, 11, 12],
+          "trevoAmount": [2, 3, 4, 5, 6]
+        },
+        {
+          "name": "Federal",
+          "color": "#103099",
+          "betNumbers": [1],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Loteca",
+          "color": "#fb1f00",
+          "betNumbers": [1],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Super Sete",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        }
+      ]
     },
     {
-      "name": "ERRE X",
-      "color": "purple"
+      "modalidadeSabedoria": [
+        {
+          "name": "Erre X",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Sortinha",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Lotinha",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Quininha",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Seninha",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        }
+      ]
     },
     {
-      "name": "Megasena",
-      "color": "#209869"
-    },
-    {
-      "name": "Lotomania",
-      "color": "#F78100"
-    },
-    {
-      "name": "Quina",
-      "color": "#260085"
-    },
-    {
-      "name": "Dupla Sena",
-      "color": "#bf194e"
-    },
-    {
-      "name": "Dia de Sorte",
-      "color": "#CB852B"
-    },
-    {
-      "name": "Timemania",
-      "color": "#02FF02"
-    },
-    {
-      "name": "+Milionária",
-      "color": "#2E3078"
-    },
-    {
-      "name": "Federal",
-      "color": "#103099"
-    },
-    {
-      "name": "Loteca",
-      "color": "#fb1f00"
-    },
-    {
-      "name": "Super Sete",
-      "color": "#A8CF45"
+      "modalidadePersonalizada": [
+        {
+          "name": "Super 5",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        },
+        {
+          "name": "Quina Brasil",
+          "color": "#A8CF45",
+          "betNumbers": [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+          "trevoAmount": [0]
+        }
+      ]
     }
   ],
   "generalSettings": {

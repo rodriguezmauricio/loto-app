@@ -11,7 +11,7 @@ import ChooseNumbersComp from "@/app/components/chooseNumbersComp/ChooseNumbersC
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import { useEffect, useState } from "react";
 import Buttons from "@/app/components/(buttons)/buttons/Buttons";
-import { isElement } from "react-dom/test-utils";
+import { tempDb } from "@/tempDb"; // Import tempDb
 
 export interface IModalidade {
   name: string;
@@ -22,8 +22,6 @@ export interface IModalidade {
 }
 
 const NovoBilhete = () => {
-  const URL = "http://localhost:3500/modalidades";
-
   // State to track which button (importar/manual) is selected
   const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
 
@@ -78,7 +76,7 @@ const NovoBilhete = () => {
     }
 
     if (selected === "randomNumbers") {
-      // Sort and return selected numbers array when "manual" is selected
+      // Sort and return selected numbers array when "randomNumbers" is selected
       return randomNumbersArr.sort((a, b) => Number(a) - Number(b));
     }
   };
@@ -161,11 +159,10 @@ const NovoBilhete = () => {
   };
 
   useEffect(() => {
+    // Fetch data from tempDb instead of the URL
     const fetchData = async () => {
       try {
-        const response = await fetch(URL);
-        const data = await response.json();
-
+        const data = await tempDb.modalidades; // Adjust according to how tempDb is used
         setModalidadeSetting(data); // Make sure data is an array
       } catch (error) {
         console.log("Error fetching data:", error);
@@ -199,7 +196,7 @@ const NovoBilhete = () => {
 
     const games: number[][] = [];
     for (let i = 0; i < numberOfGames; i++) {
-      const game = generateRandomGame(100, selectedJogos); // Generate a game with the selected number of numbers
+      const game = generateRandomGame(modalidadeContent.maxNumber, selectedJogos); // Generate a game with the selected number of numbers
       games.push(game);
     }
     setGeneratedGames(games); // Save the generated games in state
@@ -397,7 +394,7 @@ const NovoBilhete = () => {
             <Title h={3}>{`Cliente: ***nome do cliente***`}</Title>
 
             {/* Display each imported game */}
-            {handleTextAreaContent.length > 0
+            {importedNumbersArr.length > 0
               ? importedNumbersArr.map((item: any, index) => {
                   return (
                     <div key={index}>
@@ -405,20 +402,8 @@ const NovoBilhete = () => {
                       {item.join(", ")}.
                     </div>
                   );
-
-                  //TODO: Activate this card in the final version and remove placeholder code.
-                  // <IconCard
-                  //   title={`Jogo ${index + 1}`}
-                  //   description={item.join(", ")}
-                  //   fullWidth
-                  //   inIcon={false}
-                  //   hasCheckbox={false}
-                  //   icon="lotto"
-                  //   isClickable={false}
-                  //   key={item.join()}
-                  // />
                 })
-              : handleTextAreaContent.length}
+              : ""}
           </div>
         )}
         {/* Render the selected numbers if any */}

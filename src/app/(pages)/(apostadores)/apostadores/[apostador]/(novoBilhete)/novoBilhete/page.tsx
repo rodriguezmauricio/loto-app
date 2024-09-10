@@ -37,7 +37,8 @@ const NovoBilhete = () => {
   // State to store the current text value in the text area
   const [textAreaValue, setTextAreaValue] = useState("");
 
-  const [modalidadeSetting, setModalidadeSetting] = useState<IModalidade[]>([]);
+  // const [modalidadeSetting, setModalidadeSetting] = useState<IModalidade[]>([]);
+  const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
 
   const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
 

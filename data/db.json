@@ -172,73 +172,85 @@
           "name": "Lotofácil",
           "color": "#930089",
           "betNumbers": [15, 16, 17, 18, 19, 20],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "ERRE X",
           "color": "purple",
           "betNumbers": [1],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Megasena",
           "color": "#209869",
           "betNumbers": [6, 7, 8, 10, 11, 12, 13, 14, 15],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Lotomania",
           "color": "#F78100",
           "betNumbers": [50],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Quina",
           "color": "#260085",
           "betNumbers": [5, 6, 7],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Dupla Sena",
           "color": "#bf194e",
           "betNumbers": [6, 7, 8, 10, 11, 12, 13, 14, 15],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Dia de Sorte",
           "color": "#CB852B",
           "betNumbers": [7, 8, 10, 11, 12, 13, 14, 15],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Timemania",
           "color": "#02FF02",
           "betNumbers": [10],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "+Milionária",
           "color": "#2E3078",
           "betNumbers": [6, 7, 8, 10, 11, 12],
-          "trevoAmount": [2, 3, 4, 5, 6]
+          "trevoAmount": [2, 3, 4, 5, 6],
+          "maxNumber": 100
         },
         {
           "name": "Federal",
           "color": "#103099",
           "betNumbers": [1],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Loteca",
           "color": "#fb1f00",
           "betNumbers": [1],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         },
         {
           "name": "Super Sete",
           "color": "#A8CF45",
           "betNumbers": [7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-          "trevoAmount": [0]
+          "trevoAmount": [0],
+          "maxNumber": 100
         }
       ]
     },

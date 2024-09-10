@@ -20,6 +20,7 @@ import Link from "next/link";
 interface IButtons {
   buttonType:
     | "add"
+    | "content"
     | "share"
     | "delete"
     | "repeat"
@@ -43,6 +44,21 @@ const Buttons: React.FC<MyIButtons> = (props: any) => {
 
   const renderIcon = (type: string) => {
     const ICON_SIZE = 30;
+    if (type === "content") {
+      //TODO: Add functionality
+
+      return (
+        <div className={styles.container}>
+          <Link href="/apostadores/apostador/novoBilhete">
+            <button className={`${styles.button} ${styles.addButton}`} {...otherProps}>
+              {/* <BsPlus size={ICON_SIZE} /> */}
+              {props.children}
+            </button>
+          </Link>
+        </div>
+      );
+    }
+
     if (type === "add") {
       //TODO: Add functionality
 

@@ -1,49 +1,27 @@
 import { useEffect, useState } from "react"; // Importing the useState hook from React
 import styles from "./tabsWithFilters.module.css"; // Importing the CSS module for styling
 
-interface IModalidadeSetting {
-  name: string;
-  color: string;
-  betNumbers: number[];
-  trevoAmount: number[];
-}
+import { IModalidade } from "@/app/(pages)/(apostadores)/apostadores/[apostador]/(novoBilhete)/novoBilhete/page";
 
-const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModalidadeSetting) => {
+interface IModalidadeSetting {
+  modalidadeSetting: any; //TODO: FIX THAT ANY SHIT
+  modalidadesCaixa: IModalidade;
+  modalidadeSabedoria: IModalidade;
+  modalidadePersonalizada: IModalidade;
+
+  handleModalidadeContent: (settingsObj: IModalidade) => void;
+}
+//TODO: FIX THE ANY BELOW
+const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: any) => {
   // State to track which tab is currently selected (default is the first tab - index 0)
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const [modalidadeCaixa = {}, modalidadeSabedoria = {}, modalidadePersonalizada = {}] =
-    modalidadeSetting;
-
-  // Arrays defining the buttons for different categories
-  const buttonsCaixa = [
-    {
-      title: "Erre X",
-      color: "#1b1b1b", // Black color for the button background
-    },
-    {
-      title: "Dupla Sena",
-      color: "#1b1b1b",
-    },
-    {
-      title: "Dia de Sorte",
-      color: "#1b1b1b",
-    },
-    {
-      title: "Megasena",
-      color: "#1b1b1b",
-    },
-    {
-      title: "Lotofácil",
-      color: "#1b1b1b",
-    },
-    {
-      title: "Quina",
-      color: "#1b1b1b",
-    },
-  ];
-
-  // console.log("modalidadeCaixa: ", modalidadeCaixa.modalidadesCaixa);
+  // Safely destructure modalidadeSetting and provide default empty objects to avoid errors
+  const {
+    modalidadesCaixa = { modalidadesCaixa: [] },
+    modalidadeSabedoria = { modalidadeSabedoria: [] },
+    modalidadePersonalizada = { modalidadePersonalizada: [] },
+  } = modalidadeSetting || {};
 
   // Function to render buttons based on the selected tab
   const conteudoRenderizado = (selected: number) => {
@@ -51,7 +29,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
     if (selected === 0) {
       return (
         <section className={styles.buttonFiltersRow}>
-          {modalidadeCaixa?.modalidadesCaixa?.map((button) => {
+          {modalidadesCaixa?.modalidadesCaixa?.map((button: any) => {
             return (
               <button
                 style={{ background: button.color }} // Set button background color
@@ -63,6 +41,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
                     color: button.color,
                     betNumbers: button.betNumbers,
                     trevoAmount: button.trevoAmount,
+                    maxNumber: button.maxNumber,
                   })
                 }
               >
@@ -77,7 +56,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
     if (selected === 1) {
       return (
         <section className={styles.buttonFiltersRow}>
-          {modalidadeSabedoria?.modalidadeSabedoria?.map((button) => {
+          {modalidadeSabedoria?.modalidadeSabedoria?.map((button: any) => {
             return (
               <button
                 style={{ background: button.color }}
@@ -89,6 +68,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
                     color: button.color,
                     betNumbers: button.betNumbers,
                     trevoAmount: button.trevoAmount,
+                    maxNumber: button.maxNumber,
                   })
                 }
               >
@@ -103,7 +83,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
     if (selected === 2) {
       return (
         <section className={styles.buttonFiltersRow}>
-          {modalidadePersonalizada?.modalidadePersonalizada?.map((button) => {
+          {modalidadePersonalizada?.modalidadePersonalizada?.map((button: any) => {
             return (
               <button
                 style={{ background: button.color }}
@@ -115,6 +95,7 @@ const TabsWithFilters = ({ modalidadeSetting, handleModalidadeContent }: IModali
                     color: button.color,
                     betNumbers: button.betNumbers,
                     trevoAmount: button.trevoAmount,
+                    maxNumber: button.maxNumber,
                   })
                 }
               >

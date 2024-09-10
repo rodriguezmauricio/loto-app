@@ -10,6 +10,16 @@ import IconCard from "@/app/components/iconCard/IconCard";
 import ChooseNumbersComp from "@/app/components/chooseNumbersComp/ChooseNumbersComp";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import { useEffect, useState } from "react";
+import Buttons from "@/app/components/(buttons)/buttons/Buttons";
+import { isElement } from "react-dom/test-utils";
+
+export interface IModalidade {
+  name: string;
+  color: string;
+  betNumbers: number[];
+  trevoAmount: number[];
+  maxNumber: number;
+}
 
 const NovoBilhete = () => {
   const URL = "http://localhost:3500/modalidades";
@@ -29,14 +39,30 @@ const NovoBilhete = () => {
   // State to store the current text value in the text area
   const [textAreaValue, setTextAreaValue] = useState("");
 
-  const [modalidadeSetting, setModalidadeSetting] = useState<object[]>([]);
-  const [modalidadeContent, setModalidadeContent] = useState<object>();
+  const [modalidadeSetting, setModalidadeSetting] = useState<IModalidade[]>([]);
 
-  console.log("setting 1: ", modalidadeSetting);
+  const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
 
-  const handleModalidadeContent = (settingsObj) => {
+  const [selectedJogos, setSelectedJogos] = useState<number>(1); // Only one selected number
+
+  const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // Store 5 games
+
+  const [numberOfGames, setNumberOfGames] = useState<number>(1); // Default number of games
+
+  const modalidadeSettingObj = {
+    modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
+    modalidadeSabedoria: modalidadeSetting[1], // Assuming modalidadeSabedoria is the second item
+    modalidadePersonalizada: modalidadeSetting[2], // Assuming modalidadePersonalizada is the third item
+  };
+
+  const handleModalidadeContent = (settingsObj: IModalidade) => {
     setModalidadeContent(settingsObj);
     console.log(settingsObj);
+  };
+
+  const handleNumeroDeJogosSelecionado = (number: number) => {
+    // Set the clicked number as the selected number
+    setSelectedJogos(number);
   };
 
   // Function to handle form submission depending on whether the user selected "importar" or "manual"
@@ -149,6 +175,36 @@ const NovoBilhete = () => {
     fetchData();
   }, []);
 
+  // Function to generate a random game of unique numbers
+  const generateRandomGame = (maxNumber: number, gameSize: number) => {
+    const game = new Set<number>(); // Use Set to avoid duplicates
+    while (game.size < gameSize) {
+      const randomNum = Math.floor(Math.random() * maxNumber) + 1;
+      game.add(randomNum);
+    }
+    return Array.from(game).sort((a, b) => a - b); // Convert Set to array and sort
+  };
+
+  // Handle number of games input
+  const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNumberOfGames(Number(e.target.value));
+  };
+
+  // Handle game generation based on selected number of games and amount of numbers
+  const handleGenerateGames = () => {
+    if (!modalidadeContent || modalidadeContent.maxNumber < selectedJogos) {
+      console.error("Invalid modalidade settings or numbersPerGame is too high.");
+      return; // Prevent further execution if validation fails
+    }
+
+    const games: number[][] = [];
+    for (let i = 0; i < numberOfGames; i++) {
+      const game = generateRandomGame(100, selectedJogos); // Generate a game with the selected number of numbers
+      games.push(game);
+    }
+    setGeneratedGames(games); // Save the generated games in state
+  };
+
   return (
     <>
       {/* Page header */}
@@ -159,7 +215,7 @@ const NovoBilhete = () => {
           <Title h={2}>Sorteios</Title>
           <section className={styles.buttonFilterRow}>
             <TabsWithFilters
-              modalidadeSetting={modalidadeSetting}
+              modalidadeSetting={modalidadeSettingObj}
               handleModalidadeContent={handleModalidadeContent}
             />
           </section>
@@ -252,19 +308,76 @@ const NovoBilhete = () => {
             )}
             {addBilheteSelectedButton === "random" && (
               <div>
+                <Title h={2}>{modalidadeContent?.name || ""}</Title>
                 <Title h={3}>Quantidade de Números:</Title>
+                <div>
+                  {modalidadeContent && modalidadeContent?.betNumbers ? (
+                    <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+                      {modalidadeContent?.betNumbers.map((number) => {
+                        return (
+                          <SimpleButton
+                            btnTitle={number.toString()}
+                            isSelected={selectedJogos === number}
+                            key={number}
+                            func={() => handleNumeroDeJogosSelecionado(number)}
+                          ></SimpleButton>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
 
-                <p>{modalidadeContent?.name}</p>
-                <p>{modalidadeContent?.color}</p>
-                <p>{modalidadeContent?.betNumbers}</p>
-                <p>
-                  {modalidadeContent?.trevoAmount.length > 1 ? "tem conteudo" : "nao tem conteudo"}
-                </p>
+                {/* Input for number of games */}
+                <div>
+                  <label htmlFor="numberOfGames">Número de jogos:</label>
+                  <input
+                    type="number"
+                    id="numberOfGames"
+                    value={numberOfGames}
+                    onChange={handleNumberOfGamesChange}
+                    min={1} // Minimum number of games is 1
+                  />
+                </div>
+
+                {/* Button to trigger game generation */}
+                <div>
+                  <SimpleButton
+                    btnTitle="Gerar Jogos"
+                    isSelected={false}
+                    func={handleGenerateGames}
+                  />
+                </div>
+
+                {/* Display the generated games */}
+                {generatedGames.length > 0 && (
+                  <div>
+                    <h3>Jogos Gerados:</h3>
+                    {generatedGames.map((game, index) => (
+                      <div key={index}>
+                        <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+                  {modalidadeContent && modalidadeContent?.trevoAmount.length > 1
+                    ? modalidadeContent?.trevoAmount.map((numero) => {
+                        return (
+                          <Buttons buttonType="content" key={numero}>
+                            {numero}
+                          </Buttons>
+                        );
+                      })
+                    : ""}
+                </div>
               </div>
             )}
 
             {/* Button to save imported games */}
-            <div className={styles.buttonRow}>
+            {/* <div className={styles.buttonRow}>
               <SimpleButton
                 style={{ backgroundColor: "#00A67F" }}
                 btnTitle="Salvar jogos importados"
@@ -273,7 +386,7 @@ const NovoBilhete = () => {
                 hasIcon
                 isSelected={false}
               />
-            </div>
+            </div> */}
           </div>
         </section>
 

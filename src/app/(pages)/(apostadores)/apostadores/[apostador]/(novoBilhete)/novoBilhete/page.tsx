@@ -98,24 +98,6 @@ const NovoBilhete = () => {
     setTipoBilhete(value); // Update the state with the new value
   };
 
-  // Function to handle form submission depending on whether the user selected "importar" or "manual"
-  const sendForm = (selected: string) => {
-    if (selected === "importar") {
-      // Return imported numbers array when "importar" is selected
-      return importedNumbersArr;
-    }
-
-    if (selected === "manual") {
-      // Sort and return selected numbers array when "manual" is selected
-      return selectedNumbersArr.sort((a, b) => Number(a) - Number(b));
-    }
-
-    if (selected === "randomNumbers") {
-      // Sort and return selected numbers array when "randomNumbers" is selected
-      return randomNumbersArr.sort((a, b) => Number(a) - Number(b));
-    }
-  };
-
   // Function to handle text input changes in the text area
   const handleTextAreaContent = (e: any) => {
     setTextAreaValue(e.target.value); // Update the text area value in the state
@@ -190,6 +172,24 @@ const NovoBilhete = () => {
           numbersArrSetter={setSelectedNumbersArr}
         />
       );
+    }
+  };
+
+  // Function to handle form submission depending on whether the user selected "importar" or "manual"
+  const sendForm = (selected: string) => {
+    if (selected === "importar") {
+      // Return imported numbers array when "importar" is selected
+      return importedNumbersArr;
+    }
+
+    if (selected === "manual") {
+      // Sort and return selected numbers array when "manual" is selected
+      return selectedNumbersArr.sort((a, b) => Number(a) - Number(b));
+    }
+
+    if (selected === "randomNumbers") {
+      // Sort and return selected numbers array when "randomNumbers" is selected
+      return randomNumbersArr.sort((a, b) => Number(a) - Number(b));
     }
   };
 
@@ -364,9 +364,12 @@ const NovoBilhete = () => {
                 </div>
 
                 {/* Input for number of games */}
-                <div>
-                  <label htmlFor="numberOfGames">Número de jogos:</label>
+                <div className={styles.inputsRow}>
+                  <label className={styles.inputLabel} htmlFor="numberOfGames">
+                    Número de jogos:
+                  </label>
                   <input
+                    className={styles.smallInput}
                     type="number"
                     id="numberOfGames"
                     value={numberOfGames}
@@ -377,9 +380,10 @@ const NovoBilhete = () => {
 
                 {/* //TODO: CREATE THE FUNCTION */}
                 {/* Input for number of games */}
-                <div>
+                <div className={styles.inputsRow}>
                   <label htmlFor="acertos">Acertos:</label>
                   <input
+                    className={styles.smallInput}
                     type="number"
                     id="acertos"
                     value={acertos}
@@ -392,9 +396,10 @@ const NovoBilhete = () => {
 
                 {/* //TODO: CREATE THE FUNCTION */}
                 {/* Input for number of games */}
-                <div>
+                <div className={styles.inputsRow}>
                   <label htmlFor="premio">Prêmio:</label>
                   <input
+                    className={styles.smallInput}
                     type="number"
                     id="premio"
                     value={premio}
@@ -407,9 +412,10 @@ const NovoBilhete = () => {
 
                 {/* //TODO: CREATE THE FUNCTION */}
                 {/* Input for number of games */}
-                <div>
+                <div className={styles.inputsRow}>
                   <label htmlFor="apostador">Apostador:</label>
                   <input
+                    className={styles.smallInput}
                     type="text"
                     id="apostador"
                     value={apostador}
@@ -421,9 +427,10 @@ const NovoBilhete = () => {
 
                 {/* //TODO: CREATE THE FUNCTION */}
                 {/* Input for number of games */}
-                <div>
+                <div className={styles.inputsRow}>
                   <label htmlFor="tipoBilhete">Valor Bilhete:</label>
                   <input
+                    className={styles.smallInput}
                     type="number"
                     id="tipoBilhete"
                     value={tipoBilhete}
@@ -433,9 +440,10 @@ const NovoBilhete = () => {
                   />
                 </div>
 
-                <div className="">
+                <div className={styles.inputsRow}>
                   <label htmlFor="numberOfGames">Data do sorteio:</label>
                   <DatePicker
+                    className={styles.smallInput}
                     selected={dataResultado}
                     onChange={(dataResultado) => setDataResultado(dataResultado)}
                     dateFormat="dd/MM/yyyy" // Optional: Customize date format

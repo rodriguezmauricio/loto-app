@@ -1,6 +1,6 @@
 .container {
   /* background-color: var(--accent-main); */
-  background-color: var(--color-dark-light);
+  background-color: var(--color-light-light);
   border: 2px solid var(--accent-main);
   border-radius: 100px;
   display: flex;
@@ -13,8 +13,8 @@
 
 .containerSmall {
   /* background-color: var(--accent-main); */
-  background-color: var(--color-dark-light);
-  border: 2px solid var(--accent-main);
+  /* background-color: rgb(14, 122, 0); */
+  border: 2px solid rgb(14, 122, 0);
   border-radius: 100px;
   display: flex;
   align-items: center;
@@ -22,4 +22,5 @@
   width: 60px;
   height: 60px;
   font-size: 18px;
+  /* color: var(--color-light-light); */
 }

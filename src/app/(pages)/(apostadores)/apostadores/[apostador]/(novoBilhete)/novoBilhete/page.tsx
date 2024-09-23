@@ -9,9 +9,12 @@ import TabsWithFilters from "@/app/components/tabsWithFilters/TabsWithFilters";
 import IconCard from "@/app/components/iconCard/IconCard";
 import ChooseNumbersComp from "@/app/components/chooseNumbersComp/ChooseNumbersComp";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import { tempDb } from "@/tempDb"; // Import tempDb
+import ResultsCard from "@/app/components/resultsCard/ResultsCard";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export interface IModalidade {
   name: string;
@@ -24,6 +27,16 @@ export interface IModalidade {
 const NovoBilhete = () => {
   // State to track which button (importar/manual) is selected
   const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
+
+  //currentDate
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  let dateSplitter = currentDate.toDateString().split(" ");
+
+  const [acertos, setAcertos] = useState(0);
+  const [premio, setPremio] = useState(0);
+  const [apostador, setApostador] = useState("");
+  const [dataResultado, setDataResultado] = useState<Date | null>(new Date());
 
   // State to store manually selected numbers
   const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]);
@@ -62,6 +75,21 @@ const NovoBilhete = () => {
   const handleNumeroDeJogosSelecionado = (number: number) => {
     // Set the clicked number as the selected number
     setSelectedJogos(number);
+  };
+
+  const handlePremio = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setPremio(value); // Update the state with the new value
+  };
+
+  const handleAcertos = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setAcertos(value); // Update the state with the new value
+  };
+
+  const handleApostador = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setApostador(value); // Update the state with the new value
   };
 
   // Function to handle form submission depending on whether the user selected "importar" or "manual"
@@ -310,7 +338,9 @@ const NovoBilhete = () => {
                 <Title h={3}>Quantidade de Números:</Title>
                 <div>
                   {modalidadeContent && modalidadeContent?.betNumbers ? (
-                    <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+                    <div
+                      style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10 }}
+                    >
                       {modalidadeContent?.betNumbers.map((number) => {
                         return (
                           <SimpleButton
@@ -339,6 +369,59 @@ const NovoBilhete = () => {
                   />
                 </div>
 
+                {/* //TODO: CREATE THE FUNCTION */}
+                {/* Input for number of games */}
+                <div>
+                  <label htmlFor="acertos">Acertos:</label>
+                  <input
+                    type="number"
+                    id="acertos"
+                    value={acertos}
+                    onChange={(e) => {
+                      handleAcertos(e);
+                    }}
+                    min={1} // Minimum number of games is 1
+                  />
+                </div>
+
+                {/* //TODO: CREATE THE FUNCTION */}
+                {/* Input for number of games */}
+                <div>
+                  <label htmlFor="premio">Prêmio:</label>
+                  <input
+                    type="number"
+                    id="premio"
+                    value={premio}
+                    onChange={(e) => {
+                      handlePremio(e);
+                    }}
+                    min={1} // Minimum number of games is 1
+                  />
+                </div>
+
+                {/* //TODO: CREATE THE FUNCTION */}
+                {/* Input for number of games */}
+                <div>
+                  <label htmlFor="apostador">Apostador:</label>
+                  <input
+                    type="text"
+                    id="apostador"
+                    value={apostador}
+                    onChange={(e) => {
+                      handleApostador(e);
+                    }}
+                  />
+                </div>
+
+                <div className="">
+                  <label htmlFor="numberOfGames">Data do sorteio:</label>
+                  <DatePicker
+                    selected={dataResultado}
+                    onChange={(dataResultado) => setDataResultado(dataResultado)}
+                    dateFormat="dd/MM/yyyy" // Optional: Customize date format
+                  />
+                </div>
+
                 {/* Button to trigger game generation */}
                 <div>
                   <SimpleButton
@@ -355,6 +438,17 @@ const NovoBilhete = () => {
                     {generatedGames.map((game, index) => (
                       <div key={index}>
                         <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                        <ResultsCard
+                          numbersArr={[...game]}
+                          acertos={acertos}
+                          premio={premio}
+                          apostador={apostador}
+                          quantidadeDezenas={selectedJogos}
+                          resultado={dataResultado}
+                          data={currentDate}
+                          hora={currentDate}
+                          cartela={index + 1}
+                        />
                       </div>
                     ))}
                   </div>

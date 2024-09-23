@@ -22,6 +22,7 @@ interface IResultsCard {
   apostador: string;
   cartela: number;
   resultado: Date | null;
+  tipoBilhete: number;
 }
 
 const ResultsCard = ({
@@ -34,6 +35,7 @@ const ResultsCard = ({
   premio,
   apostador,
   cartela,
+  tipoBilhete,
 }: IResultsCard) => {
   const cardRef = useRef(null);
 
@@ -133,7 +135,7 @@ const ResultsCard = ({
           </div>
 
           <div className={styles.headerInfo}>
-            <span>{`Valor Promocional ${""}`}</span>
+            <span>{`Valor Bilhete ${tipoBilhete >= 1 ? tipoBilhete : "Valor Promocional"}`}</span>
             <span>{`Cartela: ${cartela}`}</span>
             <span>{`Data: ${dateFormatted(data).dia}/${dateFormatted(data).mes}`}</span>
             <span>{`Hora: ${dateFormatted(data).horas}:${dateFormatted(data).minutos}`}</span>

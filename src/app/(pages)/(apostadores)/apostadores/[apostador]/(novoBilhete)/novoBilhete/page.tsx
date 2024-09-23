@@ -36,6 +36,7 @@ const NovoBilhete = () => {
   const [acertos, setAcertos] = useState(0);
   const [premio, setPremio] = useState(0);
   const [apostador, setApostador] = useState("");
+  const [tipoBilhete, setTipoBilhete] = useState(0);
   const [dataResultado, setDataResultado] = useState<Date | null>(new Date());
 
   // State to store manually selected numbers
@@ -90,6 +91,11 @@ const NovoBilhete = () => {
   const handleApostador = (event: any) => {
     const value = event.target.value; // Get the value from the input
     setApostador(value); // Update the state with the new value
+  };
+
+  const handleTipoBilhete = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setTipoBilhete(value); // Update the state with the new value
   };
 
   // Function to handle form submission depending on whether the user selected "importar" or "manual"
@@ -413,6 +419,20 @@ const NovoBilhete = () => {
                   />
                 </div>
 
+                {/* //TODO: CREATE THE FUNCTION */}
+                {/* Input for number of games */}
+                <div>
+                  <label htmlFor="tipoBilhete">Valor Bilhete:</label>
+                  <input
+                    type="number"
+                    id="tipoBilhete"
+                    value={tipoBilhete}
+                    onChange={(e) => {
+                      handleTipoBilhete(e);
+                    }}
+                  />
+                </div>
+
                 <div className="">
                   <label htmlFor="numberOfGames">Data do sorteio:</label>
                   <DatePicker
@@ -448,6 +468,7 @@ const NovoBilhete = () => {
                           data={currentDate}
                           hora={currentDate}
                           cartela={index + 1}
+                          tipoBilhete={tipoBilhete}
                         />
                       </div>
                     ))}

@@ -1,3 +1,5 @@
+"use client";
+
 import { BsDownload } from "react-icons/bs";
 import styles from "./resultsCard.module.css";
 import NumbersSorteio from "../numbersSorteio/NumbersSorteio";

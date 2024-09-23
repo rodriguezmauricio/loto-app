@@ -8,9 +8,7 @@ const ResultadosPage = () => {
     <>
       <PageHeader title="Resultados" subpage={false} linkTo={""} />
       <main className="main">
-        <section className={styles.resultsList}>
-          <ResultsCard />
-        </section>
+        <section className={styles.resultsList}>{/* <ResultsCard  /> */}</section>
       </main>
     </>
   );

@@ -4,8 +4,8 @@ import { Dispatch, SetStateAction, useState } from "react";
 import styles from "./chooseNumbersComp.module.css";
 
 interface IChooseNumbersComp {
-  numbersToRender: number; // The total numbers to render
-  selectionLimit: number; // The maximum number of selections allowed
+  numbersToRender: number | undefined; // The total numbers to render
+  selectionLimit: number | undefined; // The maximum number of selections allowed
   numbersArr: string[]; // The current selected numbers
   numbersArrSetter: React.Dispatch<React.SetStateAction<string[]>>; // Setter function for updating selected numbers
 }
@@ -19,11 +19,11 @@ const ChooseNumbersComp = ({
   let arrNums: string[] = [];
 
   // Function to handle number selection
-  const addNumberToSelection = (selectedNumber: string, limit: number) => {
+  const addNumberToSelection = (selectedNumber: string, limit: number | undefined) => {
     if (numbersArr.includes(selectedNumber)) {
       // If the number is already selected, remove it from the selection
       numbersArrSetter((prev) => prev.filter((num) => selectedNumber !== num));
-    } else if (numbersArr.length < limit) {
+    } else if (limit && numbersArr.length < limit) {
       // If the selection limit hasn't been reached, add the number
       numbersArrSetter((prev) => [...prev, selectedNumber]);
     }

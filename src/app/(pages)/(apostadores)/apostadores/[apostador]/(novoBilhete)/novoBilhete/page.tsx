@@ -31,8 +31,6 @@ const NovoBilhete = () => {
   //currentDate
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  let dateSplitter = currentDate.toDateString().split(" ");
-
   const [acertos, setAcertos] = useState(0);
   const [premio, setPremio] = useState(0);
   const [apostador, setApostador] = useState("");
@@ -201,8 +199,8 @@ const NovoBilhete = () => {
       // Render a number selection component when "manual" is selected
       return (
         <ChooseNumbersComp
-          numbersToRender={25}
-          selectionLimit={10}
+          numbersToRender={modalidadeContent?.maxNumber}
+          selectionLimit={modalidadeContent?.betNumbers.at(-1)}
           numbersArr={selectedNumbersArr}
           numbersArrSetter={setSelectedNumbersArr}
         />
@@ -439,11 +437,12 @@ const NovoBilhete = () => {
 
         {/* Section to render either the text input or the number selection component */}
         <section className={styles.jogosRow}>
+          {/* Import button */}
           <div className={addBilheteSelectedButton === "importar" ? styles.compDiv : ""}>
             {addBilheteCompToRender(addBilheteSelectedButton)}
           </div>
 
-          {/* Instructions for importing or manually adding numbers */}
+          {/* //HEADER: Import button */}
           <div className={styles.instructionsDiv}>
             {addBilheteSelectedButton === "importar" && (
               <div>
@@ -455,7 +454,7 @@ const NovoBilhete = () => {
               </div>
             )}
 
-            {/* Add numbers manually */}
+            {/* //HEADER: Manual button */}
             {addBilheteSelectedButton === "manual" && (
               <div>
                 <Title h={3}>Instruções:</Title>
@@ -466,7 +465,7 @@ const NovoBilhete = () => {
               </div>
             )}
 
-            {/* Add random numbers */}
+            {/* //HEADER: Random number */}
             {addBilheteSelectedButton === "random" && (
               <div>
                 <Title h={2}>{modalidadeContent?.name || ""}</Title>

@@ -62,6 +62,11 @@ const NovoBilhete = () => {
 
   const [numberOfGames, setNumberOfGames] = useState<number>(1); // Default number of games
 
+  // Example state for tracking the selected modalidade and numbers
+  const [selectedModalidade, setSelectedModalidade] = useState(null);
+  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
+  const [maxSelectableNumbers, setMaxSelectableNumbers] = useState(0);
+
   const modalidadeSettingObj = {
     modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
     modalidadeSabedoria: modalidadeSetting[1], // Assuming modalidadeSabedoria is the second item
@@ -100,16 +105,24 @@ const NovoBilhete = () => {
 
   // Function to handle text input changes in the text area
   const handleTextAreaContent = (e: any) => {
-    setTextAreaValue(e.target.value); // Update the text area value in the state
-
     const content = e.target.value;
-    const trimmedContent = content.replace(/\s/g, ""); // Remove white spaces from the content
+    setTextAreaValue(content); // Update the text area value in the state
+
+    // If the content is empty, clear the imported numbers
+    if (!content.trim()) {
+      setImportedNumbersArr([]);
+      return;
+    }
+
+    // Remove white spaces from the content
+    const trimmedContent = content.replace(/\s/g, "");
 
     // Find all numbers within parentheses using regex
     const matches = trimmedContent.match(/\((.*?)\)/g);
 
     if (!matches) {
-      return [];
+      setImportedNumbersArr([]);
+      return;
     }
 
     // Extract and sort the numbers found between parentheses
@@ -117,8 +130,10 @@ const NovoBilhete = () => {
       const numbers = match
         .replace(/[()]/g, "") // Remove parentheses
         .split(",") // Split numbers by commas
-        .sort((a, b) => Number(a) - Number(b)) // Sort the numbers
-        .map(Number); // Convert strings to numbers
+        .map((num) => num.trim()) // Trim whitespace around numbers
+        .filter((num) => num !== "") // Filter out empty values
+        .map(Number) // Convert strings to numbers
+        .sort((a, b) => a - b); // Sort numbers
       return numbers;
     });
 
@@ -144,6 +159,26 @@ const NovoBilhete = () => {
   // Function to update the selected option (importar or manual)
   const handleSelectedBilhete = (selected: string) => {
     setAddBilheteSelectedButton(selected);
+  };
+
+  // Handler to manually add numbers based on modalidade
+  const handleAdicionarManual = (modalidade: any) => {
+    setSelectedModalidade(modalidade); // Set selected modalidade
+    const maxNumbers = Math.max(...modalidade.betNumbers); // Get maximum number to select
+    setMaxSelectableNumbers(maxNumbers); // Set max selectable
+    setSelectedNumbers([]); // Clear previous selections
+  };
+
+  // Handler to select/deselect numbers
+  const handleNumberSelect = (number: number) => {
+    setSelectedNumbers((prev) => {
+      if (prev.includes(number)) {
+        return prev.filter((n) => n !== number); // Deselect
+      } else if (prev.length < maxSelectableNumbers) {
+        return [...prev, number]; // Select if under limit
+      }
+      return prev; // Return without change if limit reached
+    });
   };
 
   // Function to render the appropriate component (textarea or number selection) based on user selection
@@ -313,11 +348,101 @@ const NovoBilhete = () => {
           </section>
         </section>
 
+        {/* //TODO: Add fields below */}
+
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label className={styles.inputLabel} htmlFor="numberOfGames">
+            Número de jogos:
+          </label>
+          <input
+            className={styles.smallInput}
+            type="number"
+            id="numberOfGames"
+            value={numberOfGames}
+            onChange={handleNumberOfGamesChange}
+            min={1} // Minimum number of games is 1
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="acertos">Acertos:</label>
+          <input
+            className={styles.smallInput}
+            type="number"
+            id="acertos"
+            value={acertos}
+            onChange={(e) => {
+              handleAcertos(e);
+            }}
+            min={1} // Minimum number of games is 1
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="premio">Prêmio:</label>
+          <input
+            className={styles.smallInput}
+            type="number"
+            id="premio"
+            value={premio}
+            onChange={(e) => {
+              handlePremio(e);
+            }}
+            min={1} // Minimum number of games is 1
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="apostador">Apostador:</label>
+          <input
+            className={styles.smallInput}
+            type="text"
+            id="apostador"
+            value={apostador}
+            onChange={(e) => {
+              handleApostador(e);
+            }}
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="tipoBilhete">Valor Bilhete:</label>
+          <input
+            className={styles.smallInput}
+            type="number"
+            id="tipoBilhete"
+            value={tipoBilhete}
+            onChange={(e) => {
+              handleTipoBilhete(e);
+            }}
+          />
+        </div>
+
+        <div className={styles.inputsRow}>
+          <label htmlFor="numberOfGames">Data do sorteio:</label>
+          <DatePicker
+            className={styles.smallInput}
+            selected={dataResultado}
+            onChange={(dataResultado) => setDataResultado(dataResultado)}
+            dateFormat="dd/MM/yyyy" // Optional: Customize date format
+          />
+        </div>
+
         {/* Section to render either the text input or the number selection component */}
         <section className={styles.jogosRow}>
           <div className={addBilheteSelectedButton === "importar" ? styles.compDiv : ""}>
             {addBilheteCompToRender(addBilheteSelectedButton)}
           </div>
+
           {/* Instructions for importing or manually adding numbers */}
           <div className={styles.instructionsDiv}>
             {addBilheteSelectedButton === "importar" && (
@@ -329,6 +454,8 @@ const NovoBilhete = () => {
                 <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
               </div>
             )}
+
+            {/* Add numbers manually */}
             {addBilheteSelectedButton === "manual" && (
               <div>
                 <Title h={3}>Instruções:</Title>
@@ -338,6 +465,8 @@ const NovoBilhete = () => {
                 <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
               </div>
             )}
+
+            {/* Add random numbers */}
             {addBilheteSelectedButton === "random" && (
               <div>
                 <Title h={2}>{modalidadeContent?.name || ""}</Title>
@@ -361,93 +490,6 @@ const NovoBilhete = () => {
                   ) : (
                     ""
                   )}
-                </div>
-
-                {/* Input for number of games */}
-                <div className={styles.inputsRow}>
-                  <label className={styles.inputLabel} htmlFor="numberOfGames">
-                    Número de jogos:
-                  </label>
-                  <input
-                    className={styles.smallInput}
-                    type="number"
-                    id="numberOfGames"
-                    value={numberOfGames}
-                    onChange={handleNumberOfGamesChange}
-                    min={1} // Minimum number of games is 1
-                  />
-                </div>
-
-                {/* //TODO: CREATE THE FUNCTION */}
-                {/* Input for number of games */}
-                <div className={styles.inputsRow}>
-                  <label htmlFor="acertos">Acertos:</label>
-                  <input
-                    className={styles.smallInput}
-                    type="number"
-                    id="acertos"
-                    value={acertos}
-                    onChange={(e) => {
-                      handleAcertos(e);
-                    }}
-                    min={1} // Minimum number of games is 1
-                  />
-                </div>
-
-                {/* //TODO: CREATE THE FUNCTION */}
-                {/* Input for number of games */}
-                <div className={styles.inputsRow}>
-                  <label htmlFor="premio">Prêmio:</label>
-                  <input
-                    className={styles.smallInput}
-                    type="number"
-                    id="premio"
-                    value={premio}
-                    onChange={(e) => {
-                      handlePremio(e);
-                    }}
-                    min={1} // Minimum number of games is 1
-                  />
-                </div>
-
-                {/* //TODO: CREATE THE FUNCTION */}
-                {/* Input for number of games */}
-                <div className={styles.inputsRow}>
-                  <label htmlFor="apostador">Apostador:</label>
-                  <input
-                    className={styles.smallInput}
-                    type="text"
-                    id="apostador"
-                    value={apostador}
-                    onChange={(e) => {
-                      handleApostador(e);
-                    }}
-                  />
-                </div>
-
-                {/* //TODO: CREATE THE FUNCTION */}
-                {/* Input for number of games */}
-                <div className={styles.inputsRow}>
-                  <label htmlFor="tipoBilhete">Valor Bilhete:</label>
-                  <input
-                    className={styles.smallInput}
-                    type="number"
-                    id="tipoBilhete"
-                    value={tipoBilhete}
-                    onChange={(e) => {
-                      handleTipoBilhete(e);
-                    }}
-                  />
-                </div>
-
-                <div className={styles.inputsRow}>
-                  <label htmlFor="numberOfGames">Data do sorteio:</label>
-                  <DatePicker
-                    className={styles.smallInput}
-                    selected={dataResultado}
-                    onChange={(dataResultado) => setDataResultado(dataResultado)}
-                    dateFormat="dd/MM/yyyy" // Optional: Customize date format
-                  />
                 </div>
 
                 {/* Button to trigger game generation */}
@@ -515,19 +557,30 @@ const NovoBilhete = () => {
         {addBilheteSelectedButton === "importar" && (
           <div className={styles.checkJogosDiv}>
             <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
-            <Title h={3}>{`Cliente: ***nome do cliente***`}</Title>
+            <Title h={3}>{`Jogos Importados`}</Title>
 
             {/* Display each imported game */}
-            {importedNumbersArr.length > 0
-              ? importedNumbersArr.map((item: any, index) => {
-                  return (
-                    <div key={index}>
-                      {`Jogo ${index + 1} : `}
-                      {item.join(", ")}.
-                    </div>
-                  );
-                })
-              : ""}
+            {importedNumbersArr.length > 0 &&
+              importedNumbersArr.map((item: any, index) => {
+                return (
+                  <div key={index}>
+                    {`Jogo ${index + 1} : `}
+                    {item.join(", ")}.
+                    <ResultsCard
+                      numbersArr={[...item]}
+                      acertos={acertos}
+                      premio={premio}
+                      apostador={apostador}
+                      quantidadeDezenas={selectedJogos}
+                      resultado={dataResultado}
+                      data={currentDate}
+                      hora={currentDate}
+                      cartela={index + 1}
+                      tipoBilhete={tipoBilhete}
+                    />
+                  </div>
+                );
+              })}
           </div>
         )}
         {/* Render the selected numbers if any */}

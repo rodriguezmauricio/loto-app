@@ -171,7 +171,7 @@ export const tempDb = {
         {
           name: "Lotofácil",
           color: "#930089",
-          betNumbers: [15, 16, 17, 18, 19, 20],
+          betNumbers: [17, 18, 19, 20, 21, 22, 23],
           trevoAmount: [0],
           maxNumber: 25,
         },
@@ -185,7 +185,9 @@ export const tempDb = {
         {
           name: "Megasena",
           color: "#209869",
-          betNumbers: [6, 7, 8, 10, 11, 12, 13, 14, 15],
+          betNumbers: [
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+          ],
           trevoAmount: [0],
           maxNumber: 60,
         },
@@ -200,8 +202,8 @@ export const tempDb = {
           name: "Quina",
           color: "#260085",
           betNumbers: [
-            5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
-            29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+            20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
+            42, 43, 44, 45,
           ],
           trevoAmount: [0],
           maxNumber: 80,
@@ -209,21 +211,24 @@ export const tempDb = {
         {
           name: "Dupla Sena",
           color: "#bf194e",
-          betNumbers: [6, 7, 8, 10, 11, 12, 13, 14, 15],
+          betNumbers: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
           trevoAmount: [0],
           maxNumber: 50,
         },
         {
           name: "Dia de Sorte",
           color: "#CB852B",
-          betNumbers: [7, 8, 10, 11, 12, 13, 14, 15],
+          betNumbers: [15, 16, 17, 18, 19, 20, 21, 22],
           trevoAmount: [0],
           maxNumber: 31,
         },
         {
           name: "Timemania",
           color: "#02FF02",
-          betNumbers: [10],
+          betNumbers: [
+            25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46,
+            47, 48, 49, 50,
+          ],
           trevoAmount: [0],
           maxNumber: 80,
         },

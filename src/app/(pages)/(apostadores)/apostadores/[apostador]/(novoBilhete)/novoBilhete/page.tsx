@@ -456,13 +456,38 @@ const NovoBilhete = () => {
 
             {/* //HEADER: Manual button */}
             {addBilheteSelectedButton === "manual" && (
-              <div>
-                <Title h={3}>Instruções:</Title>
-                <li>Adicione cada jogo entre parenteses.</li>
-                <li>Para mais de um jogo, coloque um sinal de + entre os jogos.</li>
-                <li>Cada número deve estar separado por uma vírgula.</li>
-                <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
-              </div>
+              <>
+                {/* Display the generated games */}
+                {generatedGames.length > 0 && (
+                  <div>
+                    <h3>Jogos Gerados:</h3>
+                    {generatedGames.map((game, index) => (
+                      <div key={index}>
+                        <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                        <ResultsCard
+                          numbersArr={[...game]}
+                          acertos={acertos}
+                          premio={premio}
+                          apostador={apostador}
+                          quantidadeDezenas={selectedJogos}
+                          resultado={dataResultado}
+                          data={currentDate}
+                          hora={currentDate}
+                          cartela={index + 1}
+                          tipoBilhete={tipoBilhete}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div>
+                  <Title h={3}>Instruções:</Title>
+                  <li>Adicione cada jogo entre parenteses.</li>
+                  <li>Para mais de um jogo, coloque um sinal de + entre os jogos.</li>
+                  <li>Cada número deve estar separado por uma vírgula.</li>
+                  <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
+                </div>
+              </>
             )}
 
             {/* //HEADER: Random number */}

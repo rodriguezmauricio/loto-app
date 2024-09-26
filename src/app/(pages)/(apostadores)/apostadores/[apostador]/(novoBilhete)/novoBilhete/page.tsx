@@ -175,7 +175,7 @@ const NovoBilhete = () => {
       return (
         <textarea
           className={styles.textArea}
-          placeholder="(1,2,3,4,5,6,7) + (2,5,7,9,10,12,15) + (1,2,3,5,7,8,9)..."
+          placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
           cols={30}
           rows={12}
           value={textAreaValue}

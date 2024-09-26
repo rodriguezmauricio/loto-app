@@ -136,7 +136,7 @@ const ResultsCard = ({
 
           <div className={styles.headerInfo}>
             <span>{`Valor Bilhete ${tipoBilhete >= 1 ? tipoBilhete : "Valor Promocional"}`}</span>
-            <span>{`Cartela: ${cartela}`}</span>
+            {/* <span>{`Cartela: ${cartela}`}</span> */}
             <span>{`Data: ${dateFormatted(data).dia}/${dateFormatted(data).mes}`}</span>
             <span>{`Hora: ${dateFormatted(data).horas}:${dateFormatted(data).minutos}`}</span>
             <span>{`Dezenas: ${quantidadeDezenas}`}</span>

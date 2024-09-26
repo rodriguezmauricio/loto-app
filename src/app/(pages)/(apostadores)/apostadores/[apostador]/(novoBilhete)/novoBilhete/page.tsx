@@ -112,31 +112,20 @@ const NovoBilhete = () => {
       return;
     }
 
-    // Remove white spaces from the content
-    const trimmedContent = content.replace(/\s/g, "");
-
-    // Find all numbers within parentheses using regex
-    const matches = trimmedContent.match(/\((.*?)\)/g);
-
-    if (!matches) {
-      setImportedNumbersArr([]);
-      return;
-    }
-
-    // Extract and sort the numbers found between parentheses
-    const result = matches.map((match: string) => {
+    const result = content.split(",").map((match: string) => {
       const numbers = match
-        .replace(/[()]/g, "") // Remove parentheses
-        .split(",") // Split numbers by commas
-        .map((num) => num.trim()) // Trim whitespace around numbers
-        .filter((num) => num !== "") // Filter out empty values
-        .map(Number) // Convert strings to numbers
-        .sort((a, b) => a - b); // Sort numbers
+        .trim() // Remove espaços extras ao redor do grupo
+        .split(" ") // Divide os números por espaços
+        .filter((num) => num !== "") // Remove valores vazios
+        .map(Number) // Converte strings em números
+        .sort((a, b) => a - b); // Ordena os números
       return numbers;
     });
 
     setImportedNumbersArr(result); // Update the state with the imported numbers
   };
+
+  console.log(importedNumbersArr);
 
   // State to store the value and quantity of the ticket
   const [valorBilhete, setValorBilhete] = useState({
@@ -447,10 +436,9 @@ const NovoBilhete = () => {
             {addBilheteSelectedButton === "importar" && (
               <div>
                 <Title h={3}>Instruções:</Title>
-                <li>Adicione cada jogo entre parenteses.</li>
-                <li>Para mais de um jogo, coloque um sinal de + entre os jogos.</li>
-                <li>Cada número deve estar separado por uma vírgula.</li>
-                <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
+                <li>Para mais de um jogo, coloque uma vírgula entre os jogos.</li>
+                <li>Cada número deve estar separado por um espaço.</li>
+                <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
               </div>
             )}
 

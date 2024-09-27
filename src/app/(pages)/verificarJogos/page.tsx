@@ -39,6 +39,42 @@ function VerificarJogos() {
     setTextAreaValue(content); // Update the text area value in the state
   };
 
+  const gamesArr = [
+    {
+      name: "jhon",
+      jogos: {
+        loteria: "megasena",
+        jogosFeitos: {
+          jogoId: 1,
+          jogoValor: 1,
+          jogosNumeros: [
+            [1, 2, 3],
+            [2, 3, 4],
+            [5, 6, 7],
+          ],
+          jogoData: "26/09/2024",
+        },
+      },
+    },
+  ];
+
+  const findWinners = (
+    arrayDeUsuarios: any,
+    // playerObj: any,
+    loteria: string,
+    resultado: number[]
+  ) => {
+    if (!arrayDeUsuarios[0].jogos[loteria]) return;
+    arrayDeUsuarios[0]?.jogos?.jogosFeitos?.jogosNumeros.map((numsArr: number[]) => {
+      if (numsArr.toString() === resultado.toString()) {
+        return true;
+      }
+    });
+    return arrayDeUsuarios[0].name;
+  };
+
+  console.log(findWinners(gamesArr, "megasena", [2, 3, 4]));
+
   useEffect(() => {
     // Fetch data from tempDb instead of the URL
     const fetchData = async () => {

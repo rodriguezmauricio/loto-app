@@ -76,9 +76,10 @@ const NovoBilhete = () => {
     console.log(settingsObj);
   };
 
-  const handleNumeroDeJogosSelecionado = (number: number) => {
+  const handleNumeroDeJogosSelecionado = (event: any) => {
+    const value = event.target.value;
     // Set the clicked number as the selected number
-    setSelectedJogos(number);
+    setSelectedJogos(value);
   };
 
   const handlePremio = (event: any) => {
@@ -481,10 +482,23 @@ const NovoBilhete = () => {
             {/* //HEADER: Random number */}
             {addBilheteSelectedButton === "random" && (
               <div>
+                <div className="divider"></div>
                 <Title h={2}>{modalidadeContent?.name || ""}</Title>
-                <Title h={3}>Quantidade de Números:</Title>
                 <div>
-                  {modalidadeContent && modalidadeContent?.betNumbers ? (
+                  {modalidadeContent && (
+                    <div className={styles.inputsRow}>
+                      <Title h={3}>Quantidade de Dezenas:</Title>
+                      <input
+                        className={styles.smallInput}
+                        type="number"
+                        name=""
+                        id=""
+                        value={selectedJogos}
+                        onChange={handleNumeroDeJogosSelecionado}
+                      />
+                    </div>
+                  )}
+                  {/* {modalidadeContent && modalidadeContent?.betNumbers ? (
                     <div
                       style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10 }}
                     >
@@ -501,7 +515,7 @@ const NovoBilhete = () => {
                     </div>
                   ) : (
                     ""
-                  )}
+                  )} */}
                 </div>
 
                 {/* Button to trigger game generation */}

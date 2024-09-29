@@ -46,6 +46,10 @@ const NovoBilhete = () => {
   // State to store imported numbers from text input
   const [randomNumbersArr, setRandomNumbersArr] = useState<string[]>([]);
 
+  const [nomeConsultor, setNomeVendedor] = useState<string>("");
+
+  const [numeroBilhete, setNumeroBilhete] = useState<number>(0);
+
   // State to store the current text value in the text area
   const [textAreaValue, setTextAreaValue] = useState("");
 
@@ -100,6 +104,16 @@ const NovoBilhete = () => {
   const handleTipoBilhete = (event: any) => {
     const value = event.target.value; // Get the value from the input
     setTipoBilhete(value); // Update the state with the new value
+  };
+
+  const handleNomeConsultor = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setNomeVendedor(value); // Update the state with the new value
+  };
+
+  const handleNumeroBilhete = (event: any) => {
+    const value = event.target.value; // Get the value from the input
+    setNumeroBilhete(value); // Update the state with the new value
   };
 
   // Function to handle text input changes in the text area
@@ -338,6 +352,55 @@ const NovoBilhete = () => {
 
         {/* //TODO: Add fields below */}
 
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="nomeConsultor">Nome do Consultor:</label>
+          <input
+            className={styles.smallInput}
+            type="text"
+            placeholder="Consultor"
+            id="nomeConsultor"
+            value={nomeConsultor}
+            onChange={(e) => {
+              handleNomeConsultor(e);
+            }}
+            min={1} // Minimum number of games is 1
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="apostador">Nome do Apostador:</label>
+          <input
+            className={styles.smallInput}
+            type="text"
+            placeholder="Apostador"
+            id="apostador"
+            value={apostador}
+            onChange={(e) => {
+              handleApostador(e);
+            }}
+          />
+        </div>
+
+        {/* //TODO: CREATE THE FUNCTION */}
+        {/* Input for number of games */}
+        <div className={styles.inputsRow}>
+          <label htmlFor="numeroBilhete">Número do Bilhete:</label>
+          <input
+            className={styles.smallInput}
+            type="number"
+            id="numeroBilhete"
+            value={numeroBilhete}
+            onChange={(e) => {
+              handleNumeroBilhete(e);
+            }}
+            min={1} // Minimum number of games is 1
+          />
+        </div>
+
         {/* Input for number of games */}
         <div className={styles.inputsRow}>
           <label className={styles.inputLabel} htmlFor="numberOfGames">
@@ -382,21 +445,6 @@ const NovoBilhete = () => {
               handlePremio(e);
             }}
             min={1} // Minimum number of games is 1
-          />
-        </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
-        <div className={styles.inputsRow}>
-          <label htmlFor="apostador">Apostador:</label>
-          <input
-            className={styles.smallInput}
-            type="text"
-            id="apostador"
-            value={apostador}
-            onChange={(e) => {
-              handleApostador(e);
-            }}
           />
         </div>
 
@@ -462,7 +510,8 @@ const NovoBilhete = () => {
                           resultado={dataResultado}
                           data={currentDate}
                           hora={currentDate}
-                          cartela={index + 1}
+                          consultor={nomeConsultor}
+                          numeroBilhete={numeroBilhete}
                           tipoBilhete={tipoBilhete}
                         />
                       </div>
@@ -538,12 +587,13 @@ const NovoBilhete = () => {
                           numbersArr={[...game]}
                           acertos={acertos}
                           premio={premio}
+                          consultor={nomeConsultor}
                           apostador={apostador}
                           quantidadeDezenas={selectedJogos}
                           resultado={dataResultado}
                           data={currentDate}
                           hora={currentDate}
-                          cartela={index + 1}
+                          numeroBilhete={numeroBilhete}
                           tipoBilhete={tipoBilhete}
                         />
                       </div>
@@ -601,7 +651,8 @@ const NovoBilhete = () => {
                       resultado={dataResultado}
                       data={currentDate}
                       hora={currentDate}
-                      cartela={index + 1}
+                      numeroBilhete={numeroBilhete}
+                      consultor={nomeConsultor}
                       tipoBilhete={tipoBilhete}
                     />
                   </div>

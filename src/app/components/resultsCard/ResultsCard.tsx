@@ -20,9 +20,10 @@ interface IResultsCard {
   hora: Date;
   premio: number;
   apostador: string;
-  cartela: number;
+  numeroBilhete: number;
   resultado: Date | null;
   tipoBilhete: number;
+  consultor: string;
 }
 
 const ResultsCard = ({
@@ -34,8 +35,9 @@ const ResultsCard = ({
   hora,
   premio,
   apostador,
-  cartela,
+  numeroBilhete,
   tipoBilhete,
+  consultor,
 }: IResultsCard) => {
   const cardRef = useRef(null);
 
@@ -135,8 +137,11 @@ const ResultsCard = ({
           </div>
 
           <div className={styles.headerInfo}>
-            <span>{`Valor Bilhete ${tipoBilhete >= 1 ? tipoBilhete : "Valor Promocional"}`}</span>
-            {/* <span>{`Cartela: ${cartela}`}</span> */}
+            <span>{`Consultor: ${consultor ? consultor : ""}`}</span>
+            <span>{`Bilhete: ${numeroBilhete ? numeroBilhete : 0}`}</span>
+            <span>{`Apostador: ${apostador}`}</span>
+            <span>{`Valor Bilhete: ${tipoBilhete >= 1 ? tipoBilhete : "Valor Promocional"}`}</span>
+            {/* <span>{`Cartela: ${numeroBilhete}`}</span> */}
             <span>{`Data: ${dateFormatted(data).dia}/${dateFormatted(data).mes}`}</span>
             <span>{`Hora: ${dateFormatted(data).horas}:${dateFormatted(data).minutos}`}</span>
             <span>{`Dezenas: ${quantidadeDezenas}`}</span>
@@ -145,7 +150,6 @@ const ResultsCard = ({
               dateFormatted(resultado).mes
             }`}</span>
             <span>{`Prêmio: ${premio}`}</span>
-            <span>{`Apostador: ${apostador}`}</span>
           </div>
         </header>
         <section className={styles.results}>

@@ -40,37 +40,29 @@ function VerificarJogos() {
   };
 
   const gamesArr = [
-    {
-      name: "jhon",
-      jogos: {
-        loteria: "megasena",
-        jogosFeitos: {
-          jogoId: 1,
-          jogoValor: 1,
-          jogosNumeros: [
-            [1, 2, 3],
-            [2, 3, 4],
-            [5, 6, 7],
-          ],
-          jogoData: "26/09/2024",
-        },
-      },
-    },
+    [1, 2, 3, 4, 5],
+    [3, 4, 5, 6, 7],
+    [5, 6, 7, 8, 9],
   ];
 
   const findWinners = (
-    arrayDeUsuarios: any,
+    arrayDeJogos: number[][],
     // playerObj: any,
     loteria: string,
     resultado: number[]
   ) => {
-    if (!arrayDeUsuarios[0].jogos[loteria]) return;
-    arrayDeUsuarios[0]?.jogos?.jogosFeitos?.jogosNumeros.map((numsArr: number[]) => {
-      if (numsArr.toString() === resultado.toString()) {
-        return true;
+    if (!arrayDeJogos) return;
+    let count = 0;
+    //TODO: implementar função e corrigir para veriricar
+    //se em algum dos jogos contém pelo menos todos os números do resultado
+    arrayDeJogos.map((numsArr: number[]) => {
+      for (let i = 0; i < numsArr.length; i++) {
+        if (resultado.includes(i)) {
+          count++;
+        }
       }
     });
-    return arrayDeUsuarios[0].name;
+    return;
   };
 
   console.log(findWinners(gamesArr, "megasena", [2, 3, 4]));

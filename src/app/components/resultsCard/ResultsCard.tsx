@@ -124,7 +124,7 @@ const ResultsCard = ({
   };
 
   return (
-    <>
+    <div id="resultsCard">
       <article ref={cardRef} className={styles.container}>
         <header className={`${(styles.header, styles.overlay)}`}>
           {/* <TbClover size={50} /> */}
@@ -178,7 +178,7 @@ const ResultsCard = ({
           func={() => exportAsImage("png", true)}
         ></SimpleButton>
       </div>
-    </>
+    </div>
   );
 };
 

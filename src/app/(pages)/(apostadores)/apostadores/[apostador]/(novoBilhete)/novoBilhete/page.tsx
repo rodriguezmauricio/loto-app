@@ -15,6 +15,7 @@ import { tempDb } from "@/tempDb"; // Import tempDb
 import ResultsCard from "@/app/components/resultsCard/ResultsCard";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import DownloadPDFButton from "@/app/components/(buttons)/downloadPdfButton/DownloadPdfButton";
 
 export interface IModalidade {
   name: string;
@@ -64,10 +65,13 @@ const NovoBilhete = () => {
 
   const [numberOfGames, setNumberOfGames] = useState<number>(1); // Default number of games
 
-  // Example state for tracking the selected modalidade and numbers
-  const [selectedModalidade, setSelectedModalidade] = useState(null);
-  const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
-  const [maxSelectableNumbers, setMaxSelectableNumbers] = useState(0);
+  const resultsCardsRef = useRef<HTMLDivElement[]>([]); // We will push each ref to this array
+
+  // State to store the value and quantity of the ticket
+  const [valorBilhete, setValorBilhete] = useState({
+    valor: 2,
+    quantidade: 1,
+  });
 
   const modalidadeSettingObj = {
     modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
@@ -140,47 +144,29 @@ const NovoBilhete = () => {
     setImportedNumbersArr(result); // Update the state with the imported numbers
   };
 
-  console.log(importedNumbersArr);
-
-  // State to store the value and quantity of the ticket
-  const [valorBilhete, setValorBilhete] = useState({
-    valor: 2,
-    quantidade: 1,
-  });
-
-  // Function to handle changes in ticket value and quantity
-  const handleValorBilhete = (event: any) => {
-    const { name, value } = event.target;
-    // Update the ticket value and quantity based on user selection
-    setValorBilhete({
-      ...valorBilhete,
-      [name]: Number(value),
-    });
-  };
-
   // Function to update the selected option (importar or manual)
   const handleSelectedBilhete = (selected: string) => {
     setAddBilheteSelectedButton(selected);
   };
 
-  // Handler to manually add numbers based on modalidade
-  const handleAdicionarManual = (modalidade: any) => {
-    setSelectedModalidade(modalidade); // Set selected modalidade
-    const maxNumbers = Math.max(...modalidade.betNumbers); // Get maximum number to select
-    setMaxSelectableNumbers(maxNumbers); // Set max selectable
-    setSelectedNumbers([]); // Clear previous selections
+  // Handle number of games input
+  const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNumberOfGames(Number(e.target.value));
   };
 
-  // Handler to select/deselect numbers
-  const handleNumberSelect = (number: number) => {
-    setSelectedNumbers((prev) => {
-      if (prev.includes(number)) {
-        return prev.filter((n) => n !== number); // Deselect
-      } else if (prev.length < maxSelectableNumbers) {
-        return [...prev, number]; // Select if under limit
-      }
-      return prev; // Return without change if limit reached
-    });
+  // Handle game generation based on selected number of games and amount of numbers
+  const handleGenerateGames = () => {
+    if (!modalidadeContent || modalidadeContent.maxNumber < selectedJogos) {
+      console.error("Invalid modalidade settings or numbersPerGame is too high.");
+      return; // Prevent further execution if validation fails
+    }
+
+    const games: number[][] = [];
+    for (let i = 0; i < numberOfGames; i++) {
+      const game = generateRandomGame(modalidadeContent.maxNumber, selectedJogos); // Generate a game with the selected number of numbers
+      games.push(game);
+    }
+    setGeneratedGames(games); // Save the generated games in state
   };
 
   // Function to render the appropriate component (textarea or number selection) based on user selection
@@ -188,45 +174,154 @@ const NovoBilhete = () => {
     if (button === "importar") {
       // Render a textarea for importing numbers when "importar" is selected
       return (
-        <textarea
-          className={styles.textArea}
-          placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
-          cols={30}
-          rows={12}
-          value={textAreaValue}
-          onChange={handleTextAreaContent}
-        ></textarea>
+        <>
+          <textarea
+            className={styles.textArea}
+            placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
+            cols={30}
+            rows={12}
+            value={textAreaValue}
+            onChange={handleTextAreaContent}
+          ></textarea>
+
+          <div>
+            <Title h={3}>Instruções:</Title>
+            <li>Para mais de um jogo, coloque uma vírgula entre os jogos.</li>
+            <li>Cada número deve estar separado por um espaço.</li>
+            <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
+          </div>
+        </>
       );
     }
 
     if (button === "manual") {
       // Render a number selection component when "manual" is selected
       return (
-        <ChooseNumbersComp
-          numbersToRender={modalidadeContent?.maxNumber}
-          selectionLimit={modalidadeContent?.betNumbers.at(-1)}
-          numbersArr={selectedNumbersArr}
-          numbersArrSetter={setSelectedNumbersArr}
-        />
+        <>
+          <ChooseNumbersComp
+            numbersToRender={modalidadeContent?.maxNumber}
+            selectionLimit={modalidadeContent?.betNumbers.at(-1)}
+            numbersArr={selectedNumbersArr}
+            numbersArrSetter={setSelectedNumbersArr}
+          />
+
+          {/* Display the generated games */}
+          {generatedGames.length > 0 && (
+            <div>
+              <h3>Jogos Gerados:</h3>
+              {generatedGames.map((game, index) => (
+                <div key={index}>
+                  <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                  <ResultsCard
+                    numbersArr={[...game]}
+                    acertos={acertos}
+                    premio={premio}
+                    apostador={apostador}
+                    quantidadeDezenas={selectedJogos}
+                    resultado={dataResultado}
+                    data={currentDate}
+                    hora={currentDate}
+                    consultor={nomeConsultor}
+                    numeroBilhete={numeroBilhete}
+                    tipoBilhete={tipoBilhete}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       );
     }
-  };
 
-  // Function to handle form submission depending on whether the user selected "importar" or "manual"
-  const sendForm = (selected: string) => {
-    if (selected === "importar") {
-      // Return imported numbers array when "importar" is selected
-      return importedNumbersArr;
-    }
+    if (button === "random") {
+      return (
+        <>
+          <div>
+            <div className="divider"></div>
+            <Title h={2}>{modalidadeContent?.name || ""}</Title>
+            <div>
+              {modalidadeContent && (
+                <div className={styles.inputsRow}>
+                  <Title h={3}>Quantidade de Dezenas:</Title>
+                  <input
+                    className={styles.smallInput}
+                    type="number"
+                    name=""
+                    id=""
+                    value={selectedJogos}
+                    onChange={handleNumeroDeJogosSelecionado}
+                  />
+                </div>
+              )}
+            </div>
 
-    if (selected === "manual") {
-      // Sort and return selected numbers array when "manual" is selected
-      return selectedNumbersArr.sort((a, b) => Number(a) - Number(b));
-    }
+            {/* Button to trigger game generation */}
+            <div>
+              <SimpleButton btnTitle="Gerar Jogos" isSelected={false} func={handleGenerateGames} />
+            </div>
+            {generatedGames.length > 0 ? (
+              <DownloadPDFButton />
+            ) : (
+              // <SimpleButton
+              //   btnTitle="Exportar PDF"
+              //   func={() => {
+              //     console.log("btn");
+              //   }}
+              //   isSelected={false}
+              // ></SimpleButton>
+              ""
+            )}
 
-    if (selected === "randomNumbers") {
-      // Sort and return selected numbers array when "randomNumbers" is selected
-      return randomNumbersArr.sort((a, b) => Number(a) - Number(b));
+            {/* Display the generated games */}
+            {generatedGames.length > 0 && (
+              <div>
+                <h3>Jogos Gerados:</h3>
+                {generatedGames.map((game, index) => (
+                  <div key={index}>
+                    <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                    <ResultsCard
+                      numbersArr={[...game]}
+                      acertos={acertos}
+                      premio={premio}
+                      consultor={nomeConsultor}
+                      apostador={apostador}
+                      quantidadeDezenas={selectedJogos}
+                      resultado={dataResultado}
+                      data={currentDate}
+                      hora={currentDate}
+                      numeroBilhete={numeroBilhete - 1 + 1 + index}
+                      tipoBilhete={tipoBilhete}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {generatedGames.length > 0 && (
+              <div>
+                <h3>Jogos Gerados:</h3>
+                {generatedGames.map((game, index) => (
+                  <div key={index}>
+                    <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              {modalidadeContent && modalidadeContent?.trevoAmount.length > 1
+                ? modalidadeContent?.trevoAmount.map((numero) => {
+                    return (
+                      <Buttons buttonType="content" key={numero}>
+                        {numero}
+                      </Buttons>
+                    );
+                  })
+                : ""}
+            </div>
+          </div>
+        </>
+      );
     }
   };
 
@@ -254,26 +349,7 @@ const NovoBilhete = () => {
     return Array.from(game).sort((a, b) => a - b); // Convert Set to array and sort
   };
 
-  // Handle number of games input
-  const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNumberOfGames(Number(e.target.value));
-  };
-
-  // Handle game generation based on selected number of games and amount of numbers
-  const handleGenerateGames = () => {
-    if (!modalidadeContent || modalidadeContent.maxNumber < selectedJogos) {
-      console.error("Invalid modalidade settings or numbersPerGame is too high.");
-      return; // Prevent further execution if validation fails
-    }
-
-    const games: number[][] = [];
-    for (let i = 0; i < numberOfGames; i++) {
-      const game = generateRandomGame(modalidadeContent.maxNumber, selectedJogos); // Generate a game with the selected number of numbers
-      games.push(game);
-    }
-    setGeneratedGames(games); // Save the generated games in state
-  };
-
+  // SECTION: COMPONENTS RETURN STATEMENT
   return (
     <>
       {/* Page header */}
@@ -299,8 +375,7 @@ const NovoBilhete = () => {
             />
           </section>
         </section>
-
-        {/* Section for ticket options */}
+        {/*://SECTION: ticket options */}
         <section>
           <Title h={2}>Bilhetes</Title>
           <section className={styles.inputsRow}>
@@ -322,38 +397,10 @@ const NovoBilhete = () => {
                 func={() => handleSelectedBilhete("random")}
               />
             </div>
-            {/* Dropdowns for selecting ticket value and quantity */}
-            <div className={styles.valorBilheteDiv}>
-              Valor do bilhete:
-              <select
-                className={styles.input}
-                value={valorBilhete.valor}
-                onChange={handleValorBilhete}
-                name="valor"
-              >
-                <option value={1}>1,00</option>
-                <option value={2}>2,00</option>
-                <option value={3}>3,00</option>
-              </select>
-              <span>X</span>
-              <select
-                className={styles.input}
-                name="quantidade"
-                value={valorBilhete.quantidade}
-                onChange={handleValorBilhete}
-              >
-                <option value={1}>1</option>
-                <option value={5}>5</option>
-              </select>
-              =<span>R$ {valorBilhete.quantidade * valorBilhete.valor}</span>
-            </div>
           </section>
         </section>
-
-        {/* //TODO: Add fields below */}
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* //SECTION: Inputs */}
+        {/* Input for consultor name */}
         <div className={styles.inputsRow}>
           <label htmlFor="nomeConsultor">Nome do Consultor:</label>
           <input
@@ -368,9 +415,7 @@ const NovoBilhete = () => {
             min={1} // Minimum number of games is 1
           />
         </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* Input for apostador name */}
         <div className={styles.inputsRow}>
           <label htmlFor="apostador">Nome do Apostador:</label>
           <input
@@ -384,9 +429,7 @@ const NovoBilhete = () => {
             }}
           />
         </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* Input for amount of tickets */}
         <div className={styles.inputsRow}>
           <label htmlFor="numeroBilhete">Número do Bilhete:</label>
           <input
@@ -400,7 +443,6 @@ const NovoBilhete = () => {
             min={1} // Minimum number of games is 1
           />
         </div>
-
         {/* Input for number of games */}
         <div className={styles.inputsRow}>
           <label className={styles.inputLabel} htmlFor="numberOfGames">
@@ -415,9 +457,7 @@ const NovoBilhete = () => {
             min={1} // Minimum number of games is 1
           />
         </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* Input for número de acertos */}
         <div className={styles.inputsRow}>
           <label htmlFor="acertos">Acertos:</label>
           <input
@@ -431,9 +471,7 @@ const NovoBilhete = () => {
             min={1} // Minimum number of games is 1
           />
         </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* Input for valor do prêmio */}
         <div className={styles.inputsRow}>
           <label htmlFor="premio">Prêmio:</label>
           <input
@@ -447,9 +485,7 @@ const NovoBilhete = () => {
             min={1} // Minimum number of games is 1
           />
         </div>
-
-        {/* //TODO: CREATE THE FUNCTION */}
-        {/* Input for number of games */}
+        {/* Input for valor do bilhete*/}
         <div className={styles.inputsRow}>
           <label htmlFor="tipoBilhete">Valor Bilhete:</label>
           <input
@@ -462,7 +498,7 @@ const NovoBilhete = () => {
             }}
           />
         </div>
-
+        {/* input for data do sorteio */}
         <div className={styles.inputsRow}>
           <label htmlFor="numberOfGames">Data do sorteio:</label>
           <DatePicker
@@ -472,163 +508,13 @@ const NovoBilhete = () => {
             dateFormat="dd/MM/yyyy" // Optional: Customize date format
           />
         </div>
-
-        {/* Section to render either the text input or the number selection component */}
+        {/*//:SECTION: render either the text input or the number selection component */}
         <section className={styles.jogosRow}>
           {/* Import button */}
           <div className={addBilheteSelectedButton === "importar" ? styles.compDiv : ""}>
             {addBilheteCompToRender(addBilheteSelectedButton)}
           </div>
-
-          {/* //HEADER: Import button */}
-          <div className={styles.instructionsDiv}>
-            {addBilheteSelectedButton === "importar" && (
-              <div>
-                <Title h={3}>Instruções:</Title>
-                <li>Para mais de um jogo, coloque uma vírgula entre os jogos.</li>
-                <li>Cada número deve estar separado por um espaço.</li>
-                <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
-              </div>
-            )}
-
-            {/* //HEADER: Manual button */}
-            {addBilheteSelectedButton === "manual" && (
-              <>
-                {/* Display the generated games */}
-                {generatedGames.length > 0 && (
-                  <div>
-                    <h3>Jogos Gerados:</h3>
-                    {generatedGames.map((game, index) => (
-                      <div key={index}>
-                        <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                        <ResultsCard
-                          numbersArr={[...game]}
-                          acertos={acertos}
-                          premio={premio}
-                          apostador={apostador}
-                          quantidadeDezenas={selectedJogos}
-                          resultado={dataResultado}
-                          data={currentDate}
-                          hora={currentDate}
-                          consultor={nomeConsultor}
-                          numeroBilhete={numeroBilhete}
-                          tipoBilhete={tipoBilhete}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div>
-                  <Title h={3}>Instruções:</Title>
-                  <li>Adicione cada jogo entre parenteses.</li>
-                  <li>Para mais de um jogo, coloque um sinal de + entre os jogos.</li>
-                  <li>Cada número deve estar separado por uma vírgula.</li>
-                  <li>Exemplo: (1,2,3,4,5,6,7) + (1,3,8,10,12,18) + (1,2,5,6,9,12)...</li>
-                </div>
-              </>
-            )}
-
-            {/* //HEADER: Random number */}
-            {addBilheteSelectedButton === "random" && (
-              <div>
-                <div className="divider"></div>
-                <Title h={2}>{modalidadeContent?.name || ""}</Title>
-                <div>
-                  {modalidadeContent && (
-                    <div className={styles.inputsRow}>
-                      <Title h={3}>Quantidade de Dezenas:</Title>
-                      <input
-                        className={styles.smallInput}
-                        type="number"
-                        name=""
-                        id=""
-                        value={selectedJogos}
-                        onChange={handleNumeroDeJogosSelecionado}
-                      />
-                    </div>
-                  )}
-                  {/* {modalidadeContent && modalidadeContent?.betNumbers ? (
-                    <div
-                      style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 10 }}
-                    >
-                      {modalidadeContent?.betNumbers.map((number) => {
-                        return (
-                          <SimpleButton
-                            btnTitle={number.toString()}
-                            isSelected={selectedJogos === number}
-                            key={number}
-                            func={() => handleNumeroDeJogosSelecionado(number)}
-                          ></SimpleButton>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ""
-                  )} */}
-                </div>
-
-                {/* Button to trigger game generation */}
-                <div>
-                  <SimpleButton
-                    btnTitle="Gerar Jogos"
-                    isSelected={false}
-                    func={handleGenerateGames}
-                  />
-                </div>
-
-                {/* Display the generated games */}
-                {generatedGames.length > 0 && (
-                  <div>
-                    <h3>Jogos Gerados:</h3>
-                    {generatedGames.map((game, index) => (
-                      <div key={index}>
-                        <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                        <ResultsCard
-                          numbersArr={[...game]}
-                          acertos={acertos}
-                          premio={premio}
-                          consultor={nomeConsultor}
-                          apostador={apostador}
-                          quantidadeDezenas={selectedJogos}
-                          resultado={dataResultado}
-                          data={currentDate}
-                          hora={currentDate}
-                          numeroBilhete={numeroBilhete}
-                          tipoBilhete={tipoBilhete}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-                  {modalidadeContent && modalidadeContent?.trevoAmount.length > 1
-                    ? modalidadeContent?.trevoAmount.map((numero) => {
-                        return (
-                          <Buttons buttonType="content" key={numero}>
-                            {numero}
-                          </Buttons>
-                        );
-                      })
-                    : ""}
-                </div>
-              </div>
-            )}
-
-            {/* Button to save imported games */}
-            {/* <div className={styles.buttonRow}>
-              <SimpleButton
-                style={{ backgroundColor: "#00A67F" }}
-                btnTitle="Salvar jogos importados"
-                func={() => console.log(sendForm(addBilheteSelectedButton))}
-                iconType="save"
-                hasIcon
-                isSelected={false}
-              />
-            </div> */}
-          </div>
         </section>
-
         {/* Section to display the total imported games and other details */}
         {addBilheteSelectedButton === "importar" && (
           <div className={styles.checkJogosDiv}>

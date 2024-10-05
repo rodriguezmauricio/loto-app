@@ -39,33 +39,35 @@ function VerificarJogos() {
     setTextAreaValue(content); // Update the text area value in the state
   };
 
+  const gameResult = [2, 3, 4];
+
   const gamesArr = [
     [1, 2, 3, 4, 5],
     [3, 4, 5, 6, 7],
     [5, 6, 7, 8, 9],
   ];
 
-  const findWinners = (
-    arrayDeJogos: number[][],
-    // playerObj: any,
-    loteria: string,
-    resultado: number[]
-  ) => {
-    if (!arrayDeJogos) return;
-    let count = 0;
-    //TODO: implementar função e corrigir para veriricar
-    //se em algum dos jogos contém pelo menos todos os números do resultado
-    arrayDeJogos.map((numsArr: number[]) => {
-      for (let i = 0; i < numsArr.length; i++) {
-        if (resultado.includes(i)) {
-          count++;
-        }
+  const findWinners = (arrayDeJogos: number[][], loteria: string, resultado: number[]) => {
+    if (!arrayDeJogos || !resultado || !loteria) return;
+
+    // Loop through each game in arrayDeJogos
+    for (let i = 0; i < arrayDeJogos.length; i++) {
+      const jogo = arrayDeJogos[i];
+
+      // Check if all numbers in resultado exist in the current game (jogo)
+      const isWinner = resultado.every((num) => jogo.includes(num));
+
+      // If the current game is a winner, return the game (or its index)
+      if (isWinner) {
+        return `Game ${i + 1} is a winner: [${jogo}]`;
       }
-    });
-    return;
+    }
+
+    // If no winner is found
+    return "No winner found.";
   };
 
-  console.log(findWinners(gamesArr, "megasena", [2, 3, 4]));
+  console.log(findWinners(gamesArr, "megasena", gameResult));
 
   useEffect(() => {
     // Fetch data from tempDb instead of the URL

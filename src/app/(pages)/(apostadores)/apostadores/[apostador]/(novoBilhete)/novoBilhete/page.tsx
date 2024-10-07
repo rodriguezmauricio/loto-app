@@ -143,7 +143,7 @@ const NovoBilhete = () => {
       }
     }
 
-    pdf.save("divs.pdf");
+    pdf.save("jogos.pdf");
   };
 
   const handleModalidadeContent = (settingsObj: IModalidade) => {

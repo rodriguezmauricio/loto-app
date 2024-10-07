@@ -180,7 +180,7 @@ export const tempDb = {
           color: "purple",
           betNumbers: [1],
           trevoAmount: [0],
-          maxNumber: 100,
+          maxNumber: 25,
         },
         {
           name: "Megasena",

@@ -86,3 +86,10 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.buttonsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin: 10px 0 20px 0;
+}

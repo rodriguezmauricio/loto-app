@@ -15,7 +15,10 @@ import { tempDb } from "@/tempDb"; // Import tempDb
 import ResultsCard from "@/app/components/resultsCard/ResultsCard";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import DownloadPDFButton from "@/app/components/(buttons)/downloadPdfButton/DownloadPdfButton";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { toPng, toJpeg } from "html-to-image";
+import { saveAs } from "file-saver";
 
 export interface IModalidade {
   name: string;
@@ -67,6 +70,47 @@ const NovoBilhete = () => {
 
   const resultsCardsRef = useRef<HTMLDivElement[]>([]); // We will push each ref to this array
 
+  const divRefs = useRef<(HTMLDivElement | null)[]>([]); //export to pdf
+  const cardRef = useRef(null); //export individually
+  const items = ["Item 1", "Item 2", "Item 3"]; // Your dynamic data
+
+  const exportAsImage = async (format = "png", saveToClipboard = false) => {
+    if (cardRef.current === null) return;
+
+    try {
+      let dataUrl;
+      if (format === "jpeg") {
+        dataUrl = await toJpeg(cardRef.current, { quality: 0.95 });
+      } else {
+        dataUrl = await toPng(cardRef.current);
+      }
+
+      // Convert data URL to Blob
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
+
+      if (saveToClipboard) {
+        // Save to Clipboard using the Clipboard API
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              [blob.type]: blob,
+            }),
+          ]);
+          // alert("Image copied to clipboard!");
+        } catch (err) {
+          console.error("Failed to copy image to clipboard", err);
+        }
+      } else {
+        // Save as a file (as in the previous example)
+        const fileName = format === "jpeg" ? "card.jpg" : "card.png";
+        saveAs(blob, fileName);
+      }
+    } catch (err) {
+      console.error("Error exporting image", err);
+    }
+  };
+
   // State to store the value and quantity of the ticket
   const [valorBilhete, setValorBilhete] = useState({
     valor: 2,
@@ -77,6 +121,29 @@ const NovoBilhete = () => {
     modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
     modalidadeSabedoria: modalidadeSetting[1], // Assuming modalidadeSabedoria is the second item
     modalidadePersonalizada: modalidadeSetting[2], // Assuming modalidadePersonalizada is the third item
+  };
+
+  const handleExportPDF = async () => {
+    const pdf = new jsPDF();
+
+    for (let i = 0; i < divRefs.current.length; i++) {
+      const div = divRefs.current[i];
+      if (div) {
+        const canvas = await html2canvas(div);
+        const imgData = canvas.toDataURL("image/png");
+
+        if (i !== 0) {
+          pdf.addPage();
+        }
+
+        const imgWidth = pdf.internal.pageSize.getWidth();
+        const imgHeight = pdf.internal.pageSize.getHeight();
+
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      }
+    }
+
+    pdf.save("divs.pdf");
   };
 
   const handleModalidadeContent = (settingsObj: IModalidade) => {
@@ -190,6 +257,53 @@ const NovoBilhete = () => {
             <li>Cada número deve estar separado por um espaço.</li>
             <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
           </div>
+
+          {addBilheteSelectedButton === "importar" && (
+            <div className={styles.checkJogosDiv}>
+              <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
+              <Title h={3}>{`Jogos Importados`}</Title>
+
+              {importedNumbersArr.length > 0 &&
+                importedNumbersArr.map((item: any, index) => {
+                  return (
+                    <div key={index} ref={cardRef}>
+                      {`Jogo ${index + 1} : `}
+                      {item.join(", ")}.
+                      <ResultsCard
+                        numbersArr={[...item]}
+                        acertos={acertos}
+                        premio={premio}
+                        apostador={apostador}
+                        quantidadeDezenas={selectedJogos}
+                        resultado={dataResultado}
+                        data={currentDate}
+                        hora={currentDate}
+                        numeroBilhete={numeroBilhete}
+                        consultor={nomeConsultor}
+                        tipoBilhete={tipoBilhete}
+                      />
+                      <div className={styles.buttonsContainer}>
+                        <SimpleButton
+                          btnTitle="Salvar PNG"
+                          isSelected
+                          func={() => exportAsImage("png")}
+                        ></SimpleButton>
+                        <SimpleButton
+                          btnTitle="Salvar JPG"
+                          isSelected
+                          func={() => exportAsImage("jpeg")}
+                        ></SimpleButton>
+                        <SimpleButton
+                          btnTitle="COPIAR IMAGEM"
+                          isSelected
+                          func={() => exportAsImage("png", true)}
+                        ></SimpleButton>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          )}
         </>
       );
     }
@@ -212,19 +326,48 @@ const NovoBilhete = () => {
               {generatedGames.map((game, index) => (
                 <div key={index}>
                   <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                  <ResultsCard
-                    numbersArr={[...game]}
-                    acertos={acertos}
-                    premio={premio}
-                    apostador={apostador}
-                    quantidadeDezenas={selectedJogos}
-                    resultado={dataResultado}
-                    data={currentDate}
-                    hora={currentDate}
-                    consultor={nomeConsultor}
-                    numeroBilhete={numeroBilhete}
-                    tipoBilhete={tipoBilhete}
-                  />
+                  <div
+                    className=""
+                    ref={(el) => (divRefs.current[index] = el)} // Attach ref to each div
+                    style={{
+                      // height: "500px",
+                      width: "100%",
+                      // backgroundColor: index % 2 === 0 ? "lightgray" : "lightblue",
+                    }}
+                  >
+                    <div className="" ref={cardRef}>
+                      <ResultsCard
+                        numbersArr={[...game]}
+                        acertos={acertos}
+                        premio={premio}
+                        consultor={nomeConsultor}
+                        apostador={apostador}
+                        quantidadeDezenas={selectedJogos}
+                        resultado={dataResultado}
+                        data={currentDate}
+                        hora={currentDate}
+                        numeroBilhete={numeroBilhete - 1 + 1 + index}
+                        tipoBilhete={tipoBilhete}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.buttonsContainer}>
+                    <SimpleButton
+                      btnTitle="Salvar PNG"
+                      isSelected
+                      func={() => exportAsImage("png")}
+                    ></SimpleButton>
+                    <SimpleButton
+                      btnTitle="Salvar JPG"
+                      isSelected
+                      func={() => exportAsImage("jpeg")}
+                    ></SimpleButton>
+                    <SimpleButton
+                      btnTitle="COPIAR IMAGEM"
+                      isSelected
+                      func={() => exportAsImage("png", true)}
+                    ></SimpleButton>
+                  </div>
                 </div>
               ))}
             </div>
@@ -259,39 +402,57 @@ const NovoBilhete = () => {
             <div>
               <SimpleButton btnTitle="Gerar Jogos" isSelected={false} func={handleGenerateGames} />
             </div>
-            {generatedGames.length > 0 ? (
-              <DownloadPDFButton />
-            ) : (
-              // <SimpleButton
-              //   btnTitle="Exportar PDF"
-              //   func={() => {
-              //     console.log("btn");
-              //   }}
-              //   isSelected={false}
-              // ></SimpleButton>
-              ""
-            )}
 
             {/* Display the generated games */}
             {generatedGames.length > 0 && (
               <div>
+                <SimpleButton btnTitle="Exportar Pdf" func={handleExportPDF} isSelected />
                 <h3>Jogos Gerados:</h3>
                 {generatedGames.map((game, index) => (
                   <div key={index}>
                     <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                    <ResultsCard
-                      numbersArr={[...game]}
-                      acertos={acertos}
-                      premio={premio}
-                      consultor={nomeConsultor}
-                      apostador={apostador}
-                      quantidadeDezenas={selectedJogos}
-                      resultado={dataResultado}
-                      data={currentDate}
-                      hora={currentDate}
-                      numeroBilhete={numeroBilhete - 1 + 1 + index}
-                      tipoBilhete={tipoBilhete}
-                    />
+                    <div
+                      className=""
+                      ref={(el) => (divRefs.current[index] = el)} // Attach ref to each div
+                      style={{
+                        // height: "500px",
+                        width: "100%",
+                        // backgroundColor: index % 2 === 0 ? "lightgray" : "lightblue",
+                      }}
+                    >
+                      <div className="" ref={cardRef}>
+                        <ResultsCard
+                          numbersArr={[...game]}
+                          acertos={acertos}
+                          premio={premio}
+                          consultor={nomeConsultor}
+                          apostador={apostador}
+                          quantidadeDezenas={selectedJogos}
+                          resultado={dataResultado}
+                          data={currentDate}
+                          hora={currentDate}
+                          numeroBilhete={numeroBilhete - 1 + 1 + index}
+                          tipoBilhete={tipoBilhete}
+                        />
+                      </div>
+                    </div>
+                    <div className={styles.buttonsContainer}>
+                      <SimpleButton
+                        btnTitle="Salvar PNG"
+                        isSelected
+                        func={() => exportAsImage("png")}
+                      ></SimpleButton>
+                      <SimpleButton
+                        btnTitle="Salvar JPG"
+                        isSelected
+                        func={() => exportAsImage("jpeg")}
+                      ></SimpleButton>
+                      <SimpleButton
+                        btnTitle="COPIAR IMAGEM"
+                        isSelected
+                        func={() => exportAsImage("png", true)}
+                      ></SimpleButton>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -516,16 +677,17 @@ const NovoBilhete = () => {
           </div>
         </section>
         {/* Section to display the total imported games and other details */}
-        {addBilheteSelectedButton === "importar" && (
+        {/* 
+  {addBilheteSelectedButton === "importar" && (
           <div className={styles.checkJogosDiv}>
             <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
             <Title h={3}>{`Jogos Importados`}</Title>
 
-            {/* Display each imported game */}
+            
             {importedNumbersArr.length > 0 &&
               importedNumbersArr.map((item: any, index) => {
                 return (
-                  <div key={index}>
+                  <div key={index} ref={cardRef}>
                     {`Jogo ${index + 1} : `}
                     {item.join(", ")}.
                     <ResultsCard
@@ -541,11 +703,29 @@ const NovoBilhete = () => {
                       consultor={nomeConsultor}
                       tipoBilhete={tipoBilhete}
                     />
+                    <div className={styles.buttonsContainer}>
+                      <SimpleButton
+                        btnTitle="Salvar PNG"
+                        isSelected
+                        func={() => exportAsImage("png")}
+                      ></SimpleButton>
+                      <SimpleButton
+                        btnTitle="Salvar JPG"
+                        isSelected
+                        func={() => exportAsImage("jpeg")}
+                      ></SimpleButton>
+                      <SimpleButton
+                        btnTitle="COPIAR IMAGEM"
+                        isSelected
+                        func={() => exportAsImage("png", true)}
+                      ></SimpleButton>
+                    </div>
                   </div>
                 );
               })}
           </div>
         )}
+*/}
         {/* Render the selected numbers if any */}
         {selectedNumbersArr}
       </main>

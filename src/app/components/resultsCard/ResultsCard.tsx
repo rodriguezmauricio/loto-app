@@ -161,7 +161,7 @@ const ResultsCard = ({
           </div>
         </section>
       </article>
-      <div className={styles.buttonsContainer}>
+      {/* <div className={styles.buttonsContainer}>
         <SimpleButton
           btnTitle="Salvar PNG"
           isSelected
@@ -177,7 +177,7 @@ const ResultsCard = ({
           isSelected
           func={() => exportAsImage("png", true)}
         ></SimpleButton>
-      </div>
+      </div> */}
     </div>
   );
 };

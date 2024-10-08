@@ -124,26 +124,43 @@ const NovoBilhete = () => {
   };
 
   const handleExportPDF = async () => {
-    const pdf = new jsPDF();
+    // Initialize jsPDF without setting a fixed size
+    let pdf: jsPDF | null = null;
 
     for (let i = 0; i < divRefs.current.length; i++) {
       const div = divRefs.current[i];
       if (div) {
-        const canvas = await html2canvas(div);
+        // Capture the div as a canvas with scaling based on the device pixel ratio
+        const canvas = await html2canvas(div, { scale: window.devicePixelRatio });
         const imgData = canvas.toDataURL("image/png");
 
-        if (i !== 0) {
-          pdf.addPage();
+        // Get the original size of the div (in pixels)
+        const divWidth = canvas.width;
+        const divHeight = canvas.height;
+
+        // Convert pixels to mm for jsPDF (1 pixel = 0.264583 mm)
+        const pdfWidth = divWidth * 0.264583;
+        const pdfHeight = divHeight * 0.264583;
+
+        // Create a new jsPDF instance for each page with custom dimensions
+        if (i === 0) {
+          pdf = new jsPDF({
+            orientation: divWidth > divHeight ? "landscape" : "portrait",
+            unit: "mm",
+            format: [pdfWidth, pdfHeight], // Set custom format size based on the div size
+          });
+        } else {
+          pdf?.addPage([pdfWidth, pdfHeight], divWidth > divHeight ? "landscape" : "portrait");
         }
 
-        const imgWidth = pdf.internal.pageSize.getWidth();
-        const imgHeight = pdf.internal.pageSize.getHeight();
-
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        // Add the image to the PDF, fitting it exactly to the page size
+        pdf?.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       }
     }
 
-    pdf.save("jogos.pdf");
+    if (pdf) {
+      pdf.save("divs.pdf");
+    }
   };
 
   const handleModalidadeContent = (settingsObj: IModalidade) => {
@@ -239,71 +256,91 @@ const NovoBilhete = () => {
   // Function to render the appropriate component (textarea or number selection) based on user selection
   const addBilheteCompToRender = (button: string) => {
     if (button === "importar") {
-      // Render a textarea for importing numbers when "importar" is selected
       return (
         <>
-          <textarea
-            className={styles.textArea}
-            placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
-            cols={30}
-            rows={12}
-            value={textAreaValue}
-            onChange={handleTextAreaContent}
-          ></textarea>
-
           <div>
-            <Title h={3}>Instruções:</Title>
-            <li>Para mais de um jogo, coloque uma vírgula entre os jogos.</li>
-            <li>Cada número deve estar separado por um espaço.</li>
-            <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
-          </div>
+            <div className="divider"></div>
+            <Title h={2}>{modalidadeContent?.name || ""}</Title>
 
-          {addBilheteSelectedButton === "importar" && (
-            <div className={styles.checkJogosDiv}>
-              <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
-              <Title h={3}>{`Jogos Importados`}</Title>
+            <section className={styles.checkJogosDiv}>
+              <textarea
+                className={styles.textArea}
+                placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
+                cols={30}
+                rows={12}
+                value={textAreaValue}
+                onChange={handleTextAreaContent}
+              ></textarea>
 
-              {importedNumbersArr.length > 0 &&
-                importedNumbersArr.map((item: any, index) => {
-                  return (
-                    <div key={index} ref={cardRef}>
-                      {`Jogo ${index + 1} : `}
-                      {item.join(", ")}.
-                      <ResultsCard
-                        numbersArr={[...item]}
-                        acertos={acertos}
-                        premio={premio}
-                        apostador={apostador}
-                        quantidadeDezenas={selectedJogos}
-                        resultado={dataResultado}
-                        data={currentDate}
-                        hora={currentDate}
-                        numeroBilhete={numeroBilhete}
-                        consultor={nomeConsultor}
-                        tipoBilhete={tipoBilhete}
-                      />
-                      <div className={styles.buttonsContainer}>
-                        <SimpleButton
-                          btnTitle="Salvar PNG"
-                          isSelected
-                          func={() => exportAsImage("png")}
-                        ></SimpleButton>
-                        <SimpleButton
-                          btnTitle="Salvar JPG"
-                          isSelected
-                          func={() => exportAsImage("jpeg")}
-                        ></SimpleButton>
-                        <SimpleButton
-                          btnTitle="COPIAR IMAGEM"
-                          isSelected
-                          func={() => exportAsImage("png", true)}
-                        ></SimpleButton>
+              <div>
+                <Title h={3}>Instruções:</Title>
+                <li>Para mais de um jogo, coloque uma vírgula entre os jogos.</li>
+                <li>Cada número deve estar separado por um espaço.</li>
+                <li>Exemplo: 1 2 3 , 4 5 6 7 , 8 9 10 11...</li>
+              </div>
+            </section>
+
+            {importedNumbersArr && (
+              <section className={styles.inputRow}>
+                <SimpleButton btnTitle="Exportar Pdf" func={handleExportPDF} isSelected />
+
+                <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
+                <Title h={3}>{`Jogos Importados`}</Title>
+
+                {importedNumbersArr.length > 0 &&
+                  importedNumbersArr.map((item: any, index) => {
+                    return (
+                      <div key={index} ref={cardRef}>
+                        {`Jogo ${index + 1} : `}
+                        {item.join(", ")}.
+                        <div
+                          className=""
+                          ref={(el) => (divRefs.current[index] = el)} // Attach ref to each div
+                          style={{
+                            // height: "500px",
+                            width: "100%",
+
+                            // backgroundColor: index % 2 === 0 ? "lightgray" : "lightblue",
+                          }}
+                        >
+                          <div className="" ref={cardRef}></div>
+                          <ResultsCard
+                            numbersArr={[...item]}
+                            acertos={acertos}
+                            premio={premio}
+                            apostador={apostador}
+                            quantidadeDezenas={selectedJogos}
+                            resultado={dataResultado}
+                            data={currentDate}
+                            hora={currentDate}
+                            numeroBilhete={numeroBilhete}
+                            consultor={nomeConsultor}
+                            tipoBilhete={tipoBilhete}
+                          />
+                        </div>
+                        <div className={styles.buttonsContainer}>
+                          <SimpleButton
+                            btnTitle="Salvar PNG"
+                            isSelected
+                            func={() => exportAsImage("png")}
+                          ></SimpleButton>
+                          <SimpleButton
+                            btnTitle="Salvar JPG"
+                            isSelected
+                            func={() => exportAsImage("jpeg")}
+                          ></SimpleButton>
+                          <SimpleButton
+                            btnTitle="COPIAR IMAGEM"
+                            isSelected
+                            func={() => exportAsImage("png", true)}
+                          ></SimpleButton>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-            </div>
-          )}
+                    );
+                  })}
+              </section>
+            )}
+          </div>
         </>
       );
     }
@@ -322,6 +359,8 @@ const NovoBilhete = () => {
           {/* Display the generated games */}
           {generatedGames.length > 0 && (
             <div>
+              <SimpleButton btnTitle="Exportar Pdf" func={handleExportPDF} isSelected />
+
               <h3>Jogos Gerados:</h3>
               {generatedGames.map((game, index) => (
                 <div key={index}>
@@ -672,60 +711,12 @@ const NovoBilhete = () => {
         {/*//:SECTION: render either the text input or the number selection component */}
         <section className={styles.jogosRow}>
           {/* Import button */}
-          <div className={addBilheteSelectedButton === "importar" ? styles.compDiv : ""}>
+          <div className={addBilheteSelectedButton === "importar" ? "" : ""}>
             {addBilheteCompToRender(addBilheteSelectedButton)}
           </div>
         </section>
         {/* Section to display the total imported games and other details */}
-        {/* 
-  {addBilheteSelectedButton === "importar" && (
-          <div className={styles.checkJogosDiv}>
-            <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
-            <Title h={3}>{`Jogos Importados`}</Title>
 
-            
-            {importedNumbersArr.length > 0 &&
-              importedNumbersArr.map((item: any, index) => {
-                return (
-                  <div key={index} ref={cardRef}>
-                    {`Jogo ${index + 1} : `}
-                    {item.join(", ")}.
-                    <ResultsCard
-                      numbersArr={[...item]}
-                      acertos={acertos}
-                      premio={premio}
-                      apostador={apostador}
-                      quantidadeDezenas={selectedJogos}
-                      resultado={dataResultado}
-                      data={currentDate}
-                      hora={currentDate}
-                      numeroBilhete={numeroBilhete}
-                      consultor={nomeConsultor}
-                      tipoBilhete={tipoBilhete}
-                    />
-                    <div className={styles.buttonsContainer}>
-                      <SimpleButton
-                        btnTitle="Salvar PNG"
-                        isSelected
-                        func={() => exportAsImage("png")}
-                      ></SimpleButton>
-                      <SimpleButton
-                        btnTitle="Salvar JPG"
-                        isSelected
-                        func={() => exportAsImage("jpeg")}
-                      ></SimpleButton>
-                      <SimpleButton
-                        btnTitle="COPIAR IMAGEM"
-                        isSelected
-                        func={() => exportAsImage("png", true)}
-                      ></SimpleButton>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        )}
-*/}
         {/* Render the selected numbers if any */}
         {selectedNumbersArr}
       </main>

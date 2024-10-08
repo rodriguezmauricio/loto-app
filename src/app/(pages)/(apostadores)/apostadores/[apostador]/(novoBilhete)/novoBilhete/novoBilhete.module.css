@@ -71,7 +71,7 @@
 
 .textArea {
   flex: 1;
-  width: 100%;
+  max-width: 100%;
   background-color: var(--color-dark-mid);
   border: 2px solid var(--color-dark-light);
   border-radius: 8px;
@@ -85,6 +85,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 600px;
 }
 
 .buttonsContainer {

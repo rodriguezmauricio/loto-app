@@ -159,7 +159,7 @@ const NovoBilhete = () => {
     }
 
     if (pdf) {
-      pdf.save("divs.pdf");
+      pdf.save("jogos.pdf");
     }
   };
 

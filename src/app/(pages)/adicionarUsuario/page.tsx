@@ -9,8 +9,24 @@ import AddUsuarioForm from "@/app/components/addUserForms/AddUsuarioForm";
 import { hashPassword } from "@/app/utils/utils";
 import { db } from "@vercel/postgres"; // Adjust for your setup
 
+export interface IRadioOptions {
+  value: string;
+  label: string;
+}
+
 function AdicionarUsuario() {
   const [userToAdd, setUserToAdd] = useState("");
+  const [selectedRadioButton, setSelectedRadioButton] = useState("");
+
+  // TOFIX: WTF IS GOING ON WITH THE USE STATE?
+  const radioOptions = [
+    { value: "percent", label: "Porcentagem" },
+    { value: "absolute", label: "Valor em R$" },
+  ];
+
+  const handleRadioChange = (e: any) => {
+    setSelectedRadioButton(e.target.value);
+  };
 
   const handleUserToAdd = (e: any) => {
     setUserToAdd(e);
@@ -83,7 +99,7 @@ function AdicionarUsuario() {
         />
 
         {/* Render user form besd on the type of user */}
-        {userToAdd && AddAdminForm(userToAdd)}
+        {userToAdd && AddAdminForm(userToAdd, radioOptions, selectedRadioButton, handleRadioChange)}
 
         {userToAdd !== "" && (
           <SimpleButton

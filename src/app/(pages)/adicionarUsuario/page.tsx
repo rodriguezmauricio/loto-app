@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
 // import styles from "./adicionarUsuario.modules.scss";
-import AddAdminForm from "../../components/addUserForms/AddAdminForm";
+import AddAdminForm, { UserType } from "../../components/addUserForms/AddAdminForm";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import AddVendedorForm from "@/app/components/addUserForms/AddVendedorForm";
 import AddUsuarioForm from "@/app/components/addUserForms/AddUsuarioForm";
 import { hashPassword } from "@/app/utils/utils";
 import { db } from "@vercel/postgres"; // Adjust for your setup
+import Title from "@/app/components/title/Title";
 
 export interface IRadioOptions {
   value: string;
@@ -15,10 +16,9 @@ export interface IRadioOptions {
 }
 
 function AdicionarUsuario() {
-  const [userToAdd, setUserToAdd] = useState("");
+  const [userToAdd, setUserToAdd] = useState<UserType>();
   const [selectedRadioButton, setSelectedRadioButton] = useState("");
 
-  // TOFIX: WTF IS GOING ON WITH THE USE STATE?
   const radioOptions = [
     { value: "percent", label: "Porcentagem" },
     { value: "absolute", label: "Valor em R$" },
@@ -86,6 +86,7 @@ function AdicionarUsuario() {
     <>
       <PageHeader title="Adicionar Usuário" subpage linkTo={`/`} />
       <main className="main">
+        <Title h={2}>Selecione o tipo de usuário para adicionar</Title>
         <SimpleButton btnTitle="Admin" func={() => handleUserToAdd("admin")} isSelected={false} />
         <SimpleButton
           btnTitle="Vendedor"
@@ -99,13 +100,12 @@ function AdicionarUsuario() {
         />
 
         {/* Render user form besd on the type of user */}
-        {userToAdd && AddAdminForm(userToAdd, radioOptions, selectedRadioButton, handleRadioChange)}
-
-        {userToAdd !== "" && (
-          <SimpleButton
-            btnTitle={`Criar novo ${userToAdd}`}
-            func={() => console.log(`Novo ${userToAdd} adicionado`)}
-            isSelected={false}
+        {userToAdd && (
+          <AddAdminForm
+            userType={userToAdd}
+            radioOptions={radioOptions}
+            selectedRadioOption={selectedRadioButton}
+            radioHandler={handleRadioChange}
           />
         )}
       </main>

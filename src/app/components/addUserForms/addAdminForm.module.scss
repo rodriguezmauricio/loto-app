@@ -1,8 +1,18 @@
 .input {
-  background-color: aqua;
+  max-width: 400px;
+  border: none;
+  height: 30px;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.formSection {
   display: flex;
   flex-direction: column;
 }

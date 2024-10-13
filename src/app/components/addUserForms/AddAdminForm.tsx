@@ -12,6 +12,18 @@ interface AddAdminFormProps {
   radioOptions: IRadioOptions[];
   selectedRadioOption: string;
   radioHandler: (event: React.ChangeEvent<HTMLInputElement>) => void; // Better type for radioHandler
+  submitInfo: (
+    userType: string,
+    username: string,
+    password: string,
+    phone: string,
+    adminId: string,
+    sellerId: string,
+    pix: string,
+    saldo: number,
+    tipoComissao: string,
+    valorComissao: number
+  ) => Promise<void>;
 }
 
 const AddAdminForm: React.FC<AddAdminFormProps> = ({
@@ -19,11 +31,23 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
   radioOptions,
   selectedRadioOption,
   radioHandler,
+  submitInfo,
 }) => {
   const { control, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    await submitInfo(
+      userType,
+      data.username,
+      data.password,
+      data.phone,
+      data.adminId, // Adjust if these fields are relevant to the current form
+      data.sellerId, // Adjust if these fields are relevant to the current form
+      data.pix, // Adjust if these fields are relevant to the current form
+      data.saldo, // Adjust if these fields are relevant to the current form
+      selectedRadioOption,
+      data.valorComissao
+    );
   };
 
   return (
@@ -148,8 +172,9 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
 
       {userType != null && (
         <SimpleButton
+          type="submit"
           btnTitle={`Criar novo ${userType}`}
-          func={() => console.log(`Novo ${userType} adicionado`)}
+          func={() => console.log(submitInfo)}
           isSelected={false}
         />
       )}

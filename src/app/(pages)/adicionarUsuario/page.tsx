@@ -33,10 +33,9 @@ function AdicionarUsuario() {
     console.log(e);
   };
 
-  async function addAdmin(
+  async function addUser(
     userType: string,
     username: string,
-    email: string,
     password: string,
     phone: string,
     adminId: string,
@@ -81,7 +80,7 @@ function AdicionarUsuario() {
     }
 
     const result = await db.query(query, values);
-    console.log("Admin added:", result.rows[0]);
+    console.log(`User added in ${userToAdd} table:`, result.rows[0]);
   }
   return (
     <>
@@ -107,6 +106,7 @@ function AdicionarUsuario() {
             radioOptions={radioOptions}
             selectedRadioOption={selectedRadioButton}
             radioHandler={handleRadioChange}
+            submitInfo={addUser}
           />
         )}
       </main>

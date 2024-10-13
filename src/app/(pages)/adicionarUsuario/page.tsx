@@ -40,6 +40,7 @@ function AdicionarUsuario() {
     password: string,
     phone: string,
     adminId: string,
+    sellerId: string,
     pix: string,
     saldo: number,
     tipoComissao: string,
@@ -52,11 +53,11 @@ function AdicionarUsuario() {
     // if user is admin, add it to the admins table
     if (userType === "admin") {
       query = `
-      INSERT INTO admins (username, email, password_hash)
-      VALUES ($1, $2, $3)
-      RETURNING id, username, email;
+      INSERT INTO admins (username, password_hash)
+      VALUES ($1, $2)
+      RETURNING id, username, password_hash;
       `;
-      values = [username, email, passwordHash, phone];
+      values = [username, passwordHash];
     }
 
     // if user is vendedor, add it to the sellers table
@@ -72,11 +73,11 @@ function AdicionarUsuario() {
     // if user is usuario, add it to the users table
     if (userType === "usuario") {
       query = `
-      INSERT INTO admins (username, password_hash, admin_id, saldo, phone, pix)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, password_hash, admin_id, saldo, phone, pix;
+      INSERT INTO admins (username, password_hash, admin_id, seller_id, saldo, phone, pix)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id, username, password_hash, admin_id, seller_id, saldo, phone, pix;
       `;
-      values = [username, passwordHash, adminId, saldo, phone, pix];
+      values = [username, passwordHash, adminId, sellerId, saldo, phone, pix];
     }
 
     const result = await db.query(query, values);

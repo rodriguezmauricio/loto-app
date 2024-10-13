@@ -71,6 +71,18 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
               )}
             />
           </div>
+
+          <div className={styles.formSection}>
+            <label htmlFor="saldo">Saldo Inicial</label>
+            <Controller
+              name="saldo"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <input type="number" {...field} name="saldo" id="saldo" className={styles.input} />
+              )}
+            />
+          </div>
         </section>
       )}
 

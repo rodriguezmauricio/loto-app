@@ -46,41 +46,48 @@ function AdicionarUsuario() {
     valorComissao: number
   ) {
     const passwordHash = await hashPassword(password);
-    let query;
+    let query: string;
     let values: any[] = [];
 
     // if user is admin, add it to the admins table
     if (userType === "admin") {
       query = `
-      INSERT INTO admins (username, password_hash)
-      VALUES ($1, $2)
-      RETURNING id, username, password_hash;
+      INSERT INTO admins (username, password_hash, saldo)
+      VALUES ($1, $2, $3)
+      RETURNING id, username, saldo
       `;
-      values = [username, passwordHash];
+      values = [username, passwordHash, (saldo = 0)];
     }
 
     // if user is vendedor, add it to the sellers table
-    if (userType === "vendedor") {
+    else if (userType === "vendedor") {
       query = `
-      INSERT INTO sellers (username, password_hash, phone, saldo, tipo_comissao, valor_comissao)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, password_hash, phone, saldo, tipo_comissao, valor_comissao;
+        INSERT INTO sellers (username, password_hash, phone, saldo, tipo_comissao, valor_comissao, admin_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        RETURNING id, username, saldo;  // Return relevant data after insertion
       `;
       values = [username, passwordHash, phone, saldo, tipoComissao, valorComissao];
     }
 
     // if user is usuario, add it to the users table
-    if (userType === "usuario") {
+    else if (userType === "usuario") {
       query = `
       INSERT INTO admins (username, password_hash, admin_id, seller_id, saldo, phone, pix)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id, username, password_hash, admin_id, seller_id, saldo, phone, pix;
-      `;
+      RETURNING id, username, saldo;  // Return relevant data after insertion
+    `;
       values = [username, passwordHash, adminId, sellerId, saldo, phone, pix];
+    } else {
+      // Handle unexpected userType
+      throw new Error(`Invalid user type: ${userType}`);
     }
 
-    const result = await db.query(query, values);
-    console.log(`User added in ${userToAdd} table:`, result.rows[0]);
+    try {
+      const result = await db.query(query, values);
+      console.log(`User added in ${userToAdd} table:`, result.rows[0]);
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
   }
   return (
     <>

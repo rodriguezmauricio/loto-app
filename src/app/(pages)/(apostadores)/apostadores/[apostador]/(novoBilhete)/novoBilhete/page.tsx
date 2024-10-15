@@ -258,30 +258,33 @@ const NovoBilhete = () => {
                             >{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
                             <Title h={3}>{`Jogos Importados`}</Title>
                             {importedNumbersArr.map((item: any, index) => (
-                                <div
-                                    key={index}
-                                    ref={(el) => {
-                                        divRefs.current[index] = el;
-                                    }}
-                                >
+                                <article key={index}>
                                     {`Jogo ${index + 1} : `}
                                     {item.join(", ")}.
-                                    <ResultsCard
-                                        modalidade={modalidadeContent?.name}
-                                        numbersArr={[...item]}
-                                        acertos={acertos}
-                                        premio={premio}
-                                        apostador={apostador}
-                                        quantidadeDezenas={selectedJogos}
-                                        resultado={dataResultado}
-                                        data={currentDate}
-                                        hora={currentDate}
-                                        numeroBilhete={numeroBilhete}
-                                        consultor={nomeConsultor}
-                                        tipoBilhete={tipoBilhete}
-                                    />
-                                    {renderExportButtons()}
-                                </div>
+                                    <div
+                                        ref={(el) => {
+                                            divRefs.current[index] = el;
+                                        }}
+                                    >
+                                        <div className="" ref={cardRef}>
+                                            <ResultsCard
+                                                modalidade={modalidadeContent?.name}
+                                                numbersArr={[...item]}
+                                                acertos={acertos}
+                                                premio={premio}
+                                                apostador={apostador}
+                                                quantidadeDezenas={selectedJogos}
+                                                resultado={dataResultado}
+                                                data={currentDate}
+                                                hora={currentDate}
+                                                numeroBilhete={numeroBilhete}
+                                                consultor={nomeConsultor}
+                                                tipoBilhete={tipoBilhete}
+                                            />
+                                        </div>
+                                        {renderExportButtons()}
+                                    </div>
+                                </article>
                             ))}
                         </section>
                     )}
@@ -307,29 +310,32 @@ const NovoBilhete = () => {
                             />
                             <h3>Jogos Gerados:</h3>
                             {generatedGames.map((game, index) => (
-                                <div
-                                    key={index}
-                                    ref={(el) => {
-                                        divRefs.current[index] = el;
-                                    }}
-                                >
+                                <article key={index}>
                                     <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                                    <ResultsCard
-                                        modalidade={modalidadeContent?.name}
-                                        numbersArr={[...game]}
-                                        acertos={acertos}
-                                        premio={premio}
-                                        consultor={nomeConsultor}
-                                        apostador={apostador}
-                                        quantidadeDezenas={selectedJogos}
-                                        resultado={dataResultado}
-                                        data={currentDate}
-                                        hora={currentDate}
-                                        numeroBilhete={numeroBilhete - 1 + 1 + index}
-                                        tipoBilhete={tipoBilhete}
-                                    />
+                                    <div
+                                        ref={(el) => {
+                                            divRefs.current[index] = el;
+                                        }}
+                                    >
+                                        <div className="" ref={cardRef}>
+                                            <ResultsCard
+                                                modalidade={modalidadeContent?.name}
+                                                numbersArr={[...game]}
+                                                acertos={acertos}
+                                                premio={premio}
+                                                consultor={nomeConsultor}
+                                                apostador={apostador}
+                                                quantidadeDezenas={selectedJogos}
+                                                resultado={dataResultado}
+                                                data={currentDate}
+                                                hora={currentDate}
+                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
+                                                tipoBilhete={tipoBilhete}
+                                            />
+                                        </div>
+                                    </div>
                                     {renderExportButtons()}
-                                </div>
+                                </article>
                             ))}
                         </div>
                     )}
@@ -348,7 +354,9 @@ const NovoBilhete = () => {
                                 className={styles.smallInput}
                                 type="number"
                                 value={selectedJogos}
-                                onChange={(e) => setSelectedJogos(Number(e.target.value))}
+                                onChange={(e) =>
+                                    handleNumeroDeJogosSelecionado(Number(e.target.value))
+                                }
                             />
                         </div>
                         <SimpleButton
@@ -366,29 +374,32 @@ const NovoBilhete = () => {
                             />
                             <h3>Jogos Gerados:</h3>
                             {generatedGames.map((game, index) => (
-                                <div
-                                    key={index}
-                                    ref={(el) => {
-                                        divRefs.current[index] = el;
-                                    }}
-                                >
+                                <article key={index}>
                                     <strong>Jogo {index + 1}:</strong> {game.join(", ")}
-                                    <ResultsCard
-                                        modalidade={modalidadeContent?.name}
-                                        numbersArr={[...game]}
-                                        acertos={acertos}
-                                        premio={premio}
-                                        consultor={nomeConsultor}
-                                        apostador={apostador}
-                                        quantidadeDezenas={selectedJogos}
-                                        resultado={dataResultado}
-                                        data={currentDate}
-                                        hora={currentDate}
-                                        numeroBilhete={numeroBilhete - 1 + 1 + index}
-                                        tipoBilhete={tipoBilhete}
-                                    />
+                                    <div
+                                        ref={(el) => {
+                                            divRefs.current[index] = el;
+                                        }}
+                                    >
+                                        <div className="" ref={cardRef}>
+                                            <ResultsCard
+                                                modalidade={modalidadeContent?.name}
+                                                numbersArr={[...game]}
+                                                acertos={acertos}
+                                                premio={premio}
+                                                consultor={nomeConsultor}
+                                                apostador={apostador}
+                                                quantidadeDezenas={selectedJogos}
+                                                resultado={dataResultado}
+                                                data={currentDate}
+                                                hora={currentDate}
+                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
+                                                tipoBilhete={tipoBilhete}
+                                            />
+                                        </div>
+                                    </div>
                                     {renderExportButtons()}
-                                </div>
+                                </article>
                             ))}
                         </div>
                     )}
@@ -509,7 +520,7 @@ const NovoBilhete = () => {
                             type="number"
                             id="acertos"
                             value={acertos}
-                            onChange={(e) => setAcertos(Number(e.target.value))}
+                            onChange={(e) => handleAcertos(Number(e.target.value))}
                         />
                     </div>
                     <div className={styles.inputsRow}>
@@ -519,7 +530,7 @@ const NovoBilhete = () => {
                             type="number"
                             id="premio"
                             value={premio}
-                            onChange={(e) => setPremio(Number(e.target.value))}
+                            onChange={(e) => handlePremio(Number(e.target.value))}
                         />
                     </div>
                     <div className={styles.inputsRow}>
@@ -529,7 +540,7 @@ const NovoBilhete = () => {
                             type="number"
                             id="tipoBilhete"
                             value={tipoBilhete}
-                            onChange={(e) => setTipoBilhete(Number(e.target.value))}
+                            onChange={(e) => handleTipoBilhete(Number(e.target.value))}
                         />
                     </div>
                     <div className={styles.inputsRow}>

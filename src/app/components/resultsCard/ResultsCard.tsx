@@ -156,7 +156,7 @@ const ResultsCard = ({
                         <span>{`Resultado: ${dateFormatted(resultado).dia}/${
                             dateFormatted(resultado).mes
                         }`}</span>
-                        <span>{`Prêmio: ${premio}`}</span>
+                        <span>{`Prêmio: R$${premio}`}</span>
                     </div>
                 </header>
                 <section className={styles.results}>

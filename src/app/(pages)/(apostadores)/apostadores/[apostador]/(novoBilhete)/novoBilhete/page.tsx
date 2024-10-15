@@ -39,7 +39,7 @@ const NovoBilhete = () => {
     const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]);
     const [importedNumbersArr, setImportedNumbersArr] = useState<string[]>([]);
     const [nomeConsultor, setNomeVendedor] = useState<string>("");
-    const [numeroBilhete, setNumeroBilhete] = useState<number>(0);
+    const [lote, setLote] = useState<string>("");
     const [textAreaValue, setTextAreaValue] = useState("");
     const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
@@ -156,9 +156,9 @@ const NovoBilhete = () => {
         setNomeVendedor(value);
     };
 
-    const handleNumeroBilhete = (event: any) => {
+    const handleLote = (event: any) => {
         const value = event.target.value;
-        setNumeroBilhete(value);
+        setLote(value);
     };
 
     const handleTextAreaContent = (e: any) => {
@@ -277,7 +277,7 @@ const NovoBilhete = () => {
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
-                                                numeroBilhete={numeroBilhete}
+                                                lote={lote}
                                                 consultor={nomeConsultor}
                                                 tipoBilhete={tipoBilhete}
                                             />
@@ -329,7 +329,7 @@ const NovoBilhete = () => {
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
-                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
+                                                lote={lote}
                                                 tipoBilhete={tipoBilhete}
                                             />
                                         </div>
@@ -393,7 +393,7 @@ const NovoBilhete = () => {
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
-                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
+                                                lote={lote}
                                                 tipoBilhete={tipoBilhete}
                                             />
                                         </div>
@@ -504,13 +504,13 @@ const NovoBilhete = () => {
                         />
                     </div>
                     <div className={styles.inputsRow}>
-                        <label htmlFor="numeroBilhete">Número do Bilhete:</label>
+                        <label htmlFor="lote">Lote:</label>
                         <input
                             className={styles.smallInput}
-                            type="number"
-                            id="numeroBilhete"
-                            value={numeroBilhete}
-                            onChange={handleNumeroBilhete}
+                            type="text"
+                            id="lote"
+                            value={lote}
+                            onChange={handleLote}
                         />
                     </div>
                     <div className={styles.inputsRow}>

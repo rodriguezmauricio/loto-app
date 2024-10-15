@@ -1,16 +1,11 @@
 "use client";
 
-import { BsDownload } from "react-icons/bs";
 import styles from "./resultsCard.module.css";
 import NumbersSorteio from "../numbersSorteio/NumbersSorteio";
-import { FaClover } from "react-icons/fa6";
-import { TbClover } from "react-icons/tb";
 import Title from "../title/Title";
 import { toPng, toJpeg } from "html-to-image";
 import { saveAs } from "file-saver";
 import { useRef } from "react";
-import Buttons from "../(buttons)/buttons/Buttons";
-import SimpleButton from "../(buttons)/simpleButton/SimpleButton";
 
 interface IResultsCard {
     data: Date;

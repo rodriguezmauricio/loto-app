@@ -267,6 +267,7 @@ const NovoBilhete = () => {
                                     {`Jogo ${index + 1} : `}
                                     {item.join(", ")}.
                                     <ResultsCard
+                                        modalidade={modalidadeContent?.name}
                                         numbersArr={[...item]}
                                         acertos={acertos}
                                         premio={premio}
@@ -314,6 +315,7 @@ const NovoBilhete = () => {
                                 >
                                     <strong>Jogo {index + 1}:</strong> {game.join(", ")}
                                     <ResultsCard
+                                        modalidade={modalidadeContent?.name}
                                         numbersArr={[...game]}
                                         acertos={acertos}
                                         premio={premio}
@@ -372,6 +374,7 @@ const NovoBilhete = () => {
                                 >
                                     <strong>Jogo {index + 1}:</strong> {game.join(", ")}
                                     <ResultsCard
+                                        modalidade={modalidadeContent?.name}
                                         numbersArr={[...game]}
                                         acertos={acertos}
                                         premio={premio}

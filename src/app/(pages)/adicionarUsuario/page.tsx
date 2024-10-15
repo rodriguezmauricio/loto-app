@@ -64,7 +64,7 @@ function AdicionarUsuario() {
       query = `
         INSERT INTO sellers (username, password_hash, phone, saldo, tipo_comissao, valor_comissao, admin_id)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
-        RETURNING id, username, saldo;  // Return relevant data after insertion
+        RETURNING id, username, saldo; 
       `;
       values = [username, passwordHash, phone, saldo, tipoComissao, valorComissao];
     }
@@ -74,7 +74,7 @@ function AdicionarUsuario() {
       query = `
       INSERT INTO admins (username, password_hash, admin_id, seller_id, saldo, phone, pix)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id, username, saldo;  // Return relevant data after insertion
+      RETURNING id, username, saldo; 
     `;
       values = [username, passwordHash, adminId, sellerId, saldo, phone, pix];
     } else {

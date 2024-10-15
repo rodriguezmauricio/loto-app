@@ -20,6 +20,7 @@ interface IResultsCard {
     hora: Date;
     premio: number;
     apostador: string;
+    lote: string;
     numeroBilhete: number;
     resultado: Date | null;
     tipoBilhete: number;
@@ -36,6 +37,7 @@ const ResultsCard = ({
     hora,
     premio,
     apostador,
+    lote,
     numeroBilhete,
     tipoBilhete,
     consultor,
@@ -141,12 +143,13 @@ const ResultsCard = ({
                     <div className={styles.headerInfo}>
                         <span>{`Modalidade: ${modalidade ? modalidade : ""}`}</span>
                         <span>{`Consultor: ${consultor ? consultor : ""}`}</span>
-                        <span>{`Lote: ${numeroBilhete ? numeroBilhete : 0}`}</span>
+                        <span>{`Lote: ${lote ? lote : 0}`}</span>
+                        <span>{`Número do Bilhete: ${numeroBilhete ? numeroBilhete : 0}`}</span>
                         <span>{`Apostador: ${apostador}`}</span>
                         <span>{`Valor Bilhete: ${
                             tipoBilhete >= 1 ? tipoBilhete : "Valor Promocional"
                         }`}</span>
-                        {/* <span>{`Cartela: ${numeroBilhete}`}</span> */}
+                        {/* <span>{`Cartela: ${lote}`}</span> */}
                         <span>{`Data: ${dateFormatted(data).dia}/${dateFormatted(data).mes}`}</span>
                         <span>{`Hora: ${dateFormatted(data).horas}:${
                             dateFormatted(data).minutos

@@ -40,10 +40,11 @@ const NovoBilhete = () => {
     const [importedNumbersArr, setImportedNumbersArr] = useState<string[]>([]);
     const [nomeConsultor, setNomeVendedor] = useState<string>("");
     const [lote, setLote] = useState<string>("");
+    const [numeroBilhete, setNumeroBilhete] = useState<number>(0);
     const [textAreaValue, setTextAreaValue] = useState("");
     const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
-    const [selectedJogos, setSelectedJogos] = useState<number>(1);
+    const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1);
     const [generatedGames, setGeneratedGames] = useState<number[][]>([]);
     const [numberOfGames, setNumberOfGames] = useState<number>(1);
 
@@ -126,9 +127,9 @@ const NovoBilhete = () => {
         setModalidadeContent(settingsObj);
     };
 
-    const handleNumeroDeJogosSelecionado = (event: any) => {
+    const handleQuantidadeDezenasSelecionadas = (event: any) => {
         const value = event.target.value;
-        setSelectedJogos(value);
+        setQuantidadeDeDezenas(value);
     };
 
     const handlePremio = (event: any) => {
@@ -159,6 +160,11 @@ const NovoBilhete = () => {
     const handleLote = (event: any) => {
         const value = event.target.value;
         setLote(value);
+    };
+
+    const handleNumeroBilhete = (event: any) => {
+        const value = event.target.value;
+        setNumeroBilhete(value);
     };
 
     const handleTextAreaContent = (e: any) => {
@@ -192,14 +198,14 @@ const NovoBilhete = () => {
     };
 
     const handleGenerateGames = () => {
-        if (!modalidadeContent || modalidadeContent.maxNumber < selectedJogos) {
+        if (!modalidadeContent || modalidadeContent.maxNumber < quantidadeDeDezenas) {
             console.error("Invalid modalidade settings or numbersPerGame is too high.");
             return; // Prevent further execution if validation fails
         }
 
         const games: number[][] = [];
         for (let i = 0; i < numberOfGames; i++) {
-            const game = generateRandomGame(modalidadeContent.maxNumber, selectedJogos);
+            const game = generateRandomGame(modalidadeContent.maxNumber, quantidadeDeDezenas);
             games.push(game);
         }
         setGeneratedGames(games);
@@ -268,12 +274,13 @@ const NovoBilhete = () => {
                                     >
                                         <div className="" ref={cardRef}>
                                             <ResultsCard
+                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
                                                 modalidade={modalidadeContent?.name}
                                                 numbersArr={[...item]}
                                                 acertos={acertos}
                                                 premio={premio}
                                                 apostador={apostador}
-                                                quantidadeDezenas={selectedJogos}
+                                                quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
@@ -319,13 +326,14 @@ const NovoBilhete = () => {
                                     >
                                         <div className="" ref={cardRef}>
                                             <ResultsCard
+                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
                                                 modalidade={modalidadeContent?.name}
                                                 numbersArr={[...game]}
                                                 acertos={acertos}
                                                 premio={premio}
                                                 consultor={nomeConsultor}
                                                 apostador={apostador}
-                                                quantidadeDezenas={selectedJogos}
+                                                quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
@@ -353,10 +361,8 @@ const NovoBilhete = () => {
                             <input
                                 className={styles.smallInput}
                                 type="number"
-                                value={selectedJogos}
-                                onChange={(e) =>
-                                    handleNumeroDeJogosSelecionado(Number(e.target.value))
-                                }
+                                value={quantidadeDeDezenas}
+                                onChange={handleQuantidadeDezenasSelecionadas}
                             />
                         </div>
                         <SimpleButton
@@ -383,13 +389,14 @@ const NovoBilhete = () => {
                                     >
                                         <div className="" ref={cardRef}>
                                             <ResultsCard
+                                                numeroBilhete={numeroBilhete - 1 + 1 + index}
                                                 modalidade={modalidadeContent?.name}
                                                 numbersArr={[...game]}
                                                 acertos={acertos}
                                                 premio={premio}
                                                 consultor={nomeConsultor}
                                                 apostador={apostador}
-                                                quantidadeDezenas={selectedJogos}
+                                                quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={dataResultado}
                                                 data={currentDate}
                                                 hora={currentDate}
@@ -514,13 +521,23 @@ const NovoBilhete = () => {
                         />
                     </div>
                     <div className={styles.inputsRow}>
+                        <label htmlFor="numeroBilhete">Número bilhete:</label>
+                        <input
+                            className={styles.smallInput}
+                            type="number"
+                            id="numeroBilhete"
+                            value={numeroBilhete}
+                            onChange={handleNumeroBilhete}
+                        />
+                    </div>
+                    <div className={styles.inputsRow}>
                         <label htmlFor="acertos">Acertos:</label>
                         <input
                             className={styles.smallInput}
                             type="number"
                             id="acertos"
                             value={acertos}
-                            onChange={(e) => handleAcertos(Number(e.target.value))}
+                            onChange={handleAcertos}
                         />
                     </div>
                     <div className={styles.inputsRow}>
@@ -530,7 +547,7 @@ const NovoBilhete = () => {
                             type="number"
                             id="premio"
                             value={premio}
-                            onChange={(e) => handlePremio(Number(e.target.value))}
+                            onChange={handlePremio}
                         />
                     </div>
                     <div className={styles.inputsRow}>
@@ -540,7 +557,7 @@ const NovoBilhete = () => {
                             type="number"
                             id="tipoBilhete"
                             value={tipoBilhete}
-                            onChange={(e) => handleTipoBilhete(Number(e.target.value))}
+                            onChange={handleTipoBilhete}
                         />
                     </div>
                     <div className={styles.inputsRow}>

@@ -28,7 +28,7 @@ export interface IModalidade {
 }
 
 const NovoBilhete = () => {
-    // State variables
+    // VARS:
     const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
     const [currentDate, setCurrentDate] = useState(new Date());
     const [acertos, setAcertos] = useState(0);
@@ -51,6 +51,7 @@ const NovoBilhete = () => {
     const divRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for divs to export to PDF
     const cardRef = useRef<HTMLDivElement | null>(null); // Ref for exporting individually
 
+    //HANDLERS:
     const exportAsImage = async (format = "png", saveToClipboard = false) => {
         if (cardRef.current === null) return;
 
@@ -211,6 +212,7 @@ const NovoBilhete = () => {
         setGeneratedGames(games);
     };
 
+    //FUNCTIONS:
     const addBilheteCompToRender = (button: string) => {
         const renderExportButtons = () => (
             <div className={styles.buttonRow}>
@@ -417,6 +419,16 @@ const NovoBilhete = () => {
         return null; // Default return for unsupported options
     };
 
+    // Function to generate a random game of unique numbers
+    const generateRandomGame = (maxNumber: number, gameSize: number) => {
+        const game = new Set<number>(); // Use Set to avoid duplicates
+        while (game.size < gameSize) {
+            const randomNum = Math.floor(Math.random() * maxNumber) + 1;
+            game.add(randomNum);
+        }
+        return Array.from(game).sort((a, b) => a - b); // Convert Set to array and sort
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -429,16 +441,6 @@ const NovoBilhete = () => {
 
         fetchData();
     }, []);
-
-    // Function to generate a random game of unique numbers
-    const generateRandomGame = (maxNumber: number, gameSize: number) => {
-        const game = new Set<number>(); // Use Set to avoid duplicates
-        while (game.size < gameSize) {
-            const randomNum = Math.floor(Math.random() * maxNumber) + 1;
-            game.add(randomNum);
-        }
-        return Array.from(game).sort((a, b) => a - b); // Convert Set to array and sort
-    };
 
     // SECTION: COMPONENTS RETURN STATEMENT
     return (

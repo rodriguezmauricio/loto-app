@@ -3,6 +3,7 @@ import styles from "./addAdminForm.module.scss";
 import { IRadioOptions } from "@/app/(pages)/adicionarUsuario/page";
 import { useForm, Controller } from "react-hook-form";
 import SimpleButton from "../(buttons)/simpleButton/SimpleButton";
+import { hashPassword } from "@/app/utils/utils";
 
 // Define a type for userType
 export type UserType = "vendedor" | "usuario";
@@ -12,18 +13,6 @@ interface AddAdminFormProps {
     radioOptions: IRadioOptions[];
     selectedRadioOption: string;
     radioHandler: (event: React.ChangeEvent<HTMLInputElement>) => void; // Better type for radioHandler
-    submitInfo: (
-        userType: string,
-        username: string,
-        password: string,
-        phone: string,
-        adminId: string,
-        sellerId: string,
-        pix: string,
-        saldo: number,
-        tipoComissao: string,
-        valorComissao: number
-    ) => Promise<void>;
 }
 
 const AddAdminForm: React.FC<AddAdminFormProps> = ({
@@ -31,60 +20,71 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
     radioOptions,
     selectedRadioOption,
     radioHandler,
-    submitInfo,
 }) => {
-    const { control, handleSubmit } = useForm();
+    //VARS:
+    const [userData, setUserData] = React.useState<any>();
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
 
-    const onSubmit = async (data: any) => {
-        await submitInfo(
-            userType,
-            data.username,
-            data.password,
-            data.phone,
-            data.adminId, // Adjust if these fields are relevant to the current form
-            data.sellerId, // Adjust if these fields are relevant to the current form
-            data.pix, // Adjust if these fields are relevant to the current form
-            data.saldo, // Adjust if these fields are relevant to the current form
-            selectedRadioOption,
-            data.valorComissao
-        );
+    const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+    };
+
+    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
+
+    /* 
+    Receives the info from the page and send it to this form component.
+    onsubmit is a function from reactHook form and must exist.
+    data is the information thats gonna be sent to the server
+    and it contains the form data for each user.
+    */
+    const onSubmit = async (e: any) => {
+        e.preventDefault();
+
+        const payload = {
+            username,
+            password: hashPassword(password),
+        };
+
+        fetch(`/api/users/`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                setUserData(data);
+                console.log("Success");
+            })
+            .catch((error) => console.error("Error:", error));
     };
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <form className={styles.form} onSubmit={onSubmit}>
             <div className={styles.formSection}>
                 <label htmlFor="username">Username</label>
-                <Controller
+
+                <input
+                    type="text"
                     name="username"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                        <input
-                            type="text"
-                            {...field}
-                            name="username"
-                            id="username"
-                            className={styles.input}
-                        />
-                    )}
+                    id="username"
+                    className={styles.input}
+                    value={username}
+                    onChange={handleUsername}
                 />
             </div>
 
             <div className={styles.formSection}>
                 <label htmlFor="password">Password</label>
-                <Controller
+
+                <input
+                    type="password"
                     name="password"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                        <input
-                            type="password"
-                            {...field}
-                            name="password"
-                            id="password"
-                            className={styles.input}
-                        />
-                    )}
+                    id="password"
+                    className={styles.input}
+                    value={password}
+                    onChange={handlePassword}
                 />
             </div>
 
@@ -92,38 +92,14 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                 <section className={styles.form}>
                     <div className={styles.formSection}>
                         <label htmlFor="phone">Telefone</label>
-                        <Controller
-                            name="phone"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <input
-                                    type="tel"
-                                    {...field}
-                                    name="phone"
-                                    id="phone"
-                                    className={styles.input}
-                                />
-                            )}
-                        />
+
+                        <input type="tel" name="phone" id="phone" className={styles.input} />
                     </div>
 
                     <div className={styles.formSection}>
                         <label htmlFor="saldo">Saldo Inicial</label>
-                        <Controller
-                            name="saldo"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <input
-                                    type="number"
-                                    {...field}
-                                    name="saldo"
-                                    id="saldo"
-                                    className={styles.input}
-                                />
-                            )}
-                        />
+
+                        <input type="number" name="saldo" id="saldo" className={styles.input} />
                     </div>
                 </section>
             )}
@@ -135,19 +111,13 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                             <label htmlFor="tipoComissao">Tipo de Comissão:</label>
                             {radioOptions.map((radio) => (
                                 <div key={radio.value}>
-                                    <Controller
-                                        name="tipoComissao"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <input
-                                                {...field}
-                                                type="radio"
-                                                value={radio.value}
-                                                checked={selectedRadioOption === radio.value}
-                                                onChange={radioHandler}
-                                            />
-                                        )}
+                                    <input
+                                        type="radio"
+                                        value={radio.value}
+                                        checked={selectedRadioOption === radio.value}
+                                        onChange={radioHandler}
                                     />
+
                                     {radio.label}
                                 </div>
                             ))}
@@ -155,19 +125,12 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
 
                         <div className={styles.formSection}>
                             <label htmlFor="valorComissao">Valor da comissão</label>
-                            <Controller
+
+                            <input
+                                type="number"
                                 name="valorComissao"
-                                control={control}
-                                defaultValue={10}
-                                render={({ field }) => (
-                                    <input
-                                        type="number"
-                                        {...field}
-                                        name="valorComissao"
-                                        id="valorComissao"
-                                        className={styles.input}
-                                    />
-                                )}
+                                id="valorComissao"
+                                className={styles.input}
                             />
                         </div>
                     </section>
@@ -177,14 +140,8 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
             {userType === "usuario" && (
                 <section className={styles.form}>
                     <label htmlFor="pix">Pix</label>
-                    <Controller
-                        name="valorComissao"
-                        control={control}
-                        defaultValue={10}
-                        render={({ field }) => (
-                            <input type="text" name="pix" id="pix" className={styles.input} />
-                        )}
-                    />
+
+                    <input type="text" name="pix" id="pix" className={styles.input} />
                 </section>
             )}
 
@@ -192,7 +149,7 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                 <SimpleButton
                     type="submit"
                     btnTitle={`Criar novo ${userType}`}
-                    func={() => console.log(submitInfo)}
+                    func={() => console.log("botao clicado")}
                     isSelected={false}
                 />
             )}

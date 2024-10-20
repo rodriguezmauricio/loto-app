@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./addAdminForm.module.scss";
 import { IRadioOptions } from "@/app/(pages)/adicionarUsuario/page";
 import { useForm, Controller } from "react-hook-form";
@@ -19,9 +19,9 @@ interface AddAdminFormProps {
 
 const AddAdminForm: React.FC<AddAdminFormProps> = ({
     userType,
-    radioOptions,
-    selectedRadioOption,
-    radioHandler,
+    // radioOptions,
+    // selectedRadioOption,
+    // radioHandler,
 }) => {
     //VARS:
     const [userData, setUserData] = React.useState<any>();
@@ -35,12 +35,40 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
     const [tipoComissao, setTipoComissao] = React.useState("");
     const [valorComissao, setValorComissao] = React.useState(0);
 
+    const [selectedRadioButton, setSelectedRadioButton] = useState("");
+
+    const radioOptions = [
+        { value: "percent", label: "Porcentagem" },
+        { value: "absolute", label: "Valor em R$" },
+    ];
+
+    //HANDLERS:
     const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
     };
 
     const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
+    };
+
+    const handleRadioChange = (e: { target: { value: React.SetStateAction<string> } }) => {
+        setSelectedRadioButton(e.target.value);
+    };
+
+    const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPhone(e.target.value);
+    };
+    const handlePix = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPix(e.target.value);
+    };
+    const handleSaldo = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSaldo(Number(e.target.value));
+    };
+    const handleTipoComissao = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setTipoComissao(e.target.value);
+    };
+    const handleValorComissao = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setValorComissao(Number(e.target.value));
     };
 
     /* 
@@ -65,6 +93,9 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                 password: hashPassword(password),
                 phone,
                 adminId,
+                saldo,
+                tipoComissao,
+                valorComissao,
             };
         } else if (userType === "usuario") {
             payload = {
@@ -145,13 +176,27 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                     <div className={styles.formSection}>
                         <label htmlFor="phone">Telefone</label>
 
-                        <input type="tel" name="phone" id="phone" className={styles.input} />
+                        <input
+                            type="tel"
+                            name="phone"
+                            id="phone"
+                            className={styles.input}
+                            value={phone}
+                            onChange={handlePhone}
+                        />
                     </div>
 
                     <div className={styles.formSection}>
                         <label htmlFor="saldo">Saldo Inicial</label>
 
-                        <input type="number" name="saldo" id="saldo" className={styles.input} />
+                        <input
+                            type="number"
+                            name="saldo"
+                            id="saldo"
+                            className={styles.input}
+                            value={saldo}
+                            onChange={handleSaldo}
+                        />
                     </div>
                 </section>
             )}
@@ -166,8 +211,8 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                                     <input
                                         type="radio"
                                         value={radio.value}
-                                        checked={selectedRadioOption === radio.value}
-                                        onChange={radioHandler}
+                                        checked={selectedRadioButton === radio.value}
+                                        onChange={handleRadioChange}
                                     />
 
                                     {radio.label}
@@ -183,6 +228,8 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                                 name="valorComissao"
                                 id="valorComissao"
                                 className={styles.input}
+                                value={valorComissao}
+                                onChange={handleValorComissao}
                             />
                         </div>
                     </section>
@@ -193,7 +240,14 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                 <section className={styles.form}>
                     <label htmlFor="pix">Pix</label>
 
-                    <input type="text" name="pix" id="pix" className={styles.input} />
+                    <input
+                        type="text"
+                        name="pix"
+                        id="pix"
+                        className={styles.input}
+                        value={pix}
+                        onChange={handlePix}
+                    />
                 </section>
             )}
 

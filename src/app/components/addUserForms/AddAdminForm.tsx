@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./addAdminForm.module.scss";
 import { IRadioOptions } from "@/app/(pages)/adicionarUsuario/page";
 import { useForm, Controller } from "react-hook-form";
@@ -6,7 +6,7 @@ import SimpleButton from "../(buttons)/simpleButton/SimpleButton";
 import { hashPassword } from "@/app/utils/utils";
 
 // Define a type for userType
-export type UserType = "vendedor" | "usuario";
+export type UserType = "admin" | "vendedor" | "usuario";
 
 interface AddAdminFormProps {
     userType: UserType;
@@ -14,6 +14,8 @@ interface AddAdminFormProps {
     selectedRadioOption: string;
     radioHandler: (event: React.ChangeEvent<HTMLInputElement>) => void; // Better type for radioHandler
 }
+
+//TODO: CHECK IF ADDING ADMIN IS STILL WORKING
 
 const AddAdminForm: React.FC<AddAdminFormProps> = ({
     userType,
@@ -25,6 +27,13 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
     const [userData, setUserData] = React.useState<any>();
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [phone, setPhone] = React.useState("");
+    const [adminId, setAdminId] = React.useState("");
+    const [sellerId, setSellerId] = React.useState("");
+    const [pix, setPix] = React.useState("");
+    const [saldo, setSaldo] = React.useState(0);
+    const [tipoComissao, setTipoComissao] = React.useState("");
+    const [valorComissao, setValorComissao] = React.useState(0);
 
     const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
@@ -43,12 +52,33 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
     const onSubmit = async (e: any) => {
         e.preventDefault();
 
-        const payload = {
-            username,
-            password: hashPassword(password),
-        };
+        let payload: any;
 
-        fetch(`/api/users/`, {
+        if (userType === "admin") {
+            payload = {
+                username,
+                password: hashPassword(password),
+            };
+        } else if (userType === "vendedor") {
+            payload = {
+                username,
+                password: hashPassword(password),
+                phone,
+                adminId,
+            };
+        } else if (userType === "usuario") {
+            payload = {
+                username,
+                password: hashPassword(password),
+                phone,
+                adminId,
+                sellerId,
+                pix,
+                saldo,
+            };
+        }
+
+        fetch(`/api/admins/`, {
             method: "POST",
             body: JSON.stringify(payload),
         })
@@ -59,6 +89,28 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
             })
             .catch((error) => console.error("Error:", error));
     };
+
+    useEffect(() => {
+        //TODO: add folder for fetching adminId based on adminId
+        //TODO: Check to see if its working
+        fetch(`/api/admins/`)
+            .then((response) => response.json())
+            .then((data) => {
+                setAdminId(data.id);
+            })
+            .catch((error) => console.error("Error:", error));
+
+        //TODO: add folder for fetching sellerId based on sellerId
+        //TODO: Check to see if its working
+        if (userType === "vendedor") {
+            fetch(`/api/vendedores/`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setSellerId(data.id);
+                })
+                .catch((error) => console.error("Error:", error));
+        }
+    }, [userType]);
 
     return (
         <form className={styles.form} onSubmit={onSubmit}>

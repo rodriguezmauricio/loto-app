@@ -15,13 +15,6 @@ export interface IRadioOptions {
 function AdicionarUsuario({ id }: { id: string }) {
     //VARS:
     const [userToAdd, setUserToAdd] = useState<UserType>();
-    const [userInfo, setUserInfo] = useState({
-        username: "",
-        password: "",
-    });
-
-    const [userData, setUserData] = useState();
-
     const [selectedRadioButton, setSelectedRadioButton] = useState("");
 
     const radioOptions = [
@@ -37,31 +30,6 @@ function AdicionarUsuario({ id }: { id: string }) {
     const handleUserToAdd = (e: any) => {
         setUserToAdd(e);
         console.log(e);
-    };
-
-    /* 
-    The function below is used to add a new user to the system.
-    it sends the user info to the form and add them to the database based on the user type.
-    */
-    const handleSendUserInfo = async (e: any) => {
-        e.preventDefault();
-
-        const payload = {
-            username: userInfo.username,
-            password: hashPassword(userInfo.password),
-            userType: userToAdd,
-            // TODO: add more fields based on user type
-        };
-
-        fetch(`/api/users/${id}`, {
-            method: "POST",
-            body: JSON.stringify(payload),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setUserData(data);
-            })
-            .catch((error) => console.error("Error:", error));
     };
 
     return (
@@ -85,7 +53,7 @@ function AdicionarUsuario({ id }: { id: string }) {
                     isSelected={false}
                 />
 
-                {/* Render user form besd on the type of user
+                {/* Render user form based on the type of user
                     Calls the handleSendUserInfo function when form is submitted
                     It contains the form data
                 */}
@@ -95,7 +63,6 @@ function AdicionarUsuario({ id }: { id: string }) {
                         radioOptions={radioOptions}
                         selectedRadioOption={selectedRadioButton}
                         radioHandler={handleRadioChange}
-                        submitInfo={(e) => handleSendUserInfo(e)}
                     />
                 )}
             </main>

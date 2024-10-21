@@ -3,16 +3,25 @@ import { sql } from "@vercel/postgres"; // Import the Vercel Postgres client
 import bcrypt from "bcryptjs"; // Import bcrypt for password verification
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    // Only handle POST requests
     if (req.method === "POST") {
         const { username, password } = req.body;
 
+        // Input validation
+        if (!username || !password) {
+            return res.status(400).json({ message: "Username and password are required" });
+        }
+
         try {
+            // Check in admins table
             const adminResult = await sql`SELECT * FROM admins WHERE username = ${username};`;
             if (adminResult.rowCount && adminResult.rowCount > 0) {
                 const admin = adminResult.rows[0];
                 const isValidPassword = await bcrypt.compare(password, admin.password_hash);
                 if (isValidPassword) {
-                    return res.status(200).json({ id: admin.id, adminType: "admin" });
+                    return res.status(200).json({ id: admin.id, userType: "admin" });
+                } else {
+                    console.error("Invalid password for admin:", username);
                 }
             }
 
@@ -23,6 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const isValidPassword = await bcrypt.compare(password, seller.password_hash);
                 if (isValidPassword) {
                     return res.status(200).json({ id: seller.id, userType: "vendedor" });
+                } else {
+                    console.error("Invalid password for seller:", username);
                 }
             }
 
@@ -33,6 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const isValidPassword = await bcrypt.compare(password, user.password_hash);
                 if (isValidPassword) {
                     return res.status(200).json({ id: user.id, userType: "usuario" });
+                } else {
+                    console.error("Invalid password for user:", username);
                 }
             }
 

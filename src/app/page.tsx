@@ -10,19 +10,9 @@ interface LoginProps {
 }
 
 const App: React.FC = () => {
-    const [loggedInAdminId, setLoggedInAdminId] = useState<string>("");
-    const [loggedInSellerId, setLoggedInSellerId] = useState<string>("");
-
     return (
         <div>
-            {!loggedInAdminId && !loggedInSellerId ? (
-                <Login
-                    setLoggedInAdminId={setLoggedInAdminId}
-                    setLoggedInSellerId={setLoggedInSellerId}
-                />
-            ) : (
-                <DashboardPage />
-            )}
+            <Login />
         </div>
     );
 };

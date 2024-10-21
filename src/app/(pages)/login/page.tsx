@@ -1,15 +1,11 @@
 // src/app/(pages)/login/page.tsx
-"use client"; // This is important for client-side components
+"use client";
 import React, { useState } from "react";
+import useStore from "../../../../store/useStore"; // Adjust according to your store structure
 
-// Define the props interface
-interface LoginProps {
-    setLoggedInAdminId: (id: string) => void;
-    setLoggedInSellerId: (id: string) => void;
-}
-
-// Login Component
-const Login: React.FC<LoginProps> = ({ setLoggedInAdminId, setLoggedInSellerId }) => {
+const Login: React.FC = () => {
+    const setLoggedInAdminId = useStore((state) => state.setLoggedInAdminId);
+    const setLoggedInSellerId = useStore((state) => state.setLoggedInSellerId);
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
 
@@ -57,5 +53,4 @@ const Login: React.FC<LoginProps> = ({ setLoggedInAdminId, setLoggedInSellerId }
     );
 };
 
-// Export the component as default
 export default Login;

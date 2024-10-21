@@ -1,15 +1,17 @@
-"use client";
-// components/Login.tsx
+// src/app/(pages)/login/page.tsx
+"use client"; // This is important for client-side components
 import React, { useState } from "react";
 
+// Define the props interface
 interface LoginProps {
     setLoggedInAdminId: (id: string) => void;
     setLoggedInSellerId: (id: string) => void;
 }
 
+// Login Component
 const Login: React.FC<LoginProps> = ({ setLoggedInAdminId, setLoggedInSellerId }) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -55,4 +57,5 @@ const Login: React.FC<LoginProps> = ({ setLoggedInAdminId, setLoggedInSellerId }
     );
 };
 
+// Export the component as default
 export default Login;

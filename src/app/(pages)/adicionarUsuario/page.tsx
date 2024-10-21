@@ -6,6 +6,7 @@ import PageHeader from "@/app/components/pageHeader/PageHeader";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import { hashPassword } from "@/app/utils/utils";
 import Title from "@/app/components/title/Title";
+import useStore from "../../../../store/useStore";
 
 export interface IRadioOptions {
     value: string;
@@ -14,6 +15,9 @@ export interface IRadioOptions {
 
 function AdicionarUsuario({ id }: { id: string }) {
     //VARS:
+
+    const loggedInAdminId = useStore((state) => state.loggedInAdminId);
+    const loggedInSellerId = useStore((state) => state.loggedInSellerId);
     const [userToAdd, setUserToAdd] = useState<UserType>();
     const [selectedRadioButton, setSelectedRadioButton] = useState("");
 
@@ -63,6 +67,8 @@ function AdicionarUsuario({ id }: { id: string }) {
                         radioOptions={radioOptions}
                         selectedRadioOption={selectedRadioButton}
                         radioHandler={handleRadioChange}
+                        adminId={loggedInAdminId}
+                        sellerId={loggedInSellerId}
                     />
                 )}
             </main>

@@ -16,12 +16,12 @@ export async function GET(
 }
 
 export async function POST(request: Request) {
-    const { username, password, phone, adminId, saldo, tipoComissao, valorComissao } =
+    const { adminId, username, phone, saldo, tipoComissao, valorComissao, password } =
         await request.json();
 
     const insertVendedor = await sql`
-    INSERT INTO sellers (username, password_hash, phone, admin_id, saldo, tipo_comissao, valor_comissao)
-    VALUES (${username}, ${password}, ${phone}, ${adminId}, ${saldo}, ${tipoComissao}, ${valorComissao});
+    INSERT INTO sellers (admin_id, username, phone, saldo, tipo_comissao, valor_comissao, password_hash)
+    VALUES (${adminId},${username}, ${phone}, ${saldo}, ${tipoComissao}, ${valorComissao}, ${tipoComissao}, ${valorComissao}, ${password}::text);
     `;
 
     return insertVendedor;

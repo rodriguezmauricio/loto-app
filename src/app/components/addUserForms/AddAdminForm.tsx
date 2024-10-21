@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+// components/AddAdminForm.tsx
+import React, { useState } from "react";
 import styles from "./addAdminForm.module.scss";
-import { IRadioOptions } from "@/app/(pages)/adicionarUsuario/page";
-import { useForm, Controller } from "react-hook-form";
-import SimpleButton from "../(buttons)/simpleButton/SimpleButton";
+import { IRadioOptions } from "@/app/(pages)/adicionarUsuario/page"; // Adjust the import path as needed
 import { hashPassword } from "@/app/utils/utils";
 
 // Define a type for userType
@@ -10,164 +9,124 @@ export type UserType = "admin" | "vendedor" | "usuario";
 
 interface AddAdminFormProps {
     userType: UserType;
-    radioOptions: IRadioOptions[];
+    radioOptions: IRadioOptions[]; // Add this line to define the prop
     selectedRadioOption: string;
-    radioHandler: (event: React.ChangeEvent<HTMLInputElement>) => void; // Better type for radioHandler
+    radioHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    adminId: string; // Assuming this is the admin ID
+    sellerId?: string; // Optional seller ID for "usuario"
 }
 
-//TODO: CHECK IF ADDING ADMIN IS STILL WORKING
+// Main component
+const AddAdminForm: React.FC<AddAdminFormProps> = ({ userType, adminId, sellerId }) => {
+    const [userData, setUserData] = useState<any>();
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [phone, setPhone] = useState<string>("");
+    const [pix, setPix] = useState<string>("");
+    const [saldo, setSaldo] = useState<number>(0);
+    const [tipoComissao, setTipoComissao] = useState<string>("");
+    const [valorComissao, setValorComissao] = useState<number>(0);
 
-const AddAdminForm: React.FC<AddAdminFormProps> = ({
-    userType,
-    // radioOptions,
-    // selectedRadioOption,
-    // radioHandler,
-}) => {
-    //VARS:
-    const [userData, setUserData] = React.useState<any>();
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [phone, setPhone] = React.useState("");
-    const [adminId, setAdminId] = React.useState("");
-    const [sellerId, setSellerId] = React.useState("");
-    const [pix, setPix] = React.useState("");
-    const [saldo, setSaldo] = React.useState(0);
-    const [tipoComissao, setTipoComissao] = React.useState("");
-    const [valorComissao, setValorComissao] = React.useState(0);
-
-    const [selectedRadioButton, setSelectedRadioButton] = useState("");
-
-    const radioOptions = [
-        { value: "percent", label: "Porcentagem" },
-        { value: "absolute", label: "Valor em R$" },
-    ];
-
-    //HANDLERS:
-    const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUsername(e.target.value);
-    };
-
-    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-    };
-
-    const handleRadioChange = (e: { target: { value: React.SetStateAction<string> } }) => {
-        setSelectedRadioButton(e.target.value);
-    };
-
-    const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPhone(e.target.value);
-    };
-    const handlePix = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPix(e.target.value);
-    };
-    const handleSaldo = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSaldo(Number(e.target.value));
-    };
-    const handleTipoComissao = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTipoComissao(e.target.value);
-    };
-    const handleValorComissao = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValorComissao(Number(e.target.value));
-    };
-
-    /* 
-    Receives the info from the page and send it to this form component.
-    onsubmit is a function from reactHook form and must exist.
-    data is the information thats gonna be sent to the server
-    and it contains the form data for each user.
-    */
-    const onSubmit = async (e: any) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        const passwordHash = await hashPassword(password); // Hash password
 
         let payload: any;
 
         if (userType === "admin") {
             payload = {
                 username,
-                password: hashPassword(password),
+                password: passwordHash,
             };
+
+            fetch(`/api/admins/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setUserData(data);
+                    console.log("Success");
+                })
+                .catch((error) => console.error("Error:", error));
         } else if (userType === "vendedor") {
             payload = {
                 username,
-                password: hashPassword(password),
                 phone,
-                adminId,
                 saldo,
                 tipoComissao,
                 valorComissao,
+                password: passwordHash,
+                adminId, // Use the passed adminId
             };
+
+            fetch(`/api/sellers/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setUserData(data);
+                    console.log("Success");
+                })
+                .catch((error) => console.error("Error:", error));
         } else if (userType === "usuario") {
             payload = {
                 username,
-                password: hashPassword(password),
+                password: passwordHash,
                 phone,
-                adminId,
-                sellerId,
+                adminId, // Use the passed adminId
+                sellerId, // Use the passed sellerId
                 pix,
                 saldo,
             };
-        }
 
-        fetch(`/api/admins/`, {
-            method: "POST",
-            body: JSON.stringify(payload),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setUserData(data);
-                console.log("Success");
+            fetch(`/api/users/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
             })
-            .catch((error) => console.error("Error:", error));
-    };
-
-    useEffect(() => {
-        //TODO: add folder for fetching adminId based on adminId
-        //TODO: Check to see if its working
-        fetch(`/api/admins/`)
-            .then((response) => response.json())
-            .then((data) => {
-                setAdminId(data.id);
-            })
-            .catch((error) => console.error("Error:", error));
-
-        //TODO: add folder for fetching sellerId based on sellerId
-        //TODO: Check to see if its working
-        if (userType === "vendedor") {
-            fetch(`/api/vendedores/`)
                 .then((response) => response.json())
                 .then((data) => {
-                    setSellerId(data.id);
+                    setUserData(data);
+                    console.log("Success");
                 })
                 .catch((error) => console.error("Error:", error));
         }
-    }, [userType]);
+    };
 
     return (
         <form className={styles.form} onSubmit={onSubmit}>
             <div className={styles.formSection}>
                 <label htmlFor="username">Username</label>
-
                 <input
                     type="text"
                     name="username"
                     id="username"
                     className={styles.input}
                     value={username}
-                    onChange={handleUsername}
+                    onChange={(e) => setUsername(e.target.value)}
                 />
             </div>
 
             <div className={styles.formSection}>
                 <label htmlFor="password">Password</label>
-
                 <input
                     type="password"
                     name="password"
                     id="password"
                     className={styles.input}
                     value={password}
-                    onChange={handlePassword}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
 
@@ -175,90 +134,45 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({
                 <section className={styles.form}>
                     <div className={styles.formSection}>
                         <label htmlFor="phone">Telefone</label>
-
                         <input
                             type="tel"
                             name="phone"
                             id="phone"
                             className={styles.input}
                             value={phone}
-                            onChange={handlePhone}
+                            onChange={(e) => setPhone(e.target.value)}
                         />
                     </div>
 
                     <div className={styles.formSection}>
                         <label htmlFor="saldo">Saldo Inicial</label>
-
                         <input
                             type="number"
                             name="saldo"
                             id="saldo"
                             className={styles.input}
                             value={saldo}
-                            onChange={handleSaldo}
+                            onChange={(e) => setSaldo(Number(e.target.value))}
                         />
                     </div>
-                </section>
-            )}
-
-            {userType === "vendedor" && (
-                <section className={styles.form}>
-                    <section className={styles.form}>
-                        <div className={styles.formSection}>
-                            <label htmlFor="tipoComissao">Tipo de Comissão:</label>
-                            {radioOptions.map((radio) => (
-                                <div key={radio.value}>
-                                    <input
-                                        type="radio"
-                                        value={radio.value}
-                                        checked={selectedRadioButton === radio.value}
-                                        onChange={handleRadioChange}
-                                    />
-
-                                    {radio.label}
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className={styles.formSection}>
-                            <label htmlFor="valorComissao">Valor da comissão</label>
-
-                            <input
-                                type="number"
-                                name="valorComissao"
-                                id="valorComissao"
-                                className={styles.input}
-                                value={valorComissao}
-                                onChange={handleValorComissao}
-                            />
-                        </div>
-                    </section>
                 </section>
             )}
 
             {userType === "usuario" && (
                 <section className={styles.form}>
                     <label htmlFor="pix">Pix</label>
-
                     <input
                         type="text"
                         name="pix"
                         id="pix"
                         className={styles.input}
                         value={pix}
-                        onChange={handlePix}
+                        onChange={(e) => setPix(e.target.value)}
                     />
                 </section>
             )}
 
-            {userType != null && (
-                <SimpleButton
-                    type="submit"
-                    btnTitle={`Criar novo ${userType}`}
-                    func={() => console.log("botao clicado")}
-                    isSelected={false}
-                />
-            )}
+            <button type="submit">Criar novo {userType}</button>
         </form>
     );
 };

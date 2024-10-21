@@ -1,10 +1,9 @@
+// src/app/(pages)/adicionarUsuario/page.tsx
 "use client";
 import { useState } from "react";
-// import styles from "./adicionarUsuario.modules.scss";
 import AddAdminForm, { UserType } from "../../components/addUserForms/AddAdminForm";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
-import { hashPassword } from "@/app/utils/utils";
 import Title from "@/app/components/title/Title";
 import useStore from "../../../../store/useStore";
 
@@ -13,27 +12,25 @@ export interface IRadioOptions {
     label: string;
 }
 
-function AdicionarUsuario({ id }: { id: string }) {
-    //VARS:
-
+const AdicionarUsuario: React.FC<{ params: { id: string } }> = ({ params }) => {
+    const { id } = params; // Extracting id from params if needed
     const loggedInAdminId = useStore((state) => state.loggedInAdminId);
     const loggedInSellerId = useStore((state) => state.loggedInSellerId);
-    const [userToAdd, setUserToAdd] = useState<UserType>();
+    const [userToAdd, setUserToAdd] = useState<UserType | null>(null); // Allowing null
     const [selectedRadioButton, setSelectedRadioButton] = useState("");
 
-    const radioOptions = [
+    const radioOptions: IRadioOptions[] = [
         { value: "percent", label: "Porcentagem" },
         { value: "absolute", label: "Valor em R$" },
     ];
 
-    //HANDLERS:
-    const handleRadioChange = (e: any) => {
+    const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedRadioButton(e.target.value);
     };
 
-    const handleUserToAdd = (e: any) => {
-        setUserToAdd(e);
-        console.log(e);
+    const handleUserToAdd = (type: UserType) => {
+        setUserToAdd(type);
+        console.log(type);
     };
 
     return (
@@ -57,10 +54,7 @@ function AdicionarUsuario({ id }: { id: string }) {
                     isSelected={false}
                 />
 
-                {/* Render user form based on the type of user
-                    Calls the handleSendUserInfo function when form is submitted
-                    It contains the form data
-                */}
+                {/* Render user form based on the type of user */}
                 {userToAdd && (
                     <AddAdminForm
                         userType={userToAdd}
@@ -74,6 +68,6 @@ function AdicionarUsuario({ id }: { id: string }) {
             </main>
         </>
     );
-}
+};
 
 export default AdicionarUsuario;

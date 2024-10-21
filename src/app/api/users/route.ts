@@ -1,3 +1,4 @@
+// src/app/api/users/route.ts
 import { sql } from "@vercel/postgres";
 
 export async function GET(
@@ -16,12 +17,25 @@ export async function GET(
 }
 
 export async function POST(request: Request) {
-    const { username, password, phone, adminId, sellerId, pix, saldo } = await request.json();
+    try {
+        const { username, password, phone, adminId, sellerId, pix, saldo } = await request.json();
 
-    const insertUsuario =
-        await sql`INSERT INTO users (username, password_hash, phone, admin_id, seller_id, pix, saldo)
-            VALUES (${username}, ${password}, ${phone}, ${adminId}, ${sellerId}, ${pix}, ${saldo});
-            `;
+        // Insert into users table and return the new user's id
+        const result = await sql`
+            INSERT INTO users (username, password_hash, phone, admin_id, seller_id, pix, saldo)
+            VALUES (${username}, ${password}, ${phone}, ${adminId}, ${sellerId}, ${pix}, ${saldo})
+            RETURNING id;  // Add RETURNING clause to get the newly created user's id
+        `;
 
-    return insertUsuario;
+        const newUserId = result.rows[0]?.id; // Access the id of the newly created user
+
+        // Respond with a success message
+        return Response.json(
+            { message: "User created successfully", id: newUserId },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("Error inserting user:", error);
+        return Response.json({ message: "Internal Server Error" }, { status: 500 });
+    }
 }

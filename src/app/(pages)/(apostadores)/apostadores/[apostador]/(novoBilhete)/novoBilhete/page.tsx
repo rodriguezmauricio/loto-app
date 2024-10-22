@@ -177,7 +177,7 @@ const NovoBilhete = () => {
             return;
         }
 
-        const result = content.split(",").map((match: string) => {
+        const result = content.split("\n").map((match: string) => {
             const numbers = match
                 .trim()
                 .split(" ")

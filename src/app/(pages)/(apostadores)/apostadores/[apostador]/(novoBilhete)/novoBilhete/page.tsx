@@ -9,7 +9,6 @@ import IconCard from "@/app/components/iconCard/IconCard";
 import ChooseNumbersComp from "@/app/components/chooseNumbersComp/ChooseNumbersComp";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import { useEffect, useState, useRef } from "react";
-import Buttons from "@/app/components/(buttons)/buttons/Buttons";
 import { tempDb } from "@/tempDb"; // Import tempDb
 import ResultsCard from "@/app/components/resultsCard/ResultsCard";
 import DatePicker from "react-datepicker";
@@ -30,28 +29,30 @@ export interface IModalidade {
 const NovoBilhete = () => {
     // VARS:
     const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
-    const [currentDate, setCurrentDate] = useState(new Date());
-    const [acertos, setAcertos] = useState(0);
-    const [premio, setPremio] = useState(0);
-    const [apostador, setApostador] = useState("");
-    const [tipoBilhete, setTipoBilhete] = useState(0);
-    const [dataResultado, setDataResultado] = useState<Date | null>(new Date());
-    const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]);
-    const [importedNumbersArr, setImportedNumbersArr] = useState<string[]>([]);
-    const [nomeConsultor, setNomeVendedor] = useState<string>("");
-    const [lote, setLote] = useState<string>("");
-    const [numeroBilhete, setNumeroBilhete] = useState<number>(0);
-    const [textAreaValue, setTextAreaValue] = useState("");
+    const [currentDate, setCurrentDate] = useState(new Date()); // current date and time when the game was generated
+    const [acertos, setAcertos] = useState(0); // set the number of matched numbers
+    const [premio, setPremio] = useState(0); // prize value
+    const [apostador, setApostador] = useState(""); // name of the person who is placing the bets
+    const [tipoBilhete, setTipoBilhete] = useState(0); // string saying if the tickets are regumar or promotional
+    const [dataResultado, setDataResultado] = useState<Date | null>(new Date()); // date of the result
+    const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]); // selected numbers in the game as strings
+    const [importedNumbersArr, setImportedNumbersArr] = useState<string[]>([]); // imported numbers in the game as strings
+    const [nomeConsultor, setNomeVendedor] = useState<string>(""); // name of the person who sold the bets
+    const [lote, setLote] = useState<string>(""); // starting lot number / name of the lottery
+    const [numeroBilhete, setNumeroBilhete] = useState<number>(0); //starter number of the lottery ticket
+    const [textAreaValue, setTextAreaValue] = useState(""); // content of the text area for imported games
     const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
-    const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1);
-    const [generatedGames, setGeneratedGames] = useState<number[][]>([]);
-    const [numberOfGames, setNumberOfGames] = useState<number>(1);
+    const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1); // selected numbers for random games
+    const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // games that were generated
+    const [numberOfGames, setNumberOfGames] = useState<number>(1); // number of games to be generated
 
     const divRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for divs to export to PDF
     const cardRef = useRef<HTMLDivElement | null>(null); // Ref for exporting individually
 
     //HANDLERS:
+
+    //exports image for single tickets in jpg, png or copying to the clipboard
     const exportAsImage = async (format = "png", saveToClipboard = false) => {
         if (cardRef.current === null) return;
 
@@ -88,6 +89,7 @@ const NovoBilhete = () => {
         modalidadePersonalizada: modalidadeSetting[2],
     };
 
+    // export all tickets to a single PDF
     const handleExportPDF = async () => {
         let pdf: jsPDF | null = null;
 
@@ -295,6 +297,13 @@ const NovoBilhete = () => {
                                     </div>
                                 </article>
                             ))}
+                            <Title h={2}>{`${importedNumbersArr.length} Jogos Gerados`}</Title>
+                            {importedNumbersArr.map((item: any, index) => (
+                                <article key={index}>
+                                    {`Jogo ${index + 1} : `}
+                                    {item.join(" ")}
+                                </article>
+                            ))}
                         </section>
                     )}
                 </>
@@ -345,6 +354,13 @@ const NovoBilhete = () => {
                                         </div>
                                     </div>
                                     {renderExportButtons()}
+                                </article>
+                            ))}
+                            <Title h={2}>{`${generatedGames.length} Jogos Gerados`}</Title>
+                            {generatedGames.map((item: any, index) => (
+                                <article key={index}>
+                                    {`Jogo ${index + 1} : `}
+                                    {item.join(" ")}
                                 </article>
                             ))}
                         </div>
@@ -409,6 +425,11 @@ const NovoBilhete = () => {
                                     </div>
                                     {renderExportButtons()}
                                 </article>
+                            ))}
+
+                            <Title h={2}>{`${generatedGames.length} Jogos Gerados`}</Title>
+                            {generatedGames.map((item: any, index) => (
+                                <article key={index}>{item.join(" ")}</article>
                             ))}
                         </div>
                     )}

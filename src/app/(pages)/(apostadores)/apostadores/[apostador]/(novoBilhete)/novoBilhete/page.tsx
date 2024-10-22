@@ -243,7 +243,7 @@ const NovoBilhete = () => {
                     <section className={styles.checkJogosDiv}>
                         <textarea
                             className={styles.textArea}
-                            placeholder="1 2 3 4, 5 6 7 8, 9 10 11 12..."
+                            placeholder={`1 2 3 4\n5 6 7 8\n9 10 11 12\n...`}
                             cols={30}
                             rows={12}
                             value={textAreaValue}

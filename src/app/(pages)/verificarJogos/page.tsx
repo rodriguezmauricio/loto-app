@@ -47,6 +47,14 @@ function VerificarJogos() {
         [5, 6, 7, 8, 9],
     ];
 
+    //FUNCTIONS:
+
+    const convertGamesTextToArrays = (text: string) => {
+        const lines = text.split("\n");
+        const gamesArr = lines.map((line) => line.split(",").map((num) => parseInt(num)));
+        return gamesArr;
+    };
+
     const findWinners = (arrayDeJogos: number[][], loteria: string, resultado: number[]) => {
         if (!arrayDeJogos || !resultado || !loteria) return;
 

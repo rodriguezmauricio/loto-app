@@ -161,7 +161,7 @@ const ResultsCard = ({
                     <h3>Resultado</h3>
                     <div className={styles.numbers}>
                         {numbersArr.map((num: number) => {
-                            return <NumbersSorteio key={num} numero={Math.ceil(num)} big={false} />;
+                            return <NumbersSorteio key={num} numero={num} big={false} />;
                         })}
                     </div>
                 </section>

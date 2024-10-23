@@ -45,10 +45,15 @@ const NovoBilhete = () => {
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
     const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1); // selected numbers for random games
     const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // games that were generated
+    const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<number[][]>([]); // games that were generated and formatted to display
     const [numberOfGames, setNumberOfGames] = useState<number>(1); // number of games to be generated
 
     const divRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for divs to export to PDF
     const cardRef = useRef<HTMLDivElement | null>(null); // Ref for exporting individually
+
+    console.log(importedNumbersArr);
+    console.log(generatedGames);
+    console.log("Display", generatedGamesDisplay);
 
     //HANDLERS:
 
@@ -184,8 +189,7 @@ const NovoBilhete = () => {
                 .trim()
                 .split(" ")
                 .filter((num) => num !== "")
-                .map(Number)
-                .sort((a, b) => a - b);
+                .map((num) => num.padStart(2, "0")); // Keep as strings with leading zero
             return numbers;
         });
 
@@ -209,9 +213,20 @@ const NovoBilhete = () => {
         const games: number[][] = [];
         for (let i = 0; i < numberOfGames; i++) {
             const game = generateRandomGame(modalidadeContent.maxNumber, quantidadeDeDezenas);
-            games.push(game);
+            games.push(game); // Store the generated game as numbers
         }
-        setGeneratedGames(games);
+
+        const gamesDisplay: any[][] = [];
+        for (let i = 0; i < numberOfGames; i++) {
+            const gameDisplay = generateRandomGame(
+                modalidadeContent.maxNumber,
+                quantidadeDeDezenas
+            ).map((num) => num.toString().padStart(2, "0")); // Keep as strings with leading zero
+            gamesDisplay.push(gameDisplay); // Store the generated game as numbers
+        }
+
+        setGeneratedGames(games); // Update state with number arrays
+        setGeneratedGamesDisplay(gamesDisplay);
     };
 
     //FUNCTIONS:
@@ -270,7 +285,7 @@ const NovoBilhete = () => {
                             {importedNumbersArr.map((item: any, index) => (
                                 <article key={index}>
                                     {`Jogo ${index + 1} : `}
-                                    {item.join(", ")}.
+                                    {item.join(" ")}
                                     <div
                                         ref={(el) => {
                                             divRefs.current[index] = el;
@@ -327,9 +342,9 @@ const NovoBilhete = () => {
                                 isSelected
                             />
                             <h3>Jogos Gerados:</h3>
-                            {generatedGames.map((game, index) => (
+                            {generatedGamesDisplay.map((game, index) => (
                                 <article key={index}>
-                                    <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                                    <strong>Jogo {index + 1}:</strong> {game.join(" ")}
                                     <div
                                         ref={(el) => {
                                             divRefs.current[index] = el;
@@ -357,7 +372,7 @@ const NovoBilhete = () => {
                                 </article>
                             ))}
                             <Title h={2}>{`${generatedGames.length} Jogos Gerados`}</Title>
-                            {generatedGames.map((item: any, index) => (
+                            {generatedGamesDisplay.map((item: any, index) => (
                                 <article key={index}>
                                     {`Jogo ${index + 1} : `}
                                     {item.join(" ")}
@@ -387,6 +402,11 @@ const NovoBilhete = () => {
                             btnTitle="Gerar Jogos"
                             isSelected={false}
                             func={handleGenerateGames}
+                            disabled={
+                                !modalidadeContent ||
+                                !quantidadeDeDezenas ||
+                                quantidadeDeDezenas > modalidadeContent.maxNumber
+                            } // Disable button if conditions aren't met
                         />
                     </div>
                     {generatedGames.length > 0 && (
@@ -397,9 +417,9 @@ const NovoBilhete = () => {
                                 isSelected
                             />
                             <h3>Jogos Gerados:</h3>
-                            {generatedGames.map((game, index) => (
+                            {generatedGamesDisplay.map((game, index) => (
                                 <article key={index}>
-                                    <strong>Jogo {index + 1}:</strong> {game.join(", ")}
+                                    <strong>Jogo {index + 1}:</strong> {game.join(" ")}
                                     <div
                                         ref={(el) => {
                                             divRefs.current[index] = el;
@@ -428,7 +448,7 @@ const NovoBilhete = () => {
                             ))}
 
                             <Title h={2}>{`${generatedGames.length} Jogos Gerados`}</Title>
-                            {generatedGames.map((item: any, index) => (
+                            {generatedGamesDisplay.map((item: any, index) => (
                                 <article key={index}>{item.join(" ")}</article>
                             ))}
                         </div>
@@ -455,6 +475,9 @@ const NovoBilhete = () => {
             try {
                 const data = await tempDb.modalidades; // Adjust according to how tempDb is used
                 setModalidadeSetting(data); // Make sure data is an array
+                // if (data.length > 0) {
+                //     setModalidadeContent(data[0]); // Set to the first item
+                // }
             } catch (error) {
                 console.log("Error fetching data:", error);
             }

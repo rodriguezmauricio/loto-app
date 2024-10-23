@@ -23,6 +23,7 @@ function VerificarJogos() {
 
     // State to store the current text value in the text area
     const [winningGame, setWinningGame] = useState("");
+    const [winningGameDisplay, setWinningGameDisplay] = useState(false);
     const [gamesToVerify, setGamesToVerify] = useState("");
 
     const modalidadeSettingObj = {
@@ -77,9 +78,10 @@ function VerificarJogos() {
 
         // Display the result on the screen
         if (winners.length > 0) {
-            alert(`Winning Games: \n${winners.join("\n")}`);
+            setWinningGame(winners.join("\n"));
+            setWinningGameDisplay(true);
         } else {
-            alert("No winning games found.");
+            setWinningGame("Não teve nenhum jogo vencedor.");
         }
     };
 
@@ -149,7 +151,7 @@ function VerificarJogos() {
                 <section>
                     <Title h={3}>Adicione os números vencedores</Title>
                     <textarea
-                        className={styles.textArea}
+                        className={styles.textInput}
                         placeholder="1 2 3 4 5 ..."
                         cols={30}
                         rows={12}
@@ -159,7 +161,7 @@ function VerificarJogos() {
 
                     <Title h={3}>Adicione os números para conferir</Title>
                     <textarea
-                        className={styles.textArea}
+                        className={styles.textInput}
                         placeholder={`1 2 3 4\n5 6 7 8\n9 10 11 12`}
                         cols={30}
                         rows={12}
@@ -170,9 +172,6 @@ function VerificarJogos() {
 
                 {/* //TODO: TEMPORARY RETURN */}
                 <div className={styles.checkJogosDiv}>
-                    <Title h={3}>{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
-                    <Title h={3}>{`Jogos Importados`}</Title>
-
                     {/* Display each imported game */}
                     {importedNumbersArr.length > 0 &&
                         importedNumbersArr.map((item: any, index) => {
@@ -186,6 +185,13 @@ function VerificarJogos() {
                     {/* Render the selected numbers if any */}
                     {selectedNumbersArr}
                 </div>
+
+                {winningGameDisplay && (
+                    <>
+                        <Title h={3}>Jogo vencedor</Title>
+                        <div>{winningGame}</div>
+                    </>
+                )}
 
                 <SimpleButton
                     btnTitle="Verificar Jogos"

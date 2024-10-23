@@ -24,6 +24,7 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({ userType, adminId, sellerId
     const [phone, setPhone] = useState<string>("");
     const [pix, setPix] = useState<string>("");
     const [saldo, setSaldo] = useState<number>(0);
+    const [saldoCarteira, setSaldoCarteira] = useState<number>(0);
     const [tipoComissao, setTipoComissao] = useState<string>("");
     const [valorComissao, setValorComissao] = useState<number>(0);
 
@@ -32,14 +33,20 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({ userType, adminId, sellerId
 
         const passwordHash = await hashPassword(password); // Hash password
 
-        let payload: any;
+        let payload = {
+            username,
+            password: passwordHash,
+            saldo,
+            saldoCarteira,
+            adminId, // Use the passed adminId
+            sellerId, // Use the passed sellerId if userType is "usuario"
+            tipoComissao,
+            valorComissao,
+            phone,
+            pix,
+        };
 
         if (userType === "admin") {
-            payload = {
-                username,
-                password: passwordHash,
-            };
-
             fetch(`/api/admins/`, {
                 method: "POST",
                 headers: {
@@ -54,16 +61,6 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({ userType, adminId, sellerId
                 })
                 .catch((error) => console.error("Error:", error));
         } else if (userType === "vendedor") {
-            payload = {
-                username,
-                phone,
-                saldo,
-                tipoComissao,
-                valorComissao,
-                password: passwordHash,
-                adminId, // Use the passed adminId
-            };
-
             fetch(`/api/sellers/`, {
                 method: "POST",
                 headers: {
@@ -78,16 +75,6 @@ const AddAdminForm: React.FC<AddAdminFormProps> = ({ userType, adminId, sellerId
                 })
                 .catch((error) => console.error("Error:", error));
         } else if (userType === "usuario") {
-            payload = {
-                username,
-                password: passwordHash,
-                phone,
-                adminId, // Use the passed adminId
-                sellerId, // Use the passed sellerId
-                pix,
-                saldo,
-            };
-
             fetch(`/api/users/`, {
                 method: "POST",
                 headers: {

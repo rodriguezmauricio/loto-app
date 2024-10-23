@@ -51,10 +51,6 @@ const NovoBilhete = () => {
     const divRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for divs to export to PDF
     const cardRef = useRef<HTMLDivElement | null>(null); // Ref for exporting individually
 
-    console.log(importedNumbersArr);
-    console.log(generatedGames);
-    console.log("Display", generatedGamesDisplay);
-
     //HANDLERS:
 
     //exports image for single tickets in jpg, png or copying to the clipboard

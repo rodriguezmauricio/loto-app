@@ -8,8 +8,10 @@ import React, { useEffect, useState } from "react";
 import { tempDb } from "@/tempDb"; // Import tempDb
 
 import { IModalidade } from "../(apostadores)/apostadores/[apostador]/(novoBilhete)/novoBilhete/page";
+import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 
 function VerificarJogos() {
+    //VARS:
     const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
 
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
@@ -20,7 +22,8 @@ function VerificarJogos() {
     const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]);
 
     // State to store the current text value in the text area
-    const [textAreaValue, setTextAreaValue] = useState("");
+    const [winningGame, setWinningGame] = useState("");
+    const [gamesToVerify, setGamesToVerify] = useState("");
 
     const modalidadeSettingObj = {
         modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
@@ -28,35 +31,73 @@ function VerificarJogos() {
         modalidadePersonalizada: modalidadeSetting[2], // Assuming modalidadePersonalizada is the third item
     };
 
+    //HANDLERS:
     const handleModalidadeContent = (settingsObj: IModalidade) => {
         setModalidadeContent(settingsObj);
         console.log(settingsObj);
     };
 
     // Function to handle text input changes in the text area
-    const handleTextAreaContent = (e: any) => {
+    const handleWinningGameText = (e: any) => {
         const content = e.target.value;
-        setTextAreaValue(content); // Update the text area value in the state
+        setWinningGame(content); // Update the text area value in the state
     };
 
-    const gameResult = [2, 3, 4];
+    // Function to handle text input changes in the text area
+    const handleGamesToVerify = (e: any) => {
+        const content = e.target.value;
+        setGamesToVerify(content); // Update the text area value in the state
+    };
 
-    const gamesArr = [
-        [1, 2, 3, 4, 5],
-        [3, 4, 5, 6, 7],
-        [5, 6, 7, 8, 9],
-    ];
+    const handleVerifyGamesButton = () => {
+        // Parse the winning numbers from the first text area
+        const winningNumbersArr = winningGame
+            .split(" ")
+            .map((num) => parseInt(num))
+            .filter((num) => !isNaN(num));
+
+        // Parse the games to verify from the second text area
+        const gamesArr = convertGamesTextToArrays(gamesToVerify);
+
+        // Check if any line in the second text area has a different number of numbers compared to the first text area
+        const allGamesHaveSameLength = gamesArr.every(
+            (game) => game.length === winningNumbersArr.length
+        );
+
+        // If there are different lengths, notify the user and stop
+        if (!allGamesHaveSameLength) {
+            alert(
+                "The number of numbers in the winning numbers must match the number of numbers in each line of games to verify."
+            );
+            return;
+        }
+
+        // Proceed to find winners
+        const winners = findWinners(gamesArr, winningNumbersArr);
+
+        // Display the result on the screen
+        if (winners.length > 0) {
+            alert(`Winning Games: \n${winners.join("\n")}`);
+        } else {
+            alert("No winning games found.");
+        }
+    };
 
     //FUNCTIONS:
 
     const convertGamesTextToArrays = (text: string) => {
         const lines = text.split("\n");
-        const gamesArr = lines.map((line) => line.split(",").map((num) => parseInt(num)));
+        const gamesArr = lines.map((line) =>
+            line
+                .split(" ")
+                .map((num) => parseInt(num.trim()))
+                .filter((num) => !isNaN(num))
+        );
         return gamesArr;
     };
 
-    const findWinners = (arrayDeJogos: number[][], loteria: string, resultado: number[]) => {
-        if (!arrayDeJogos || !resultado || !loteria) return;
+    const findWinners = (arrayDeJogos: number[][], resultado: number[]) => {
+        const winningGames = [];
 
         // Loop through each game in arrayDeJogos
         for (let i = 0; i < arrayDeJogos.length; i++) {
@@ -65,17 +106,15 @@ function VerificarJogos() {
             // Check if all numbers in resultado exist in the current game (jogo)
             const isWinner = resultado.every((num) => jogo.includes(num));
 
-            // If the current game is a winner, return the game (or its index)
+            // If the current game is a winner, add the game to the result array
             if (isWinner) {
-                return `Game ${i + 1} is a winner: [${jogo}]`;
+                winningGames.push(`Game ${i + 1} is a winner: [${jogo.join(", ")}]`);
             }
         }
 
-        // If no winner is found
-        return "No winner found.";
+        // Return all winning games (if any)
+        return winningGames;
     };
-
-    console.log(findWinners(gamesArr, "megasena", gameResult));
 
     useEffect(() => {
         // Fetch data from tempDb instead of the URL
@@ -111,11 +150,21 @@ function VerificarJogos() {
                     <Title h={3}>Adicione os números vencedores</Title>
                     <textarea
                         className={styles.textArea}
-                        placeholder="(1,2,3,4,5,6,7) + (2,5,7,9,10,12,15) + (1,2,3,5,7,8,9)..."
+                        placeholder="1 2 3 4 5 ..."
                         cols={30}
                         rows={12}
-                        value={textAreaValue}
-                        onChange={handleTextAreaContent}
+                        value={winningGame}
+                        onChange={handleWinningGameText}
+                    ></textarea>
+
+                    <Title h={3}>Adicione os números para conferir</Title>
+                    <textarea
+                        className={styles.textArea}
+                        placeholder={`1 2 3 4\n5 6 7 8\n9 10 11 12`}
+                        cols={30}
+                        rows={12}
+                        value={gamesToVerify}
+                        onChange={handleGamesToVerify}
                     ></textarea>
                 </section>
 
@@ -137,6 +186,12 @@ function VerificarJogos() {
                     {/* Render the selected numbers if any */}
                     {selectedNumbersArr}
                 </div>
+
+                <SimpleButton
+                    btnTitle="Verificar Jogos"
+                    func={handleVerifyGamesButton}
+                    isSelected={false}
+                />
             </main>
         </>
     );

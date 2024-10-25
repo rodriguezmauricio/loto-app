@@ -1,7 +1,7 @@
 // src/app/(pages)/adicionarUsuario/page.tsx
 "use client";
 import { useState } from "react";
-import AddAdminForm, { UserType } from "../../components/addUserForms/AddAdminForm";
+import AddUsersForm, { UserType } from "../../components/addUserForms/AddUsersForm";
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import Title from "@/app/components/title/Title";
@@ -56,7 +56,7 @@ const AdicionarUsuario: React.FC<{ params: { id: string } }> = ({ params }) => {
 
                 {/* Render user form based on the type of user */}
                 {userToAdd && (
-                    <AddAdminForm
+                    <AddUsersForm
                         userType={userToAdd}
                         radioOptions={radioOptions}
                         selectedRadioOption={selectedRadioButton}

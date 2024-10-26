@@ -1,21 +1,22 @@
+// stores/userStore.ts
 import { create } from "zustand";
 
-interface AuthState {
-    loggedInAdminId: string;
-    setLoggedInAdminId: (id: string) => void;
-    loggedInSellerId: string;
-    setLoggedInSellerId: (id: string) => void;
-    loggedInUserId: string;
-    setLoggedInUserId: (id: string) => void;
+interface User {
+    id: string;
+    username: string;
+    adminId?: string;
+    sellerId?: string;
+    // Add other user properties as needed
 }
 
-const useStore = create<AuthState>((set) => ({
-    loggedInAdminId: "",
-    setLoggedInAdminId: (id) => set({ loggedInAdminId: id }),
-    loggedInSellerId: "",
-    setLoggedInSellerId: (id) => set({ loggedInSellerId: id }),
-    loggedInUserId: "",
-    setLoggedInUserId: (id) => set({ loggedInUserId: id }),
-}));
+interface UserStore {
+    user: User | null;
+    setUser: (user: User | null) => void;
+    logout: () => void;
+}
 
-export default useStore;
+export const useUserStore = create<UserStore>((set) => ({
+    user: null,
+    setUser: (user) => set({ user }),
+    logout: () => set({ user: null }),
+}));

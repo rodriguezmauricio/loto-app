@@ -1,44 +1,44 @@
 :root {
-  /* --max-width: 1100px; */
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono",
-    "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono",
-    "Courier New", monospace;
+    /* --max-width: 1100px; */
+    --border-radius: 12px;
+    --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono",
+        "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono",
+        "Courier New", monospace;
 
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+    --callout-rgb: 238, 240, 241;
+    --callout-border-rgb: 172, 175, 176;
+    --card-rgb: 180, 185, 188;
+    --card-border-rgb: 131, 134, 135;
 
-  --accent-main: #00a67f;
-  --accent-success: #7ce38b;
-  --accent-blue: #3883e4;
-  --accent-warn: #faa356;
-  --accent-danger: #fa7970;
-  --accent-repeat: #f7d82c;
-  --accent-purple: #b72cf7;
+    --accent-main: #00a67f;
+    --accent-success: #7ce38b;
+    --accent-blue: #3883e4;
+    --accent-warn: #faa356;
+    --accent-danger: #fa7970;
+    --accent-repeat: #f7d82c;
+    --accent-purple: #b72cf7;
 
-  /* --color-dark-dark: #0d1117;
+    /* --color-dark-dark: #0d1117;
   --color-dark-mid: #161b22;
   --color-dark-light: #21262d; */
 
-  --color-dark-dark: #101011;
-  --color-dark-mid: #1b1b1d;
-  --color-dark-light: #2e3033;
+    --color-dark-dark: #101011;
+    --color-dark-mid: #1b1b1d;
+    --color-dark-light: #2e3033;
 
-  --color-light-dark: #89929b;
-  --color-light-mid: #c6cdd5;
-  --color-light-light: #ecf2f8;
+    --color-light-dark: #89929b;
+    --color-light-mid: #c6cdd5;
+    --color-light-light: #ecf2f8;
 
-  --sidebar-width: 280px;
-  --header-height: 100px;
-  --logo-menu-container: 50px;
+    --sidebar-width: 280px;
+    --header-height: 100px;
+    --logo-menu-container: 50px;
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -54,106 +54,106 @@
 } */
 
 body {
-  width: 100vw;
-  overflow-x: hidden;
-  color: var(--color-light-light);
-  background-color: var(--color-dark-dark);
-  display: flex;
-  flex-direction: row;
+    width: 100vw;
+    overflow-x: hidden;
+    color: var(--color-light-light);
+    background-color: var(--color-dark-dark);
+    display: flex;
+    flex-direction: row;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 15px;
-  padding: 20px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
 }
 
 .sidebar {
-  background-color: var(--color-dark-mid);
-  border-right: 2px solid var(--color-dark-light);
-  /* background-color: red; */
-  width: var(--sidebar-width);
+    background-color: var(--color-dark-mid);
+    border-right: 2px solid var(--color-dark-light);
+    /* background-color: red; */
+    width: var(--sidebar-width);
 }
 
 .content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .main {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 15px;
-  padding: 20px;
-  max-width: 1100px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    max-width: 1100px;
 }
 
 .divider {
-  display: flex;
-  flex-direction: row;
-  height: 2px;
-  width: 100%;
-  background-color: var(--color-dark-light);
+    display: flex;
+    flex-direction: row;
+    height: 2px;
+    width: 100%;
+    background-color: var(--color-dark-light);
 }
 
 /* CHECKBOX STYLE BEGINING */
 .checkbox {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #333;
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
 }
 
 .checkbox:checked {
-  background-color: var(
-    --accent-main
-  ); /* Change this to the desired color when checkbox is checked */
-  border-color: var(--accent-main);
-  color: #333;
-  content: "\2713";
+    background-color: var(
+        --accent-main
+    ); /* Change this to the desired color when checkbox is checked */
+    border-color: var(--accent-main);
+    color: #333;
+    content: "\2713";
 }
 
 .checkbox::before {
-  content: "\2713";
-  font-size: 16px;
-  font-weight: bold;
-  color: transparent;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    content: "\2713";
+    font-size: 16px;
+    font-weight: bold;
+    color: transparent;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .checkbox:checked::before {
-  color: var(--color-dark-mid);
+    color: var(--color-dark-mid);
 }
 /* CHECKBOX STYLE ENDING */
 
 @media (max-width: 768px) {
-  body {
-    flex-direction: column;
-  }
+    body {
+        flex-direction: column;
+    }
 
-  .sidebar {
-    width: 100%;
-    /* transition: all 0.5s; */
-    height: fit-content;
-    position: sticky;
-    top: 0;
-    z-index: 15;
-  }
+    .sidebar {
+        width: 100%;
+        /* transition: all 0.5s; */
+        height: fit-content;
+        position: sticky;
+        top: 0;
+        z-index: 15;
+    }
 }
 /* 
 @media (prefers-color-scheme: dark) {

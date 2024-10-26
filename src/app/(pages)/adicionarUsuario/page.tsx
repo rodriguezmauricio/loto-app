@@ -5,7 +5,6 @@ import AddUsersForm, { UserType } from "../../components/addUserForms/AddUsersFo
 import PageHeader from "@/app/components/pageHeader/PageHeader";
 import SimpleButton from "@/app/components/(buttons)/simpleButton/SimpleButton";
 import Title from "@/app/components/title/Title";
-import useStore from "../../../../store/useStore";
 
 export interface IRadioOptions {
     value: string;
@@ -14,8 +13,6 @@ export interface IRadioOptions {
 
 const AdicionarUsuario: React.FC<{ params: { id: string } }> = ({ params }) => {
     const { id } = params; // Extracting id from params if needed
-    const loggedInAdminId = useStore((state) => state.loggedInAdminId);
-    const loggedInSellerId = useStore((state) => state.loggedInSellerId);
     const [userToAdd, setUserToAdd] = useState<UserType | null>(null); // Allowing null
     const [selectedRadioButton, setSelectedRadioButton] = useState("");
 
@@ -61,8 +58,6 @@ const AdicionarUsuario: React.FC<{ params: { id: string } }> = ({ params }) => {
                         radioOptions={radioOptions}
                         selectedRadioOption={selectedRadioButton}
                         radioHandler={handleRadioChange}
-                        adminId={loggedInAdminId}
-                        sellerId={loggedInSellerId}
                     />
                 )}
             </main>

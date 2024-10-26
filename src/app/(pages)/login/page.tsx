@@ -1,18 +1,20 @@
-// src/app/(pages)/login/page.tsx
 "use client";
-import React, { useState } from "react";
-import useStore from "../../../../store/useStore"; // Adjust according to your store structure
+import { useState } from "react";
+import { useUserStore } from "../../../../store/useStore";
+import { useRouter } from "next/router";
 
-const Login: React.FC = () => {
-    const setLoggedInAdminId = useStore((state) => state.setLoggedInAdminId);
-    const setLoggedInSellerId = useStore((state) => state.setLoggedInSellerId);
-    const [username, setUsername] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+function LoginPage() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const setUser = useUserStore((state) => state.setUser);
+    const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError(null);
 
-        const response = await fetch("/api/login", {
+        const response = await fetch("/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -20,37 +22,37 @@ const Login: React.FC = () => {
             body: JSON.stringify({ username, password }),
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            // Set the logged-in ID based on user type
-            if (data.userType === "admin") {
-                setLoggedInAdminId(data.id);
-            } else if (data.userType === "vendedor") {
-                setLoggedInSellerId(data.id);
-            }
+            const userData = await response.json();
+            setUser(userData);
+            router.push("/dashboard");
         } else {
-            console.error("Login failed:", data.message);
+            const { error } = await response.json();
+            setError(error || "Falha ao fazer login");
         }
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button type="submit">Login</button>
-        </form>
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={handleLogin}>
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Login</button>
+            </form>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
     );
-};
+}
 
-export default Login;
+export default LoginPage;

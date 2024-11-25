@@ -1,0 +1,76 @@
+/* .container {
+  padding: 15px 30px 15px 20px;
+  background-color: var(--color-dark-mid);
+  border-radius: 10px;
+  border-left: 10px solid var(--color-dark-light);
+
+}
+
+.borderLeftGreen {
+  padding: 15px 30px 15px 20px;
+  background-color: var(--color-dark-mid);
+  border-radius: 10px;
+  width: fit-content;
+  border-left: 10px solid var(--accent-main);
+}
+
+.borderLeftYellow {
+  padding: 15px 30px 15px 20px;
+  background-color: var(--color-dark-mid);
+  border-radius: 10px;
+  width: fit-content;
+  border-left: 10px solid var(--accent-warn);
+}
+
+.borderLeftRed {
+  padding: 15px 30px 15px 20px;
+  background-color: var(--color-dark-mid);
+  border-radius: 10px;
+  width: fit-content;
+  border-left: 10px solid var(--accent-danger);
+}
+
+.h2 {
+  font-size: 16px;
+  margin-bottom: 5px;
+  font-weight: 300;
+}
+
+.h3 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.h3Main {
+  font-size: 32px;
+  font-weight: 500;
+}
+ */
+
+/* src/components/card/Card.module.css */
+
+.card {
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+    margin: 10px;
+    flex: 1;
+    min-width: 200px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.green {
+    background-color: #28a745;
+}
+
+.red {
+    background-color: #dc3545;
+}
+
+.yellow {
+    background-color: #ffc107;
+}
+
+.big {
+    font-size: 1.5rem;
+}

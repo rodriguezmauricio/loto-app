@@ -1,0 +1,39 @@
+/* src/components/Breadcrumbs/Breadcrumbs.module.css */
+
+.breadcrumbs {
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumbList {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+}
+
+.breadcrumbItem::after {
+    content: "/";
+    margin-left: 0.5rem;
+    color: var(--color-light-mid);
+}
+
+.breadcrumbItem:last-child::after {
+    content: "";
+}
+
+.breadcrumbLink {
+    color: var(--accent-main);
+    text-decoration: none;
+}
+
+.breadcrumbLink:hover {
+    text-decoration: underline;
+    color: var(--accent-success);
+}
+
+.currentCrumb {
+    color: var(--color-light-light);
+}

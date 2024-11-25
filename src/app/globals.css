@@ -53,13 +53,14 @@
   }
 } */
 
+/* Remove or adjust this */
 body {
+    /* Remove display: flex; and flex-direction: row; */
     width: 100vw;
     overflow-x: hidden;
     color: var(--color-light-light);
     background-color: var(--color-dark-dark);
-    display: flex;
-    flex-direction: row;
+    /* Remove display: flex; and flex-direction: row; */
 }
 
 a {
@@ -75,26 +76,32 @@ main {
     padding: 20px;
 }
 
+/* Container for the entire app layout */
+.app-layout {
+    display: flex;
+    min-height: 100vh; /* Ensures the layout fills the viewport height */
+}
+
+/* Sidebar styling */
 .sidebar {
-    background-color: var(--color-dark-mid);
+    width: var(--sidebar-width); /* Use your existing variable */
+    background-color: var(--color-dark-mid); /* Adjust as needed */
     border-right: 2px solid var(--color-dark-light);
-    /* background-color: red; */
-    width: var(--sidebar-width);
+    /* Remove any positioning styles that might cause overlap */
 }
 
+/* Content area styling */
 .content {
+    flex: 1; /* Takes up the remaining space */
     display: flex;
     flex-direction: column;
-    flex: 1;
 }
 
-.main {
-    display: flex;
+main {
     flex: 1;
-    flex-direction: column;
-    gap: 15px;
     padding: 20px;
     max-width: 1100px;
+    /* Additional styles as needed */
 }
 
 .divider {
@@ -142,17 +149,18 @@ main {
 /* CHECKBOX STYLE ENDING */
 
 @media (max-width: 768px) {
-    body {
-        flex-direction: column;
-    }
+    @media (max-width: 768px) {
+        .app-layout {
+            flex-direction: column;
+        }
 
-    .sidebar {
-        width: 100%;
-        /* transition: all 0.5s; */
-        height: fit-content;
-        position: sticky;
-        top: 0;
-        z-index: 15;
+        .sidebar {
+            width: 100%;
+            height: fit-content;
+            position: sticky;
+            top: 0;
+            z-index: 15;
+        }
     }
 }
 /* 

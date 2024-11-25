@@ -1,0 +1,37 @@
+/* /components/TicketList.module.scss */
+
+.ticketListContainer {
+    padding: 20px;
+}
+
+.ticketList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.ticketItem {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.deleteButton {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: #ff7875;
+}

@@ -1,0 +1,121 @@
+.main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.usersList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* app/pages/apostadores/apostadores.module.css */
+
+/* app/pages/apostadores/apostadores.module.css */
+
+.cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    padding: 20px;
+}
+
+.controlsContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+}
+
+.searchInputWrapper {
+    position: relative;
+    width: 300px;
+}
+
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.clearIcon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 10px 10px 35px; /* Left padding for search icon */
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.searchInput:focus {
+    border-color: #0070f3; /* Change to your primary color */
+    outline: none;
+}
+
+.sortContainer {
+    display: flex;
+    align-items: center;
+}
+
+.sortContainer label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.sortSelect {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    gap: 10px;
+}
+
+.paginationButton {
+    padding: 8px 16px;
+    font-size: 16px;
+    border: none;
+    background-color: #0070f3; /* Primary color */
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.paginationButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #005bb5; /* Darker shade on hover */
+}
+
+.highlight {
+    background-color: yellow;
+}

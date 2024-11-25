@@ -1,0 +1,32 @@
+/* src/components/PageHeader/PageHeader.module.css */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: var(--color-dark-mid);
+    border-bottom: 2px solid var(--color-dark-light);
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    margin-right: 1rem;
+    color: var(--accent-main);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    color: var(--accent-success);
+}
+
+.title {
+    font-size: 1.5rem;
+    color: var(--color-light-light);
+}

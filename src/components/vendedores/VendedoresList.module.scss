@@ -1,0 +1,57 @@
+/* src/components/Vendedores/VendedoresList.module.css */
+
+.listContainer {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-dark-light);
+    color: var(--color-light-light);
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-dark);
+}
+
+.table th {
+    background-color: var(--color-dark);
+}
+
+.editButton {
+    margin-right: 8px;
+    padding: 6px 12px;
+    background-color: var(--accent-main);
+    color: var(--color-light-light);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.editButton:hover {
+    background-color: var(--accent-success);
+}
+
+.deleteButton {
+    padding: 6px 12px;
+    background-color: var(--accent-danger);
+    color: var(--color-light-light);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: var(--accent-danger-dark);
+}
+
+.noData {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--color-light-light);
+}

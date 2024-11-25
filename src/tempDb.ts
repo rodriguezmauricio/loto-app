@@ -268,6 +268,13 @@ export const tempDb = {
                     trevoAmount: [0],
                     maxNumber: 22,
                 },
+                {
+                    name: "Super 5",
+                    color: "#A8CF45",
+                    betNumbers: [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+                    trevoAmount: [0],
+                    maxNumber: 28,
+                },
             ],
         },
         {

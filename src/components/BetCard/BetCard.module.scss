@@ -1,0 +1,31 @@
+// components/betCard/betCard.module.scss
+
+.card {
+    background-color: #f9f9f9;
+    border-left: 4px solid #0070f3; // Adjust the color to match your theme
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modalidade {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0070f3; // Adjust to match your theme
+    margin-bottom: 8px;
+}
+
+.numbers {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.p {
+    margin: 4px 0;
+    color: #333;
+}

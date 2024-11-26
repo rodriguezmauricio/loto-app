@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@lib/authOptions";
 import { Role } from "../../../types/roles";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { z } from "zod";

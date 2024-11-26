@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 
 import prisma from "../../../../../../../prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../auth/[...nextauth]/route"; // Adjust the path if necessary
+import { authOptions } from "@lib/authOptions"; // Adjust the path if necessary
 
 function isValidUUID(uuid: string): boolean {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

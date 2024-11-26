@@ -35,6 +35,12 @@ const createBetSchema = z.object({
     vendedorId: z.string().uuid().optional(),
 });
 
+// New schema for batch bet creation
+const createBetsSchema = z.object({
+    userId: z.string().uuid(),
+    bets: z.array(createBetSchema).min(1),
+    totalAmount: z.number().nonnegative(),
+});
 // Define the response type
 interface DashboardData {
     saldoBancaHoje: number;
@@ -113,7 +119,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if the user has the required role
+    // Check user role
     const userRole = session.user.role as Role;
     if (userRole !== "admin" && userRole !== "vendedor") {
         console.log(`Forbidden access attempt by user with role: ${userRole}`);
@@ -123,33 +129,39 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
 
-        // Validate the request body
-        const parsedBody = createBetSchema.safeParse(body);
+        // Validate the request body against the batch schema
+        const parsedBody = createBetsSchema.safeParse(body);
         if (!parsedBody.success) {
             console.log("Validation failed:", parsedBody.error.errors);
             return NextResponse.json({ error: parsedBody.error.errors }, { status: 400 });
         }
 
-        const {
-            numbers,
-            modalidade,
-            acertos,
-            premio,
-            consultor,
-            apostador,
-            quantidadeDeDezenas,
-            resultado,
-            data,
-            hora,
-            lote,
-            tipoBilhete,
-            valorBilhete,
-            vendedorId,
-        } = parsedBody.data;
+        const { userId, bets, totalAmount } = parsedBody.data;
 
-        // Create the new bet
-        const newBet = await prisma.bet.create({
-            data: {
+        // Additional Authorization: Ensure the authenticated user can create bets for this userId
+        // For example, admins can create bets for any user, while vendedores can create bets for their own users
+        if (userRole === "vendedor") {
+            // Verify that the `userId` belongs to a user managed by this vendedor
+            const apostador = await prisma.user.findUnique({
+                where: { id: userId },
+                select: { seller_id: true },
+            });
+
+            if (!apostador || apostador.seller_id !== session.user.id) {
+                console.log(
+                    `Vendedor ${session.user.id} attempting to create bet for unauthorized user ${userId}`
+                );
+                return NextResponse.json(
+                    { error: "Forbidden: Cannot create bets for this user." },
+                    { status: 403 }
+                );
+            }
+        }
+
+        // Iterate over each bet and create them in the database
+        const createdBets = [];
+        for (const bet of bets) {
+            const {
                 numbers,
                 modalidade,
                 acertos,
@@ -157,22 +169,56 @@ export async function POST(request: Request) {
                 consultor,
                 apostador,
                 quantidadeDeDezenas,
-                resultado: new Date(resultado),
-                data: new Date(data),
+                resultado,
+                data,
                 hora,
                 lote,
                 tipoBilhete,
                 valorBilhete,
-                userId: session.user.id, // Assuming the authenticated user's ID is used as bettor
-                vendedorId: vendedorId || null,
-            },
+                vendedorId,
+            } = bet;
+
+            // If the authenticated user is a vendedor and vendedorId is not provided, assign it
+            const finalVendedorId =
+                vendedorId || (userRole === "vendedor" ? session.user.id : null);
+
+            const newBet = await prisma.bet.create({
+                data: {
+                    numbers,
+                    modalidade,
+                    acertos,
+                    premio,
+                    consultor,
+                    apostador,
+                    quantidadeDeDezenas,
+                    resultado: new Date(resultado),
+                    data: new Date(data),
+                    hora, // Should be in 'HH:mm' format
+                    lote,
+                    tipoBilhete,
+                    valorBilhete,
+                    userId: userId, // Associate the bet with the specified userId
+                    vendedorId: finalVendedorId,
+                },
+            });
+
+            createdBets.push(newBet);
+        }
+
+        console.log(`Created ${createdBets.length} bets successfully.`);
+
+        // Optionally, deduct the totalAmount from the user's wallet
+        await prisma.wallet.update({
+            where: { userId }, // Assuming one wallet per user
+            data: { balance: { decrement: totalAmount } },
         });
 
-        console.log("New bet created:", newBet);
-
-        return NextResponse.json(newBet, { status: 201 });
+        return NextResponse.json(
+            { message: "Bets created successfully.", bets: createdBets },
+            { status: 201 }
+        );
     } catch (error: any) {
-        console.error("Error creating bet:", error.message, error.stack);
+        console.error("Error creating bets:", error.message, error.stack);
 
         if (error instanceof PrismaClientKnownRequestError) {
             // Handle specific Prisma errors if needed

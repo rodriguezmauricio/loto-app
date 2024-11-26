@@ -324,6 +324,14 @@ const NovoBilhete = () => {
                 return;
             }
 
+            // Format the 'hora' field correctly ('HH:mm')
+            const horaFormatted = formData.currentDate
+                ? formData.currentDate.toLocaleTimeString("en-GB", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                  })
+                : "00:00";
+
             const apostaData = {
                 userId: apostadorId,
                 bets: games.map((game, index) => ({
@@ -338,7 +346,7 @@ const NovoBilhete = () => {
                         ? formData.resultDate.toISOString()
                         : new Date().toISOString(),
                     data: formData.currentDate.toISOString(),
-                    hora: formData.currentDate.toISOString(),
+                    hora: horaFormatted, // Correct format
                     lote: formData.lote || "Lote Desconhecido",
                     tipoBilhete: formData.ticketType || "Tipo Desconhecido",
                     valorBilhete: Number(formData.valorBilhete) || 0, // Ensure it's a number
@@ -354,6 +362,7 @@ const NovoBilhete = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(apostaData),
+                credentials: "include", // Include cookies for authentication
             });
 
             if (response.ok) {
@@ -361,11 +370,13 @@ const NovoBilhete = () => {
                 console.log("Apostas created successfully:", result);
                 alert("Bilhetes criados com sucesso!");
 
+                // Optionally, update the apostador's wallet and redirect
                 const updatedApostadorResponse = await fetch(`/api/users/${apostadorId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                     },
+                    credentials: "include", // Include cookies for authentication
                 });
                 if (updatedApostadorResponse.ok) {
                     const updatedApostador: Apostador = await updatedApostadorResponse.json();

@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../../../app/api/auth/[...nextauth]/route"; // Adjust the path if necessary
+import { authOptions } from "@lib/authOptions";
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {

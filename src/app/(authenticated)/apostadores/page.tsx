@@ -6,7 +6,6 @@ import PageHeader from "components/pageHeader/PageHeader";
 import IconCard from "components/iconCard/IconCard";
 import styles from "./apostadores.module.css";
 import { useEffect, useState } from "react";
-import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import { useUserStore } from "../../../../store/useUserStore";
 import { BsSearch, BsXLg } from "react-icons/bs";
 
@@ -16,6 +15,11 @@ interface Apostador {
     phone: string;
     pix: string;
     created_on: string; // ISO date string
+}
+
+interface FetchUsersResponse {
+    users: Apostador[];
+    totalPages: number;
 }
 
 const ApostadoresPage = () => {
@@ -83,21 +87,20 @@ const ApostadoresPage = () => {
                         headers: {
                             "Content-Type": "application/json",
                         },
+                        credentials: "include", // Include cookies for authentication
                     }
                 );
 
                 if (!response.ok) {
-                    const errorData = await response.json();
+                    const errorData = await response
+                        .json()
+                        .catch(() => ({ error: "Erro ao buscar apostadores." }));
                     throw new Error(errorData.error || "Erro ao buscar apostadores.");
                 }
 
-                const data: Apostador[] = await response.json();
-                setApostadores(data);
-
-                // Optionally, set totalPages based on headers or additional API response
-                // Example:
-                // const totalCount = parseInt(response.headers.get('X-Total-Count') || '0');
-                // setTotalPages(Math.ceil(totalCount / 10));
+                const data: FetchUsersResponse = await response.json();
+                setApostadores(data.users);
+                setTotalPages(data.totalPages);
             } catch (err: any) {
                 console.error("Error fetching apostadores:", err);
                 setError(err.message || "Erro ao buscar apostadores.");

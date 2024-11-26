@@ -1,9 +1,31 @@
-// src/app/components/SessionWrapper.tsx
+// src/components/SessionWrapper.tsx
 "use client";
 
-import { SessionProvider } from "next-auth/react";
-import { ReactNode } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"; // Ensure correct import for Next.js 13+
+import { useEffect } from "react";
 
-export default function SessionWrapper({ children }: { children: ReactNode }) {
-    return <SessionProvider>{children}</SessionProvider>;
+interface SessionWrapperProps {
+    children: React.ReactNode;
 }
+
+const SessionWrapper = ({ children }: SessionWrapperProps) => {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (status === "loading") return; // Do nothing while loading
+        if (!session) {
+            router.push("/login"); // Use relative path directly
+        }
+    }, [session, status, router]);
+
+    // Optionally, show a loading state while checking session
+    if (status === "loading") {
+        return <div>Loading...</div>;
+    }
+
+    return <>{children}</>;
+};
+
+export default SessionWrapper;

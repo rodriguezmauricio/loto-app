@@ -8,6 +8,9 @@ import { useUserStore } from "../../../../../store/useUserStore";
 
 interface IUserDataToDatabase {
     username: string;
+    name: string;
+    email: string;
+    picture: string;
     password: string;
     phone: string;
     pix: string;
@@ -19,6 +22,9 @@ const AdicionarApostador = () => {
     const [userDataToDatabase, setUserDataToDatabase] = useState<IUserDataToDatabase>({
         username: "",
         password: "",
+        name: "",
+        email: "",
+        picture: "",
         phone: "",
         pix: "sem pix",
     });
@@ -52,6 +58,9 @@ const AdicionarApostador = () => {
             setUserDataToDatabase({
                 username: "",
                 password: "",
+                name: "",
+                email: "",
+                picture: "",
                 phone: "",
                 pix: "sem pix",
             });
@@ -82,6 +91,30 @@ const AdicionarApostador = () => {
             <PageHeader title="Adicionar Apostador" subpage={true} linkTo="/apostadores" />
             <main className="main">
                 <form className={styles.form} onSubmit={handleSubmitForm}>
+                    <div className={styles.formSection}>
+                        <label htmlFor="name">Nome</label>
+                        <input
+                            type="text"
+                            name="name"
+                            id="name"
+                            className={styles.input}
+                            value={userDataToDatabase.name}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className={styles.formSection}>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="text"
+                            name="email"
+                            id="email"
+                            className={styles.input}
+                            value={userDataToDatabase.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
                     <div className={styles.formSection}>
                         <label htmlFor="username">Nome de Usuario</label>
                         <input

@@ -177,9 +177,23 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             where: { id },
             data: {
                 username: body.username,
+                name: body.name,
+                email: body.email,
+                image: body.image,
                 phone: body.phone,
                 pix: body.pix,
                 // Add other fields as necessary
+            },
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                email: true,
+                image: true,
+                phone: true,
+                pix: true,
+                created_on: true,
+                wallet: true,
             },
         });
 

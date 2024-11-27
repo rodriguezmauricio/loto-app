@@ -50,6 +50,7 @@ const TicketList: React.FC<TicketListProps> = ({ userId }) => {
             } catch (err: any) {
                 console.error(err);
                 setError(err.message || "Erro desconhecido.");
+            } finally {
                 setLoading(false);
             }
         };

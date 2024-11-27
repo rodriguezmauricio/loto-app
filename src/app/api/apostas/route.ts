@@ -73,6 +73,16 @@ export async function GET(request: Request) {
 
     // Check if the user has the required role
     const userRole = session.user.role as Role;
+
+    // Parse query parameters
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    // Ensure that userId is provided
+    if (!userId) {
+        return NextResponse.json({ error: "User ID is required." }, { status: 400 });
+    }
+
     if (userRole !== "admin") {
         console.log(`Forbidden access attempt by user with role: ${userRole}`);
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -82,6 +92,7 @@ export async function GET(request: Request) {
         console.log("Fetching all bets...");
 
         const bets = await prisma.bet.findMany({
+            where: { userId: userId },
             include: {
                 user: {
                     select: { id: true, username: true },

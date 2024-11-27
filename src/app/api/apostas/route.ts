@@ -11,10 +11,10 @@ import { z } from "zod";
 // Define the request body schema for creating a new bet
 const createBetSchema = z.object({
     numbers: z
-        .array(z.number().int().min(1).max(60))
+        .array(z.number().int().min(1))
         .min(1)
         .refine((nums) => new Set(nums).size === nums.length, {
-            message: "Numbers must be unique and between 1 and 60",
+            message: "Numbers must be unique and starting at 1",
         }),
     modalidade: z.string().min(1),
     acertos: z.number().int().min(0),

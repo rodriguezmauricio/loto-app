@@ -239,6 +239,18 @@
     cursor: not-allowed;
 }
 
+.selectedButton {
+    border: 2px solid #fff; /* Adjust the color as needed */
+    border-radius: 5px; /* Optional: rounded corners */
+    /* You can add more styles if needed */
+}
+
+.selectedModalidadeButton {
+    border: 2px solid #fff; /* Adjust the color as needed */
+    border-radius: 5px; /* Optional: rounded corners */
+    /* You can add more styles if needed */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .inputsRow {

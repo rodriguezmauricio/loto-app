@@ -61,6 +61,8 @@ const NovoBilhete = () => {
     const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // games that were generated
     const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<number[][]>([]); // games that were generated and formatted to display
     const [numberOfGames, setNumberOfGames] = useState<number>(1); // number of games to be generated
+    const [quantidadeBilhetes, setQuantidadeBilhetes] = useState<number>(1);
+    const [selectedFilter, setSelectedFilter] = useState<string | null>(null); // 'importar', 'manual', 'random' or null
 
     const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]); // selected numbers in the game as strings
     const [importedNumbersArr, setImportedNumbersArr] = useState<string[][]>([]);
@@ -212,6 +214,7 @@ const NovoBilhete = () => {
 
     const handleSelectedBilhete = (selected: string) => {
         setAddBilheteSelectedButton(selected);
+        setSelectedFilter(selected); // Update the selected filter
     };
 
     const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -225,18 +228,14 @@ const NovoBilhete = () => {
         }
 
         const games: number[][] = [];
-        for (let i = 0; i < numberOfGames; i++) {
+        const gamesDisplay: string[][] = [];
+
+        for (let i = 0; i < quantidadeBilhetes; i++) {
             const game = generateRandomGame(modalidadeContent.maxNumber, quantidadeDeDezenas);
             games.push(game); // Store the generated game as numbers
-        }
 
-        const gamesDisplay: any[][] = [];
-        for (let i = 0; i < numberOfGames; i++) {
-            const gameDisplay = generateRandomGame(
-                modalidadeContent.maxNumber,
-                quantidadeDeDezenas
-            ).map((num) => num.toString().padStart(2, "0")); // Keep as strings with leading zero
-            gamesDisplay.push(gameDisplay); // Store the generated game as numbers
+            const gameDisplay = game.map((num) => num.toString().padStart(2, "0")); // Keep as strings with leading zero
+            gamesDisplay.push(gameDisplay);
         }
 
         setGeneratedGames(games); // Update state with number arrays
@@ -356,6 +355,21 @@ const NovoBilhete = () => {
 
             console.log("Aposta Data to be sent:", JSON.stringify(apostaData, null, 2)); // Log the data
 
+            for (let i = 0; i < games.length; i++) {
+                for (let j = 0; j < games[i].length; j++) {
+                    if (games[i][j] > modalidadeContent?.maxNumber!) {
+                        alert(
+                            `Número ${games[i][j]} no jogo ${
+                                i + 1
+                            } excede o valor máximo permitido de ${
+                                modalidadeContent?.maxNumber || 60
+                            }.`
+                        );
+                        return;
+                    }
+                }
+            }
+
             const response = await fetch("/api/apostas", {
                 method: "POST",
                 headers: {
@@ -401,19 +415,22 @@ const NovoBilhete = () => {
         const renderExportButtons = () => (
             <div className={styles.buttonRow}>
                 <SimpleButton
-                    btnTitle="Export as PNG"
-                    func={() => exportAsImage("png")}
-                    isSelected={false}
+                    isSelected={addBilheteSelectedButton === "importar"}
+                    btnTitle="Importar"
+                    func={() => handleSelectedBilhete("importar")}
+                    className={addBilheteSelectedButton === "importar" ? styles.selectedButton : ""}
                 />
                 <SimpleButton
-                    btnTitle="Export as JPEG"
-                    func={() => exportAsImage("jpeg")}
-                    isSelected={false}
+                    isSelected={addBilheteSelectedButton === "manual"}
+                    btnTitle="Adicionar Manualmente"
+                    func={() => handleSelectedBilhete("manual")}
+                    className={addBilheteSelectedButton === "manual" ? styles.selectedButton : ""}
                 />
                 <SimpleButton
-                    btnTitle="Copy Image"
-                    func={() => exportAsImage("png", true)}
-                    isSelected={false}
+                    isSelected={addBilheteSelectedButton === "random"}
+                    btnTitle="Aleatório"
+                    func={() => handleSelectedBilhete("random")}
+                    className={addBilheteSelectedButton === "random" ? styles.selectedButton : ""}
                 />
             </div>
         );
@@ -560,29 +577,33 @@ const NovoBilhete = () => {
         if (button === "random") {
             return (
                 <>
-                    <div>
+                    <div className={styles.randomBilhetesContainer}>
                         <Title h={2}>{modalidadeContent?.name || ""}</Title>
                         <div className={styles.inputsRow}>
-                            <Title h={3}>Quantidade de Dezenas:</Title>
-                            <input
-                                className={styles.smallInput}
-                                type="number"
-                                id="quantidadeDeDezenas"
-                                value={quantidadeDeDezenas}
-                                onChange={handleQuantidadeDezenasSelecionadas}
-                                min={1}
-                                max={modalidadeContent?.maxNumber || 0}
-                            />
+                            <div className={styles.inputGroup}>
+                                <label htmlFor="quantidadeBilhetes">Quantidade de Bilhetes:</label>
+                                <input
+                                    type="number"
+                                    id="quantidadeBilhetes"
+                                    value={quantidadeBilhetes}
+                                    onChange={(e) => setQuantidadeBilhetes(Number(e.target.value))}
+                                    min={1}
+                                    max={maxTickets}
+                                    className={styles.smallInput}
+                                    required
+                                />
+                            </div>
                         </div>
                         <SimpleButton
-                            btnTitle="Gerar Jogos"
+                            btnTitle="Gerar Bilhetes Aleatórios"
                             isSelected={false}
                             func={handleGenerateGames}
                             disabled={
                                 !modalidadeContent ||
-                                !quantidadeDeDezenas ||
+                                quantidadeBilhetes <= 0 ||
+                                quantidadeBilhetes > maxTickets ||
                                 quantidadeDeDezenas > modalidadeContent.maxNumber
-                            } // Disable button if conditions aren't met
+                            }
                         />
                     </div>
                     {generatedGames.length > 0 && (
@@ -640,7 +661,7 @@ const NovoBilhete = () => {
     };
 
     // Function to generate a random game of unique numbers
-    const generateRandomGame = (maxNumber: number, gameSize: number) => {
+    const generateRandomGame = (maxNumber: number, gameSize: number): number[] => {
         const game = new Set<number>(); // Use Set to avoid duplicates
         while (game.size < gameSize) {
             const randomNum = Math.floor(Math.random() * maxNumber) + 1;
@@ -735,22 +756,37 @@ const NovoBilhete = () => {
                     {modalidadeContent && (
                         <>
                             <div className={styles.sectionContainer}>
-                                <Title h={2}>Bilhetes</Title>
+                                <Title h={2}>{`Bilhetes ${modalidadeContent.name ?? ""}`}</Title>
                                 <div className={styles.buttonRow}>
                                     <SimpleButton
                                         isSelected={addBilheteSelectedButton === "importar"}
                                         btnTitle="Importar"
                                         func={() => handleSelectedBilhete("importar")}
+                                        className={
+                                            addBilheteSelectedButton === "importar"
+                                                ? styles.selectedButton
+                                                : ""
+                                        }
                                     />
                                     <SimpleButton
                                         isSelected={addBilheteSelectedButton === "manual"}
                                         btnTitle="Adicionar Manualmente"
                                         func={() => handleSelectedBilhete("manual")}
+                                        className={
+                                            addBilheteSelectedButton === "manual"
+                                                ? styles.selectedButton
+                                                : ""
+                                        }
                                     />
                                     <SimpleButton
                                         isSelected={addBilheteSelectedButton === "random"}
                                         btnTitle="Aleatório"
                                         func={() => handleSelectedBilhete("random")}
+                                        className={
+                                            addBilheteSelectedButton === "random"
+                                                ? styles.selectedButton
+                                                : ""
+                                        }
                                     />
                                 </div>
                             </div>
@@ -853,6 +889,7 @@ const NovoBilhete = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div className={styles.inputsRow}>
                                     <div className={styles.inputGroup}>
                                         <label htmlFor="valorBilhete">Valor Bilhete:</label>
@@ -870,6 +907,21 @@ const NovoBilhete = () => {
                                             step={0.01}
                                         />
                                     </div>
+                                    <div className={styles.inputGroup}>
+                                        <label htmlFor="quantidadeDeDezenas">
+                                            Quantidade De Dezenas:
+                                        </label>
+                                        <input
+                                            type="number"
+                                            id="quantidadeDeDezenas"
+                                            value={quantidadeDeDezenas}
+                                            min={1}
+                                            max={Math.min(modalidadeContent?.maxNumber)} // Cap at 60
+                                            onChange={handleQuantidadeDezenasSelecionadas}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={styles.inputsRow}>
                                     <div className={styles.inputGroup}>
                                         <label htmlFor="resultDate">Data do Sorteio:</label>
                                         <DatePicker

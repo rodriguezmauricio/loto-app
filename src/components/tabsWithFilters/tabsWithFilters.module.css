@@ -1,59 +1,59 @@
 .tabList {
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
-  list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    list-style: none;
 }
 
 .singleTab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background-color: var(--color-dark-mid);
-  border: 1px solid var(--color-dark-light);
-  color: var(--color-light-dark);
-  cursor: pointer;
-  width: 200px;
-  font-size: 18px;
-  font-weight: 500;
-  font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--color-dark-mid);
+    border: 1px solid var(--color-dark-light);
+    color: var(--color-light-dark);
+    cursor: pointer;
+    width: 200px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: inherit;
 }
 
 .singleTabSelected {
-  background-color: var(--color-dark-light);
-  border: 1px solid var(--color-dark-light);
-  color: var(--color-light-light);
-  font-weight: bold;
+    background-color: var(--color-dark-light);
+    border: 1px solid var(--color-dark-light);
+    color: var(--color-light-light);
+    font-weight: bold;
 }
 
 .singleTab:first-child,
 .singleTabSelected:first-child {
-  border-radius: 8px 0 0 0;
+    border-radius: 8px 0 0 0;
 }
 
 .singleTab:last-child,
 .singleTabSelected:last-child {
-  border-radius: 0 8px 0 0;
+    border-radius: 0 8px 0 0;
 }
 
 .tabContentContainer {
-  background-color: var(--color-dark-light);
-  padding: 20px;
-  border-radius: 0 8px 8px 8px;
+    background-color: var(--color-dark-light);
+    padding: 20px;
+    border-radius: 0 8px 8px 8px;
 }
 
 .buttonFiltersRow {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .buttonFilter {
-  padding: 10px;
-  color: var(--color-light-light);
-  border-radius: 8px;
-  border: none;
-  font-family: inherit;
-  cursor: pointer;
+    padding: 10px;
+    color: var(--color-light-light);
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
 }

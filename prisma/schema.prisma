@@ -112,6 +112,16 @@ model Prize {
     user   User   @relation("UserPrizes", fields: [userId], references: [id])
 }
 
+model Result {
+    id             String   @id @default(uuid())
+    modalidade     String
+    winningNumbers Int[]
+    premio         Float
+    createdAt      DateTime @default(now())
+
+    @@index([modalidade])
+}
+
 model Account {
     id                Int     @id @default(autoincrement())
     userId            String  @db.Uuid

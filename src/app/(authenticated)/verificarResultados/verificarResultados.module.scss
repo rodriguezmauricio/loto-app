@@ -1,0 +1,93 @@
+/* app/(authenticated)/results/results.module.scss */
+
+.formSection {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.formSection h2 {
+    margin-bottom: 1.5rem;
+    color: #333333;
+}
+
+.resultForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555555;
+}
+
+.formGroup select,
+.formGroup input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.formGroup select:focus,
+.formGroup input:focus {
+    border-color: #0070f3;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.winnersSection {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.winnersSection h2 {
+    margin-bottom: 1.5rem;
+    color: #333333;
+}
+
+.winnersList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.winnerCard {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.winnerCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.winnerCard p {
+    margin: 0.5rem 0;
+    color: #444444;
+}
+
+@media (max-width: 768px) {
+    .winnersList {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .winnersList {
+        grid-template-columns: 1fr;
+    }
+}

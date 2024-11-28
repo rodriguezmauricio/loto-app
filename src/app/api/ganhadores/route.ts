@@ -95,7 +95,7 @@ export async function GET(request: Request) {
                 numbers: true,
                 modalidade: true,
                 userId: true,
-                user: { select: { name: true } }, // Fetch user's name
+                user: { select: { username: true } }, // Fetch user's name
             },
         });
 
@@ -117,7 +117,7 @@ export async function GET(request: Request) {
                 numbers: bet.numbers,
                 modalidade: bet.modalidade,
                 userId: bet.userId,
-                userName: bet.user?.name || "Unknown",
+                userName: bet.user?.username || "Unknown",
                 sorteioDate: sorteio.createdAt.toISOString().split("T")[0],
                 premio: sorteio.premio || 0,
             }));

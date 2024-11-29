@@ -6,9 +6,10 @@ interface ICard {
     big: boolean;
     color: "green" | "red" | "yellow" | "none";
     money?: boolean;
+    children?: React.ReactNode;
 }
 
-const Card = ({ title, value, big, color, money = true }: ICard) => {
+const Card = ({ title, value, big, color, money = true, children }: ICard) => {
     // Format the value as currency
     const formattedValue =
         value !== undefined
@@ -37,6 +38,7 @@ const Card = ({ title, value, big, color, money = true }: ICard) => {
             <h3>{title}</h3>
             <h2 className={styles.h2}>{title}</h2>
             <h3 className={big ? styles.h3Main : styles.h3}>{formattedValue}</h3>
+            {children && <div className={styles.children}>{children}</div>}
         </div>
     );
 };

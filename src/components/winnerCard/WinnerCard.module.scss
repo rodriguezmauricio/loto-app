@@ -1,0 +1,42 @@
+/* components/simpleWinnerCard/SimpleWinnerCard.module.css */
+
+.card {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333333;
+}
+
+.content {
+    margin-top: 0.5rem;
+}
+
+.content p {
+    margin: 0.25rem 0;
+    color: #555555;
+}
+
+.numbers {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.number {
+    background-color: var(--accent-main);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}

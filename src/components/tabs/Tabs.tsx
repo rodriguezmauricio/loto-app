@@ -1,7 +1,7 @@
 // components/tabs/Tabs.tsx
 
 import { useState } from "react";
-import styles from "./tabs.module.css";
+import styles from "./tabs.module.scss";
 
 interface ITab {
     tabTitle: string;

@@ -7,12 +7,15 @@ type User = {
     id: string;
     username: string;
     role: string | null;
-    adminId?: string | null | undefined;
-    sellerId?: string | null | undefined;
+    adminId?: string | null;
+    sellerId?: string | null;
+    bancaName?: string | null; // Include bancaName here
 } & DefaultSession["user"]; // Include name, email, image
 
 interface UserStore {
     user: User | null;
+    // Remove separate bancaName property
+    // bancaName?: string;
     setUser: (user: User | null) => void;
     logout: () => void;
 }

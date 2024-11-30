@@ -23,11 +23,14 @@ const Menu = () => {
 
     const userRole = user?.role || "usuario";
 
+    console.log("user: ", user);
+
     return (
         <div className={styles.sticky}>
             <header className={styles.logoMenuContainer}>
                 <div className={styles.logo}>
                     <Image src={logo} alt="logo" width={130} height={50} />
+                    <p>{user?.bancaName ?? "Nome da banca"}</p>
                 </div>
                 <div className={styles.mobileMenuContainer} onClick={handleToggleMenu}>
                     {toggleMenu ? <BsList size={35} /> : <BsXLg size={35} />}

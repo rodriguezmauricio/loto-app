@@ -2,14 +2,14 @@
 
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// Remove the adapter import
+// import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../prisma/client";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-    // Removed PrismaAdapter to ensure compatibility with JWT strategy
-    // adapter: PrismaAdapter(prisma), // Remove this line
-    adapter: PrismaAdapter(prisma),
+    // Remove the adapter
+    // adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -20,7 +20,6 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 if (!credentials?.username || !credentials?.password) {
                     throw new Error("Missing username or password");
-                    return null;
                 }
 
                 const user = await prisma.user.findUnique({
@@ -29,7 +28,6 @@ export const authOptions: NextAuthOptions = {
 
                 if (!user) {
                     throw new Error("No user found with the given username");
-                    return null;
                 }
 
                 const isValidPassword = await bcrypt.compare(
@@ -39,13 +37,16 @@ export const authOptions: NextAuthOptions = {
 
                 if (!isValidPassword) {
                     throw new Error("Invalid password");
-                    return null;
                 }
 
                 return {
                     id: user.id,
                     username: user.username,
+                    bancaName: user.bancaName,
                     role: user.role,
+                    name: user.name || null,
+                    email: user.email || null,
+                    image: user.image || null,
                 };
             },
         }),
@@ -56,14 +57,16 @@ export const authOptions: NextAuthOptions = {
                 session.user.id = token.id as string;
                 session.user.role = token.role as string;
                 session.user.username = token.username as string;
+                session.user.bancaName = token.bancaName as string;
             }
             return session;
         },
-        async jwt({ token, user, account, profile, isNewUser }) {
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
                 token.role = user.role;
                 token.username = user.username;
+                token.bancaName = user.bancaName;
             }
             return token;
         },

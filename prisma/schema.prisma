@@ -30,6 +30,7 @@ model User {
     created_on     DateTime  @default(now()) @db.Timestamp(6)
     updated_on     DateTime  @updatedAt @db.Timestamp(6)
     emailVerified  DateTime? // Added field
+    bancaName      String?
 
     // Relations
     wallet Wallet?

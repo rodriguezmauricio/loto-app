@@ -165,9 +165,9 @@ export const tempDb = {
     generalSettings: {
         bilhetes_horarioLimiteApotas: "20:00:00",
         bilhetes_valorMaximoPorBilhete: 20,
-        bilhetes_quantidadeMaximaDeBilhetesPorCliente: 20,
+        bilhetes_quantidadeMaximaDeBilhetesPorCliente: 200,
         bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorSorteio: 20,
-        bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorAposta: 20,
+        bilhetes_quantidadeMaximaDeBilhetesDuplicadosPorAposta: 0,
         bilhetes_bloquearCadastroDeBilhetesDuplicados: false,
         surpresinha_permitirCadastroIlimitadoDeBilhetes: true,
         surpresinha_permitirCadastroIlimitadoDeBilhetesDuplicados: false,

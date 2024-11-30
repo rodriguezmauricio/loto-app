@@ -12,11 +12,12 @@ export async function POST(request: NextRequest) {
         const { username, password } = await request.json();
 
         // Fetch user from the database
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
             where: { username },
         });
 
         if (!user) {
+            alert("usuário ou senha incorretos.");
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
         const isMatch = await bcrypt.compare(password, user.password_hash);
 
         if (!isMatch) {
+            alert("usuário ou senha incorretos.");
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
@@ -31,6 +33,7 @@ export async function POST(request: NextRequest) {
         const payload = {
             id: user.id,
             username: user.username,
+            bancaName: user.bancaName,
             role: user.role,
         };
 

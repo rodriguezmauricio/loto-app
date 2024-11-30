@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { SessionProvider } from "next-auth/react";
 
 const App: React.FC = () => {
     const { data: session, status } = useSession();

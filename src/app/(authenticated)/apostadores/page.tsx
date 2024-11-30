@@ -31,6 +31,8 @@ const ApostadoresPage = () => {
     const [debouncedSearch, setDebouncedSearch] = useState<string>("");
     const [sortOption, setSortOption] = useState<string>("name_asc");
 
+    console.log("apostadores: ", user);
+
     // Debounce the search input to prevent excessive API calls
     useEffect(() => {
         const handler = setTimeout(() => {

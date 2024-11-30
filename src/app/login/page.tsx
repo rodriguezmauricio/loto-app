@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useUserStore } from "../../../store/useUserStore"; // Make sure path is correct
 import { useRouter } from "next/navigation"; // For Next.js app routing
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import styles from "./login.module.scss"; // Make sure path is correct "./LoginPage.module.css"; // Make sure path is correct "./login.module.scss"; // Make sure path is correct
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import logo from "../../../public/images/lotoplay_light_logo1.svg";
@@ -16,6 +16,15 @@ function LoginPage() {
     const setUser = useUserStore((state) => state.setUser); // Zustand store to set user
     const router = useRouter();
     const user = useUserStore((state) => state.user);
+    const { data: session, status } = useSession();
+
+    useEffect(() => {
+        if (session?.user) {
+            setUser(session.user as any); // Cast to 'any' if necessary
+        }
+    }, [session, setUser]);
+
+    console.log("login User: ", user);
 
     //HANDLERS:
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +42,7 @@ function LoginPage() {
             if (res?.error) {
                 setError(res.error);
             } else {
-                window.location.href = "/dashboard";
+                router.push("/dashboard");
             }
         } catch (err) {
             console.error("Login error:", err);

@@ -20,3 +20,15 @@ export const createUserSchema = z.object({
         .max(100, { message: "A comissão não pode exceder 100%." })
         .optional(), // Only required for 'vendedor'
 });
+
+export const updateUserSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+    phone: z.string(),
+    pix: z.string().optional(),
+    role: z.enum(["admin", "vendedor", "usuario"]).optional(),
+    valor_comissao: z.number().optional(),
+    name: z.string().optional(),
+    email: z.string().email().optional(),
+    image: z.string().url().optional(),
+});

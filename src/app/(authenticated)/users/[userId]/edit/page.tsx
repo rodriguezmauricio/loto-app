@@ -1,32 +1,32 @@
-// src/app/(authenticated)/vendedores/[vendedorId]/edit/page.tsx
+// src/app/(authenticated)/users/[userId]/edit/page.tsx
 
 "use client";
 
 import React, { useEffect, useState } from "react";
-import VendedorEditForm from "components/vendedores/VendedorEditForm";
-import { Vendedor } from "../../../../../types/vendedor";
+import UserEditForm from "components/users/UserEditform";
+import { User } from "../../../../../types/roles";
 import { Role } from "../../../../../types/roles";
 import ProtectedRoute from "components/ProtectedRoute";
 import { ROUTES } from "@routes/routes";
 import Breadcrumbs from "components/breadcrumbs/Breadcrumbs";
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./EditVendedorPage.module.css";
+import styles from "./EditUserPage.module.scss";
 
-interface EditVendedorPageProps {
-    params: { vendedorId: string };
+interface EditUserPageProps {
+    params: { userId: string };
 }
 
-const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
-    const { vendedorId } = params;
-    const [vendedor, setVendedor] = useState<Vendedor | null>(null);
+const EditUserPage: React.FC<EditUserPageProps> = ({ params }) => {
+    const { userId } = params;
+    const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch the vendedor data from the API
+    // Fetch the user data from the API
     useEffect(() => {
-        const fetchVendedor = async () => {
+        const fetchUser = async () => {
             try {
-                const res = await fetch(`/api/users/${vendedorId}`, {
+                const res = await fetch(`/api/users/${userId}`, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -35,27 +35,27 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
 
                 if (!res.ok) {
                     if (res.status === 404) {
-                        setError("Vendedor não encontrado.");
+                        setError("Usuário não encontrado.");
                     } else {
                         const errorData = await res.json();
-                        setError(errorData.error || "Erro ao buscar vendedor.");
+                        setError(errorData.error || "Erro ao buscar usuário.");
                     }
                     setLoading(false);
                     return;
                 }
 
-                const data: Vendedor = await res.json();
-                setVendedor(data);
+                const data: User = await res.json();
+                setUser(data);
             } catch (err: any) {
-                console.error("Error fetching vendedor:", err);
-                setError("Erro ao buscar vendedor.");
+                console.error("Error fetching user:", err);
+                setError("Erro ao buscar usuário.");
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchVendedor();
-    }, [vendedorId]);
+        fetchUser();
+    }, [userId]);
 
     // Fetch currentUserRole (replace with actual authentication logic)
     // Assuming you have a way to get the current user's role, e.g., via context or props
@@ -63,15 +63,16 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
 
     const breadcrumbs = [
         { href: ROUTES.HOME, label: "Home" },
-        { href: ROUTES.VENDEDORES, label: "Vendedores" },
-        { href: ROUTES.VENDEDOR(vendedorId), label: `Vendedor ${vendedorId}` },
-        { href: ROUTES.EDIT_VENDEDOR(vendedorId), label: "Editar Vendedor" },
+        { href: ROUTES.USERS, label: "Usuários" },
+        { href: ROUTES.USER(userId), label: `Usuário ${userId}` },
+        { href: ROUTES.EDIT_USER(userId), label: "Editar Usuário" },
     ];
 
     if (loading) {
         return (
             <div className={styles.container}>
-                <p>Carregando vendedor...</p>
+                <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
+                <p>Carregando usuário...</p>
             </div>
         );
     }
@@ -79,17 +80,17 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
     if (error) {
         return (
             <div className={styles.container}>
-                <h1>Erro</h1>
+                <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
                 <p>{error}</p>
             </div>
         );
     }
 
-    if (!vendedor) {
+    if (!user) {
         return (
             <div className={styles.container}>
-                <h1>Vendedor Não Encontrado</h1>
-                <p>O vendedor que você está procurando não foi encontrado.</p>
+                <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
+                <p>Usuário não encontrado.</p>
             </div>
         );
     }
@@ -98,15 +99,11 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
         <ProtectedRoute requiredRole="admin" currentUserRole={currentUserRole}>
             <div className={styles.container}>
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
-                <PageHeader
-                    title="Editar Vendedor"
-                    subpage={true}
-                    linkTo={ROUTES.VENDEDOR(vendedorId)}
-                />
-                <VendedorEditForm vendedor={vendedor} />
+                <PageHeader title="Editar Usuário" subpage={true} linkTo={ROUTES.USER(user.id)} />
+                <UserEditForm user={user} />
             </div>
         </ProtectedRoute>
     );
 };
 
-export default EditVendedorPage;
+export default EditUserPage;

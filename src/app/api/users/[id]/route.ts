@@ -1,189 +1,42 @@
-// app/api/users/[id]/route.ts
+// src/app/api/users/[Id]/route.ts
 
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@lib/authOptions";
+import bcrypt from "bcrypt";
+import { Role } from "../../../../types/roles";
+import { ZodError } from "zod";
+import { updateUserSchema } from "validation/userValidation";
 
+// Helper functions
+const isAdmin = (role: Role): boolean => role === "admin";
+const isVendedor = (role: Role): boolean => role === "vendedor";
+
+/**
+ * Handles GET, PUT, DELETE requests for /api/users/[userId]
+ */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-        // Get the session to identify the current user
+        // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
+        console.log("Session:", session);
+
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = params;
-        console.log(`Fetching apostador with ID: ${id}`);
+        // Extract user information from session
+        const userRole = session.user?.role as Role;
+        const currentUserId = session.user?.id as string;
 
-        // Fetch the apostador from the database
-        const apostador = await prisma.user.findUnique({
-            where: { id },
-            include: {
-                wallet: true,
-            },
-        });
-
-        if (!apostador) {
-            return NextResponse.json({ error: "Apostador não encontrado." }, { status: 404 });
+        if (!userRole || !currentUserId) {
+            return NextResponse.json({ error: "Invalid session data" }, { status: 401 });
         }
 
-        // Authorization: Check if the current user can view this apostador
-        if (session.user.role === "admin") {
-            // Admin can view apostadores they created or created by their sellers
-            const sellers = await prisma.user.findMany({
-                where: { admin_id: session.user.id, role: "vendedor" },
-                select: { id: true },
-            });
-            const sellerIds = sellers.map((seller) => seller.id);
-
-            if (
-                apostador.admin_id !== session.user.id &&
-                !(apostador.seller_id && sellerIds.includes(apostador.seller_id))
-            ) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else if (session.user.role === "vendedor") {
-            // Sellers can only view apostadores they created
-            if (apostador.seller_id !== session.user.id) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else {
-            // Regular users should not access this endpoint
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
-
-        return NextResponse.json(apostador, { status: 200 });
-    } catch (error) {
-        console.error("Error fetching apostador:", error);
-        return NextResponse.json({ error: "Erro ao buscar apostador." }, { status: 500 });
-    }
-}
-
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-    try {
-        // Get the session to identify the current user
-        const session = await getServerSession(authOptions);
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { id } = params;
-
-        // Fetch the apostador to verify existence and permissions
-        const apostador = await prisma.user.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                role: true,
-                admin_id: true,
-                seller_id: true,
-            },
-        });
-
-        if (!apostador) {
-            return NextResponse.json({ error: "Apostador não encontrado." }, { status: 404 });
-        }
-
-        // Authorization: Check if the current user can delete this apostador
-        if (session.user.role === "admin") {
-            // Admin can delete apostadores they created or created by their sellers
-            const sellers = await prisma.user.findMany({
-                where: { admin_id: session.user.id, role: "vendedor" },
-                select: { id: true },
-            });
-            const sellerIds = sellers.map((seller) => seller.id);
-
-            if (
-                apostador.admin_id !== session.user.id &&
-                !sellerIds.includes(apostador.seller_id!) // added the ! here too
-            ) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else if (session.user.role === "vendedor") {
-            // Sellers can only delete apostadores they created
-            if (apostador.seller_id !== session.user.id) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else {
-            // Regular users should not access this endpoint
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
-
-        // Delete the apostador
-        await prisma.user.delete({
-            where: { id },
-        });
-
-        return NextResponse.json({ message: "Apostador excluído com sucesso." }, { status: 200 });
-    } catch (error) {
-        console.error("Error deleting apostador:", error);
-        return NextResponse.json({ error: "Erro ao excluir apostador." }, { status: 500 });
-    }
-}
-
-// app/api/users/[id]/route.ts
-
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-    try {
-        // Get the session to identify the current user
-        const session = await getServerSession(authOptions);
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
-
-        const { id } = params;
-        const body = await request.json();
-
-        // Fetch the apostador to verify existence and permissions
-        const apostador = await prisma.user.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                role: true,
-                admin_id: true,
-                seller_id: true,
-            },
-        });
-
-        if (!apostador) {
-            return NextResponse.json({ error: "Apostador não encontrado." }, { status: 404 });
-        }
-
-        // Authorization: Similar to DELETE
-        if (session.user.role === "admin") {
-            const sellers = await prisma.user.findMany({
-                where: { admin_id: session.user.id, role: "vendedor" },
-                select: { id: true },
-            });
-            const sellerIds = sellers.map((seller) => seller.id);
-
-            if (
-                apostador.admin_id !== session.user.id &&
-                !sellerIds.includes(apostador.seller_id!) // added ! here too
-            ) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else if (session.user.role === "vendedor") {
-            if (apostador.seller_id !== session.user.id) {
-                return NextResponse.json({ error: "Acesso negado." }, { status: 403 });
-            }
-        } else {
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
-
-        // Update the apostador
-        const updatedApostador = await prisma.user.update({
-            where: { id },
-            data: {
-                username: body.username,
-                name: body.name,
-                email: body.email,
-                image: body.image,
-                phone: body.phone,
-                pix: body.pix,
-                // Add other fields as necessary
-            },
+        // Fetch the user by ID
+        const user = await prisma.user.findUnique({
+            where: { id: params.id },
             select: {
                 id: true,
                 username: true,
@@ -192,14 +45,181 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                 image: true,
                 phone: true,
                 pix: true,
+                role: true,
+                valor_comissao: true,
                 created_on: true,
-                wallet: true,
+                updated_on: true,
             },
         });
 
-        return NextResponse.json(updatedApostador, { status: 200 });
-    } catch (error) {
-        console.error("Error updating apostador:", error);
-        return NextResponse.json({ error: "Erro ao atualizar apostador." }, { status: 500 });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Authorization: Only admins or the user themselves can view
+        if (userRole !== "admin" && user.id !== currentUserId) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        return NextResponse.json(user, { status: 200 });
+    } catch (error: any) {
+        console.error("Error fetching user:", error);
+        return NextResponse.json({ error: "Error fetching user." }, { status: 500 });
+    }
+}
+
+export async function PUT(request: Request, { params }: { params: { userId: string } }) {
+    try {
+        // Authenticate the user using getServerSession
+        const session = await getServerSession(authOptions);
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Extract user information from session
+        const userRole = session.user.role as Role;
+        const userId = session.user.id as string;
+
+        // Fetch the user by ID
+        const user = await prisma.user.findUnique({
+            where: { id: params.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Authorization: Only admins or the user themselves can update
+        if (userRole !== "admin" && user.id !== userId) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        // Parse and validate the request body
+        const body = await request.json();
+
+        // Validate using Zod
+        const parsed = updateUserSchema.safeParse(body);
+        if (!parsed.success) {
+            const errors = parsed.error.errors.map((err: any) => err.message).join(", ");
+            return NextResponse.json({ error: errors }, { status: 400 });
+        }
+
+        const { username, phone, name, email, image, pix, valor_comissao, password, role } =
+            parsed.data;
+
+        // Prepare update data
+        const updateData: any = {
+            username,
+            phone,
+            name: name || null,
+            email: email || null,
+            image: image || null,
+            pix: pix || null,
+            updated_on: new Date(),
+        };
+
+        // Only admins can change roles
+        if (role && userRole === "admin") {
+            updateData.role = role;
+        }
+
+        // Include valor_comissao only if the role is vendedor
+        if (role === "vendedor" || user.role === "vendedor") {
+            updateData.valor_comissao = valor_comissao || 0;
+        }
+
+        // Include password if it's provided
+        if (password && password.trim() !== "") {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updateData.password_hash = hashedPassword;
+        }
+
+        // Update the user
+        const updatedUser = await prisma.user.update({
+            where: { id: params.userId },
+            data: updateData,
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                email: true,
+                image: true,
+                phone: true,
+                pix: true,
+                role: true,
+                valor_comissao: true,
+                created_on: true,
+                updated_on: true,
+            },
+        });
+
+        return NextResponse.json(updatedUser, { status: 200 });
+    } catch (error: any) {
+        console.error("Error updating user:", error);
+        if (error instanceof ZodError) {
+            const errors = error.errors.map((err) => err.message).join(", ");
+            return NextResponse.json({ error: errors }, { status: 400 });
+        }
+        // Handle unique constraint violation (e.g., duplicate username)
+        if (error.code === "P2002") {
+            if (error.meta.target.includes("username")) {
+                return NextResponse.json({ error: "Username already exists." }, { status: 409 });
+            }
+            return NextResponse.json({ error: "Unique constraint failed." }, { status: 409 });
+        }
+        return NextResponse.json({ error: "Error updating user." }, { status: 500 });
+    }
+}
+
+export async function DELETE(request: Request, { params }: { params: { userId: string } }) {
+    try {
+        // Authenticate the user using getServerSession
+        const session = await getServerSession(authOptions);
+
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Extract user information from session
+        const userRole = session.user.role as Role;
+        const userId = session.user.id as string;
+
+        // Only admins can delete users
+        if (userRole !== "admin") {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+
+        // Fetch the user by ID
+        const user = await prisma.user.findUnique({
+            where: { id: params.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        // Delete the user
+        const deletedUser = await prisma.user.delete({
+            where: { id: params.userId },
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                email: true,
+                image: true,
+                phone: true,
+                pix: true,
+                role: true,
+                valor_comissao: true,
+                created_on: true,
+                updated_on: true,
+            },
+        });
+
+        return NextResponse.json(deletedUser, { status: 200 });
+    } catch (error: any) {
+        console.error("Error deleting user:", error);
+        return NextResponse.json({ error: "Error deleting user." }, { status: 500 });
     }
 }

@@ -49,7 +49,7 @@ const VendedoresPage = () => {
             setLoading(true);
             setError(null);
 
-            // Map sortOption to sortField and sortOrder
+            // Define sorting parameters
             let sortField = "username";
             let sortOrder: "asc" | "desc" = "asc";
 
@@ -93,24 +93,19 @@ const VendedoresPage = () => {
                 }
 
                 const data = await response.json();
-                console.log("API response data:", data); // Debugging
+                console.log("API response data:", data); // Should log { vendedores: [...], totalPages: 1 }
 
-                // Determine if data is an array or contains vendedores array
                 let fetchedVendedores: Vendedor[] = [];
 
-                if (Array.isArray(data)) {
-                    fetchedVendedores = data;
-                } else if (Array.isArray(data.vendedores)) {
+                if (Array.isArray(data.vendedores)) {
                     fetchedVendedores = data.vendedores;
                 } else {
                     console.error("Unexpected data format:", data);
+                    throw new Error("Formato de dados inesperado.");
                 }
 
                 setVendedores(fetchedVendedores);
-
-                // Get totalPages from headers
-                const totalPagesHeader = response.headers.get("X-Total-Pages");
-                setTotalPages(totalPagesHeader ? parseInt(totalPagesHeader) : 1);
+                setTotalPages(data.totalPages || 1);
             } catch (err: any) {
                 console.error("Error fetching vendedores:", err);
                 setError(err.message || "Erro desconhecido.");

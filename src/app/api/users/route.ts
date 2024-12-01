@@ -1,4 +1,4 @@
-// app/api/users/route.ts
+// src/app/api/users/route.ts
 
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
@@ -39,9 +39,23 @@ export async function GET(request: Request) {
         const sortOrder = url.searchParams.get("sortOrder") || "asc";
         const page = parseInt(url.searchParams.get("page") || "1", 10);
         const limit = parseInt(url.searchParams.get("limit") || "10", 10);
+        const role = url.searchParams.get("role");
         const skip = (page - 1) * limit;
 
-        console.log("GET /api/users - Params:", { search, sortField, sortOrder, page, limit });
+        console.log("GET /api/users - Params:", {
+            search,
+            sortField,
+            sortOrder,
+            page,
+            limit,
+            role,
+        });
+
+        // Define allowed roles
+        const allowedRoles = ["vendedor", "usuario"];
+        if (!role || !allowedRoles.includes(role)) {
+            return NextResponse.json({ error: "Invalid role specified." }, { status: 400 });
+        }
 
         // Define sorting
         const validSortFields = ["username", "created_on"];
@@ -50,16 +64,9 @@ export async function GET(request: Request) {
         const appliedSortField = validSortFields.includes(sortField) ? sortField : "username";
         const appliedSortOrder = validSortOrders.includes(sortOrder) ? sortOrder : "asc";
 
-        // Validate 'role' parameter
-        const role = url.searchParams.get("role");
-        const allowedRoles = ["vendedor", "usuario"];
-        if (!role || !allowedRoles.includes(role)) {
-            return NextResponse.json({ error: "Invalid role specified." }, { status: 400 });
-        }
-
         // Define filtering
         const where: any = {
-            role: role, // Add role filter
+            role: role, // Filter by role
         };
 
         if (search) {
@@ -71,7 +78,6 @@ export async function GET(request: Request) {
 
         if (isAdmin(userRole)) {
             // Admin can see all users or based on additional logic
-            // Example: Admin can see all or only users they created
             userFilter = {
                 OR: [{ admin_id: userId }, { seller_id: { in: await getSellersIds(userId) } }],
             };
@@ -109,11 +115,12 @@ export async function GET(request: Request) {
             select: {
                 id: true,
                 username: true,
-                name: true, // New field
-                email: true, // New field
-                image: true, // New field
+                name: true,
+                email: true,
+                image: true,
                 phone: true,
                 pix: true,
+                role: true, // Include role for frontend use
                 created_on: true,
             },
         });
@@ -166,10 +173,12 @@ export async function POST(request: Request) {
             );
         }
 
-        if (role === "vendedor" && !isAdmin(userRole)) {
-            console.log("POST /api/users - Forbidden: Only admins can create vendedores.");
+        if ((role === "vendedor" || role === "usuario") && !isAdmin(userRole)) {
+            console.log(
+                "POST /api/users - Forbidden: Only admins can create vendedores or apostadores."
+            );
             return NextResponse.json(
-                { error: "Forbidden: Only admins can create vendedores." },
+                { error: "Forbidden: Only admins can create vendedores or apostadores." },
                 { status: 403 }
             );
         }
@@ -206,28 +215,37 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Username already exists." }, { status: 409 });
         }
 
-        // Create the user in the database with a Wallet
+        // Create the user in the database with a Wallet if necessary
         const newUser = await prisma.user.create({
             data: {
                 username,
                 password_hash: hashedPassword,
                 phone,
                 pix: pix || "sem pix",
-                name: body.name || null, // New field
-                email: body.email || null, // New field
-                image: body.picture || null, // New field
+                name: body.name || null,
+                email: body.email || null,
+                image: body.picture || null,
                 admin_id: adminId,
                 seller_id: sellerId,
                 role,
-                valor_comissao: valor_comissao, // Store comissao if applicable
-                wallet: {
-                    create: {
-                        balance: 0, // Initialize wallet with a balance of 0
-                    },
-                },
+                valor_comissao: valor_comissao || null,
+                // Assuming you have a wallet field or relation
+                // wallet: {
+                //     create: { balance: 0 },
+                // },
             },
-            include: {
-                wallet: true, // Include the wallet in the response if needed
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                email: true,
+                image: true,
+                phone: true,
+                pix: true,
+                role: true,
+                valor_comissao: true,
+                created_on: true,
+                updated_on: true,
             },
         });
 
@@ -245,15 +263,12 @@ export async function POST(request: Request) {
         }
         // Handle unique constraint violation (e.g., duplicate username or wallet)
         if (error.code === "P2002") {
-            if (error.meta.target.includes("userId")) {
-                console.log("POST /api/users - Conflict: Wallet already exists.");
-                return NextResponse.json(
-                    { error: "A Wallet already exists for this user." },
-                    { status: 409 }
-                );
+            if (error.meta.target.includes("username")) {
+                console.log("POST /api/users - Conflict: Username already exists.");
+                return NextResponse.json({ error: "Username already exists." }, { status: 409 });
             }
-            console.log("POST /api/users - Conflict: Username already exists.");
-            return NextResponse.json({ error: "Username already exists." }, { status: 409 });
+            console.log("POST /api/users - Conflict: Unique constraint failed.");
+            return NextResponse.json({ error: "Unique constraint failed." }, { status: 409 });
         }
         console.log("POST /api/users - Internal Server Error.");
         return NextResponse.json({ error: "Error creating user." }, { status: 500 });

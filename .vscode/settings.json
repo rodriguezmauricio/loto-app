@@ -1,5 +1,27 @@
 {
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "WillLuke.nextjs.addTypesOnSave": true,
-    "WillLuke.nextjs.hasPrompted": true
+    "WillLuke.nextjs.hasPrompted": true,
+    "folder-color.pathColors": [
+        {
+            "folderPath": "loto-app\\src\\app\\api\\",
+            "color": "foldercolorizer.color_ff0066"
+        },
+        {
+            "folderPath": "loto-app\\src\\components\\",
+            "color": "foldercolorizer.color_00cc66"
+        },
+        {
+            "folderPath": "loto-app\\src\\app\\(authenticated)\\",
+            "color": "foldercolorizer.color_3366cc"
+        },
+        {
+            "folderPath": "loto-app\\src\\types\\",
+            "color": "foldercolorizer.color_99ccff"
+        },
+        {
+            "folderPath": "loto-app\\src\\routes\\",
+            "color": "foldercolorizer.color_66cc66"
+        }
+    ]
 }

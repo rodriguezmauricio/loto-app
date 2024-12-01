@@ -1,26 +1,17 @@
-// app/pages/apostadores/page.tsx (Adjust the path as necessary)
+// src/app/(authenticated)/apostadores/page.tsx
 
 "use client";
 
 import PageHeader from "components/pageHeader/PageHeader";
 import IconCard from "components/iconCard/IconCard";
-import styles from "./apostadores.module.css";
+import styles from "./apostadores.module.scss"; // Ensure this CSS module exists
 import { useEffect, useState } from "react";
-import { useUserStore } from "../../../../store/useUserStore";
+import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
+import { useUserStore } from "../../../../store/useUserStore"; // Ensure correct path
 import { BsSearch, BsXLg } from "react-icons/bs";
-
-interface Apostador {
-    id: string;
-    username: string;
-    phone: string;
-    pix: string;
-    created_on: string; // ISO date string
-}
-
-interface FetchUsersResponse {
-    users: Apostador[];
-    totalPages: number;
-}
+import ConfirmModal from "components/confirmModal/ConfirmModal";
+import { Apostador } from "../../../types/apostador"; // Define this type accordingly
+import { Role } from "../../../types/roles";
 
 const ApostadoresPage = () => {
     const user = useUserStore((state) => state.user);
@@ -30,8 +21,6 @@ const ApostadoresPage = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [debouncedSearch, setDebouncedSearch] = useState<string>("");
     const [sortOption, setSortOption] = useState<string>("name_asc");
-
-    console.log("apostadores: ", user);
 
     // Debounce the search input to prevent excessive API calls
     useEffect(() => {
@@ -45,7 +34,7 @@ const ApostadoresPage = () => {
         };
     }, [searchQuery]);
 
-    // Manage current page for pagination (if implemented)
+    // Manage current page for pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1); // To be set based on API response
 
@@ -134,13 +123,54 @@ const ApostadoresPage = () => {
         setSearchQuery("");
     };
 
-    // Pagination handlers (if implemented)
+    // Pagination handlers
     const handlePreviousPage = () => {
         setCurrentPage((prev) => Math.max(prev - 1, 1));
     };
 
     const handleNextPage = () => {
-        setCurrentPage((prev) => prev + 1);
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    };
+
+    // Delete handlers
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [apostadorToDelete, setApostadorToDelete] = useState<string | null>(null);
+
+    const openModal = (id: string) => {
+        setApostadorToDelete(id);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setApostadorToDelete(null);
+        setIsModalOpen(false);
+    };
+
+    const confirmDelete = async () => {
+        if (!apostadorToDelete) return;
+
+        try {
+            const response = await fetch(`/api/users/${apostadorToDelete}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (response.ok) {
+                // Remove the deleted apostador from the state
+                setApostadores(apostadores.filter((a) => a.id !== apostadorToDelete));
+                alert("Apostador deletado com sucesso.");
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Erro ao deletar apostador.");
+            }
+        } catch (err: any) {
+            console.error("Error deleting apostador:", err);
+            alert(err.message || "Erro desconhecido ao deletar apostador.");
+        } finally {
+            closeModal();
+        }
     };
 
     if (loading) {
@@ -245,7 +275,17 @@ const ApostadoresPage = () => {
                                     apostador.created_on
                                 ).toLocaleDateString()}`}
                                 searchTerm={debouncedSearch} // Pass the search term for highlighting
-                            />
+                            >
+                                {/* Render Delete Button if the user has permission */}
+                                {(user?.role === "admin" || user?.role === "usuario") && (
+                                    <SimpleButton
+                                        btnTitle="Deletar"
+                                        func={() => openModal(apostador.id)}
+                                        isSelected={false}
+                                        className={styles.deleteButton}
+                                    />
+                                )}
+                            </IconCard>
                         ))}
                     </div>
                 )}
@@ -259,15 +299,25 @@ const ApostadoresPage = () => {
                     >
                         Anterior
                     </button>
-                    <span>Página {currentPage}</span>
+                    <span>
+                        Página {currentPage} de {totalPages}
+                    </span>
                     <button
                         onClick={handleNextPage}
-                        // Disable based on totalPages if available
+                        disabled={currentPage === totalPages}
                         className={styles.paginationButton}
                     >
                         Próxima
                     </button>
                 </div>
+
+                {/* Confirm Delete Modal */}
+                <ConfirmModal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    onConfirm={confirmDelete}
+                    message="Tem certeza que deseja deletar este apostador?"
+                />
             </main>
         </>
     );

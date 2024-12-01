@@ -92,8 +92,21 @@ const VendedoresPage = () => {
                     throw new Error(errorData.error || "Erro ao buscar vendedores.");
                 }
 
-                const data: Vendedor[] = await response.json();
-                setVendedores(data);
+                const data = await response.json();
+                console.log("API response data:", data); // Debugging
+
+                // Determine if data is an array or contains vendedores array
+                let fetchedVendedores: Vendedor[] = [];
+
+                if (Array.isArray(data)) {
+                    fetchedVendedores = data;
+                } else if (Array.isArray(data.vendedores)) {
+                    fetchedVendedores = data.vendedores;
+                } else {
+                    console.error("Unexpected data format:", data);
+                }
+
+                setVendedores(fetchedVendedores);
 
                 // Get totalPages from headers
                 const totalPagesHeader = response.headers.get("X-Total-Pages");

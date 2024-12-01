@@ -50,8 +50,18 @@ export async function GET(request: Request) {
         const appliedSortField = validSortFields.includes(sortField) ? sortField : "username";
         const appliedSortOrder = validSortOrders.includes(sortOrder) ? sortOrder : "asc";
 
+        // Validate 'role' parameter
+        const role = url.searchParams.get("role");
+        const allowedRoles = ["vendedor", "usuario"];
+        if (!role || !allowedRoles.includes(role)) {
+            return NextResponse.json({ error: "Invalid role specified." }, { status: 400 });
+        }
+
         // Define filtering
-        const where: any = {};
+        const where: any = {
+            role: role, // Add role filter
+        };
+
         if (search) {
             where.username = { contains: search, mode: "insensitive" };
         }
@@ -75,7 +85,9 @@ export async function GET(request: Request) {
         }
 
         // Combine filters
-        where.AND = userFilter;
+        if (Object.keys(userFilter).length > 0) {
+            where.AND = userFilter;
+        }
 
         // Fetch total count for pagination
         const totalCount = await prisma.user.count({
@@ -108,7 +120,13 @@ export async function GET(request: Request) {
 
         console.log("GET /api/users - Users Fetched:", users.length);
 
-        return NextResponse.json({ users, totalPages }, { status: 200 });
+        // Modify response field based on role
+        const responseData =
+            role === "vendedor"
+                ? { vendedores: users, totalPages }
+                : { apostadores: users, totalPages };
+
+        return NextResponse.json(responseData, { status: 200 });
     } catch (error: any) {
         console.error("Error fetching users:", error);
         return NextResponse.json({ error: "Error fetching users." }, { status: 500 });

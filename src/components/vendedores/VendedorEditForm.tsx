@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./VendedorEditForm.module.css";
+import styles from "./VendedorEditForm.module.scss";
 import { Vendedor } from "../../types/vendedor";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@routes/routes";

@@ -5,6 +5,7 @@ import PageHeader from "components/pageHeader/PageHeader";
 import { useState } from "react";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import { useUserStore } from "../../../../../store/useUserStore";
+import { useRouter } from "next/navigation";
 
 interface IUserDataToDatabase {
     username: string;
@@ -18,6 +19,7 @@ interface IUserDataToDatabase {
 
 const AdicionarApostador = () => {
     const user = useUserStore((state) => state.user);
+    const router = useRouter();
     const [confirmPassword, setConfirmPassword] = useState("");
     const [userDataToDatabase, setUserDataToDatabase] = useState<IUserDataToDatabase>({
         username: "",
@@ -65,6 +67,8 @@ const AdicionarApostador = () => {
                 pix: "sem pix",
             });
             setConfirmPassword("");
+
+            router.back();
         } catch (error: any) {
             console.error("Error creating user:", error);
             alert(error.message || "Erro ao criar usuário.");

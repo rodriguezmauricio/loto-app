@@ -83,29 +83,37 @@ const ApostadoresPage = () => {
                 const response = await fetch(
                     `/api/users?search=${encodeURIComponent(
                         debouncedSearch
-                    )}&sortField=${sortField}&sortOrder=${sortOrder}&page=${currentPage}&limit=10`,
+                    )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${currentPage}&limit=10`,
                     {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        credentials: "include", // Include cookies for authentication
                     }
                 );
 
                 if (!response.ok) {
-                    const errorData = await response
-                        .json()
-                        .catch(() => ({ error: "Erro ao buscar apostadores." }));
+                    const errorData = await response.json();
                     throw new Error(errorData.error || "Erro ao buscar apostadores.");
                 }
 
-                const data: FetchUsersResponse = await response.json();
-                setApostadores(data.users);
-                setTotalPages(data.totalPages);
+                const data = await response.json();
+                console.log("API response data:", data); // Should log { apostadores: [...], totalPages: 1 }
+
+                let fetchedApostadores: Apostador[] = [];
+
+                if (Array.isArray(data.apostadores)) {
+                    fetchedApostadores = data.apostadores;
+                } else {
+                    console.error("Unexpected data format:", data);
+                    throw new Error("Formato de dados inesperado.");
+                }
+
+                setApostadores(fetchedApostadores);
+                setTotalPages(data.totalPages || 1);
             } catch (err: any) {
                 console.error("Error fetching apostadores:", err);
-                setError(err.message || "Erro ao buscar apostadores.");
+                setError(err.message || "Erro desconhecido.");
             } finally {
                 setLoading(false);
             }

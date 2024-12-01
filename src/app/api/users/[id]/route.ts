@@ -49,6 +49,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
                 valor_comissao: true,
                 created_on: true,
                 updated_on: true,
+                wallet: {
+                    // Include wallet data
+                    select: {
+                        id: true,
+                        balance: true,
+                        transactions: true, // Adjust based on your schema
+                    },
+                },
             },
         });
 
@@ -151,6 +159,14 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
                 valor_comissao: true,
                 created_on: true,
                 updated_on: true,
+                wallet: {
+                    // Include wallet data
+                    select: {
+                        id: true,
+                        balance: true,
+                        transactions: true, // Adjust based on your schema
+                    },
+                },
             },
         });
 

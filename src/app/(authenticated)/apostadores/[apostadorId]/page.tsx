@@ -74,6 +74,7 @@ const ApostadorDetail = () => {
 
     // Handlers for Modal
     const openModal = () => {
+        console.log("openModal called"); // Debugging
         setUpdateError(null);
         setIsUpdating(false);
         setIsModalOpen(true);
@@ -362,7 +363,11 @@ const ApostadorDetail = () => {
                             inIcon
                             fullWidth={false}
                             hasCheckbox={false}
-                            isClickable={false}
+                            isClickable={true}
+                            onClick={() => {
+                                console.log("openModal");
+                            }} // Make the wallet card clickable to open the modal
+                            linkTo={""}
                         />
                     )}
                 </section>

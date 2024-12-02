@@ -11,16 +11,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { registerLocale } from "react-datepicker";
-// import ptBR from "date-fns/locale/pt-BR";
-
-// registerLocale("pt-BR", ptBR);
 
 import { tempDb } from "../../../tempDb";
-
-interface WinnerBet {
-    // ... your existing interface
-}
+import { WinnerBet } from "../../../types/ganhadores"; // Ensure correct path
 
 const GanhadoresPage = () => {
     const [modalidades] = useState<string[]>(["Caixa", "Surpresinha", "Personalizado"]);
@@ -45,9 +38,12 @@ const GanhadoresPage = () => {
             if (modalidadeKey) {
                 const modalidadeData = tempDb.modalidades.find(
                     (mod) => Object.keys(mod)[0] === modalidadeKey
-                );
+                ) as
+                    | { [key: string]: { name: string; color: string /* other properties */ }[] }
+                    | undefined;
+
                 if (modalidadeData && modalidadeData[modalidadeKey]) {
-                    const loteriasList = modalidadeData[modalidadeKey].map((lot: any) => lot.name);
+                    const loteriasList = modalidadeData[modalidadeKey].map((lot) => lot.name);
                     setLoterias(loteriasList);
                 } else {
                     setLoterias([]);
@@ -70,10 +66,21 @@ const GanhadoresPage = () => {
     useEffect(() => {
         const fetchAvailableDates = async () => {
             if (selectedLoteria) {
-                const response = await fetch(`/api/sorteios/dates?modalidade=${selectedLoteria}`);
-                const data = await response.json();
-                const dates = data.dates.map((dateStr: string) => new Date(dateStr));
-                setAvailableDates(dates);
+                try {
+                    const response = await fetch(
+                        `/api/sorteios/dates?modalidade=${encodeURIComponent(selectedLoteria)}`
+                    );
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar datas disponíveis.");
+                    }
+                    const data = await response.json();
+                    const dates = data.dates.map((dateStr: string) => new Date(dateStr));
+                    setAvailableDates(dates);
+                } catch (error) {
+                    console.error("Error fetching available dates:", error);
+                    toast.error("Erro ao buscar datas disponíveis.");
+                    setAvailableDates([]);
+                }
             } else {
                 setAvailableDates([]);
             }
@@ -177,11 +184,12 @@ const GanhadoresPage = () => {
                             <label htmlFor="sorteioDate">Data do Sorteio:</label>
                             <DatePicker
                                 selected={selectedDate}
-                                onChange={(date: Date) => setSelectedDate(date)}
+                                onChange={(date: Date | null) => setSelectedDate(date)}
                                 locale="pt-BR"
                                 dateFormat="dd/MM/yyyy"
                                 highlightDates={availableDates}
                                 placeholderText="Selecione uma data"
+                                isClearable
                             />
                         </div>
 

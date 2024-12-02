@@ -20,6 +20,13 @@ interface GanhadoresCardsProps {
 }
 
 const GanhadoresCards: React.FC<GanhadoresCardsProps> = ({ winners, loading }) => {
+    if (loading) {
+        return <p>Carregando ganhadores...</p>;
+    }
+
+    if (winners.length === 0) {
+        return <p>Nenhum ganhador encontrado.</p>;
+    }
     return (
         <div className={styles.container}>
             <header className={styles.header}>

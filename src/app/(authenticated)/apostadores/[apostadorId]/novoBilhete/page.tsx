@@ -59,7 +59,7 @@ const NovoBilhete = () => {
     const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
     const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1); // selected numbers for random games
     const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // games that were generated
-    const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<number[][]>([]); // games that were generated and formatted to display
+    const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<any[][]>([]); // games that were generated and formatted to display
     const [numberOfGames, setNumberOfGames] = useState<number>(1); // number of games to be generated
     const [quantidadeBilhetes, setQuantidadeBilhetes] = useState<number>(1);
     const [selectedFilter, setSelectedFilter] = useState<string | null>(null); // 'importar', 'manual', 'random' or null

@@ -5,7 +5,7 @@ import styles from "./modalidadeSelection.module.css";
 import PageHeader from "components/pageHeader/PageHeader";
 import ConfigOptionsCard from "components/configOptionsCard/ConfigOptionsCard";
 import { FaClover } from "react-icons/fa6";
-import useFetchData from "@/app/utils/useFetchData";
+import useFetchData from "app/utils/useFetchData";
 
 type Modalidades = {
     name: string;

@@ -5,9 +5,9 @@ import PageHeader from "components/pageHeader/PageHeader";
 import TabsWithFilters from "components/tabsWithFilters/TabsWithFilters";
 import Title from "components/title/Title";
 import React, { useEffect, useState } from "react";
-import { tempDb } from "@/tempDb"; // Import tempDb
+import { tempDb } from "tempDb"; // Import tempDb
 
-import { IModalidade } from "../apostadores/apostadores/[id]/novoBilhete/page";
+import { IModalidade } from "../apostadores/[apostadorId]/novoBilhete/page";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 
 function VerificarJogos() {

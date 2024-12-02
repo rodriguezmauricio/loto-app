@@ -72,7 +72,7 @@ const EditUserPage: React.FC<EditUserPageProps> = ({ params }) => {
         return (
             <div className={styles.container}>
                 <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
-                <p>Carregando usuário...</p>
+                <p className={styles.p}>Carregando usuário...</p>
             </div>
         );
     }
@@ -81,7 +81,7 @@ const EditUserPage: React.FC<EditUserPageProps> = ({ params }) => {
         return (
             <div className={styles.container}>
                 <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
-                <p>{error}</p>
+                <p className={styles.p}>{error}</p>
             </div>
         );
     }
@@ -90,7 +90,7 @@ const EditUserPage: React.FC<EditUserPageProps> = ({ params }) => {
         return (
             <div className={styles.container}>
                 <PageHeader title="Editar Usuário" subpage={false} linkTo={ROUTES.USERS} />
-                <p>Usuário não encontrado.</p>
+                <p className={styles.p}>Usuário não encontrado.</p>
             </div>
         );
     }

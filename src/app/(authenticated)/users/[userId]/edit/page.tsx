@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from "react";
 import UserEditForm from "components/users/UserEditform";
-import { User } from "../../../../../types/roles";
+import { User } from "../../../../../types/user";
 import { Role } from "../../../../../types/roles";
 import ProtectedRoute from "components/ProtectedRoute";
 import { ROUTES } from "@routes/routes";

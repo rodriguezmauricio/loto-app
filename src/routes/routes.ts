@@ -29,6 +29,11 @@ export const ROUTES = {
     VENDEDOR_VENDAS: (vendedorId: string) => `/vendedores/${vendedorId}/vendas`,
     EDIT_VENDEDOR: (vendedorId: string) => `/vendedores/${vendedorId}/edit`,
     NOVO_VENDEDOR: "/vendedores/novo",
+
+    //USERS
+    USERS: "/users", // Added
+    USER: (userId: string) => `/users/${userId}`, // Added
+    EDIT_USER: (userId: string) => `/users/${userId}/edit`, // Added
 } as const;
 
 // Define a type for all routes to enforce type safety

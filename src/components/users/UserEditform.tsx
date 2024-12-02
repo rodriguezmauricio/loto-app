@@ -3,7 +3,7 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from "./UserEditForm.module.scss"; // Ensure this CSS module exists
+import styles from "./UserEditform.module.scss"; // Ensure this CSS module exists
 import { User } from "../../types/user";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@routes/routes";

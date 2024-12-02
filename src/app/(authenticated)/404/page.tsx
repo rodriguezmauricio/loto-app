@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ROUTES } from "@routes/routes";
 import PageHeader from "components/pageHeader/PageHeader";
 import Breadcrumbs from "../../../components/breadcrumbs/Breadcrumbs";
-import styles from "../../../styles/404.module.css";
+import styles from "./404.module.scss";
 
 const Custom404: React.FC = () => {
     const breadcrumbs = [{ href: ROUTES.HOME, label: "Home" }];

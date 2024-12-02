@@ -173,6 +173,8 @@ const ApostadoresPage = () => {
         }
     };
 
+    console.log("apostadores: ", apostadores);
+
     if (loading) {
         return (
             <>

@@ -11,6 +11,7 @@ interface ISimpleButton {
     className?: string;
     disabled?: boolean;
     type?: "button" | "submit" | "reset"; // Add type prop
+    danger?: boolean;
 }
 
 interface MyISimpleButton extends ButtonHTMLAttributes<HTMLButtonElement>, ISimpleButton {}
@@ -24,6 +25,7 @@ const SimpleButton: React.FC<MyISimpleButton> = (props: MyISimpleButton) => {
         func,
         className = "",
         disabled = false,
+        danger = false,
         type = "button", // Default type is "button"
         ...buttonProps
     } = props;
@@ -39,7 +41,9 @@ const SimpleButton: React.FC<MyISimpleButton> = (props: MyISimpleButton) => {
     };
     return (
         <button
-            className={`${styles.button} ${isSelected ? styles.selected : ""} ${className}`}
+            className={`${styles.button} ${isSelected ? styles.selected : ""} ${className} ${
+                danger ? styles.danger : ""
+            }`}
             {...buttonProps}
             onClick={func}
         >

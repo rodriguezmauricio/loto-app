@@ -3,7 +3,6 @@
 "use client";
 
 import React, { useState } from "react";
-import NovoVendedorForm from "components/vendedores/NovoVendedorForm";
 import PageHeader from "components/pageHeader/PageHeader";
 import Breadcrumbs from "components/breadcrumbs/Breadcrumbs";
 import { ROUTES } from "@routes/routes";
@@ -12,6 +11,7 @@ import ProtectedRoute from "components/ProtectedRoute";
 import styles from "./novoVendedor.module.scss";
 import { useRouter } from "next/navigation";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
+import { useUserStore } from "../../../../../store/useUserStore";
 
 interface NovoVendedorPageProps {}
 
@@ -26,6 +26,9 @@ const NovoVendedorPage: React.FC<NovoVendedorPageProps> = () => {
     const [pix, setPix] = useState<string>("");
     const [comissao, setComissao] = useState<string>("");
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const user = useUserStore((state) => state.user);
+
+    console.log("novo vendedor user: ", user);
 
     const breadcrumbs = [
         { href: ROUTES.HOME, label: "Home" },

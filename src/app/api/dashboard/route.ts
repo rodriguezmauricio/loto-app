@@ -2,7 +2,7 @@
 
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/authOptions";
 import { Role } from "../../../types/roles";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -29,16 +29,16 @@ interface DashboardData {
 }
 
 export async function GET(request: Request) {
-    // Authenticate the user using getToken
-    const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
+    // Authenticate the user using getServerSession
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
+    if (!session || !session.user) {
         console.log("Unauthorized access attempt.");
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Check if the user has the required role
-    const userRole = token.role as Role;
+    const userRole = session.user.role as Role;
     if (userRole !== "admin") {
         console.log(`Forbidden access attempt by user with role: ${userRole}`);
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -92,16 +92,16 @@ export async function GET(request: Request) {
         console.log("Fetching premiacoes data...");
         const premiacoesData = await prisma.prize.aggregate({
             _sum: {
-                premio: true,
+                amount: true,
             },
             where: {
-                awardedAt: {
+                awarded_at: {
                     gte: startOfToday,
                 },
             },
         });
         console.log("Premiacoes data fetched:", premiacoesData);
-        const premiacoes = premiacoesData._sum?.premio ? Number(premiacoesData._sum.premio) : 0;
+        const premiacoes = premiacoesData._sum?.amount ? Number(premiacoesData._sum.amount) : 0;
 
         // 5. Créditos Vendedores: Total balance held by all sellers
         console.log("Fetching creditosVendedores data...");

@@ -78,7 +78,7 @@ const DashboardPage = () => {
     }
 
     return (
-        <ProtectedRoute requiredRole={"admin"} currentUserRole={session.user.role}>
+        <ProtectedRoute requiredRole={"admin"} currentUserRole={session?.user.role}>
             <PageHeader title="Dashboard" subpage={false} linkTo={""} />
             <main className="main">{/* ... [Rest of your dashboard content] */}</main>
         </ProtectedRoute>

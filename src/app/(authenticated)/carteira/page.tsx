@@ -7,7 +7,7 @@ import { useUserStore } from "../../../../store/useUserStore";
 import { useRouter } from "next/navigation";
 
 import { useEffect } from "react";
-import { db } from "@/app/config";
+import { db } from "app/config";
 
 const CarteiraPage = () => {
     return (

@@ -55,7 +55,7 @@ const disableAuth = process.env.NEXT_PUBLIC_DISABLE_AUTH === "true";
 interface ProtectedRouteProps {
     children: React.ReactNode;
     requiredRole: Role;
-    currentUserRole?: Role | null;
+    currentUserRole?: string | Role | null;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({

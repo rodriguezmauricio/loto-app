@@ -4,7 +4,7 @@
 
 import React, { useEffect, useState } from "react";
 import VendedorEditForm from "components/vendedores/VendedorEditForm";
-import { Vendedor } from "../../../../../types/vendedor";
+import { User } from "../../../../../types/user"; // Updated import
 import { Role } from "../../../../../types/roles";
 import ProtectedRoute from "components/ProtectedRoute";
 import { ROUTES } from "@routes/routes";
@@ -18,11 +18,11 @@ interface EditVendedorPageProps {
 
 const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
     const { vendedorId } = params;
-    const [vendedor, setVendedor] = useState<Vendedor | null>(null);
+    const [vendedor, setVendedor] = useState<User | null>(null); // Updated type
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch the vendedor data from the API
+    // Fetch the vendedor data from the User API
     useEffect(() => {
         const fetchVendedor = async () => {
             try {
@@ -44,7 +44,7 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
                     return;
                 }
 
-                const data: Vendedor = await res.json();
+                const data: User = await res.json(); // Updated type
                 setVendedor(data);
             } catch (err: any) {
                 console.error("Error fetching vendedor:", err);
@@ -103,7 +103,7 @@ const EditVendedorPage: React.FC<EditVendedorPageProps> = ({ params }) => {
                     subpage={true}
                     linkTo={ROUTES.VENDEDOR(vendedorId)}
                 />
-                <VendedorEditForm vendedor={vendedor} />
+                <VendedorEditForm vendedor={vendedor} /> {/* Now passing User type */}
             </div>
         </ProtectedRoute>
     );

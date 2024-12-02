@@ -1,15 +1,15 @@
-// src/components/Vendedores/VendedorEditForm.tsx
+// src/components/vendedores/VendedorEditForm.tsx
 
 "use client";
 
 import React, { useState } from "react";
 import styles from "./VendedorEditForm.module.scss";
-import { User } from "../../types/user"; // Use the unified User type
+import { User } from "../../types/user"; // Updated import
 import { useRouter } from "next/navigation";
-import { ROUTES } from "../../routes/routes"; // Adjust the path as necessary
+import { ROUTES } from "@routes/routes";
 
 interface VendedorEditFormProps {
-    vendedor: User;
+    vendedor: User; // Updated type
 }
 
 const VendedorEditForm: React.FC<VendedorEditFormProps> = ({ vendedor }) => {

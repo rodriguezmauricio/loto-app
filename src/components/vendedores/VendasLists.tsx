@@ -1,7 +1,7 @@
 // src/components/Vendedores/VendasList.tsx
 
 import React from "react";
-import styles from "./VendasList.module.scss";
+import styles from "./VendasLists.module.scss";
 
 interface Venda {
     id: string;

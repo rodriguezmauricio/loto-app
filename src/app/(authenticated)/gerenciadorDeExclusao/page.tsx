@@ -3,7 +3,7 @@
 import IconCard from "components/iconCard/IconCard";
 import PageHeader from "components/pageHeader/PageHeader";
 import Title from "components/title/Title";
-import styles from "./gerenciadorDeExclusao.module.css";
+import styles from "./gerenciadorDeExclusao.module.scss";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import { useState } from "react";
 import Buttons from "components/(buttons)/buttons/Buttons";

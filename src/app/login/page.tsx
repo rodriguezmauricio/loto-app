@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useUserStore } from "../../../store/useUserStore"; // Make sure path is correct
 import { useRouter } from "next/navigation"; // For Next.js app routing
 import { signIn, useSession } from "next-auth/react";
-import styles from "./login.module.scss"; // Make sure path is correct "./LoginPage.module.css"; // Make sure path is correct "./login.module.scss"; // Make sure path is correct
+import styles from "./login.module.scss"; // Make sure path is correct "./LoginPage.module.scss"; // Make sure path is correct "./login.module.scss"; // Make sure path is correct
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import logo from "../../../public/images/lotoplay_light_logo1.svg";
 import Image from "next/image";

@@ -1,7 +1,7 @@
 "use client";
 
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./sorteio.module.css";
+import styles from "./sorteio.module.scss";
 import Card from "components/card/Card";
 import Buttons from "components/(buttons)/buttons/Buttons";
 import IconCard from "components/iconCard/IconCard";

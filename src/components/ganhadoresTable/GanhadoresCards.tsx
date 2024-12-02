@@ -2,7 +2,7 @@
 
 import React from "react";
 import WinnerCard from "../winnerCard/WinnerCard";
-import styles from "./GanhadoresCards.module.css";
+import styles from "./GanhadoresCards.module.scss";
 
 interface WinnerBet {
     id: string;

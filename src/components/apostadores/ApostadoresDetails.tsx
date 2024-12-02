@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ROUTES } from "@routes/routes";
 import PageHeader from "../pageHeader/PageHeader";
 import Breadcrumbs from "../breadcrumbs/Breadcrumbs";
-import styles from "./ApostadorDetails.module.css";
+import styles from "./ApostadorDetails.module.scss";
 
 interface Apostador {
     id: string;

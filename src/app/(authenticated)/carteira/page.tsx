@@ -1,6 +1,6 @@
 "use client";
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./carteira.module.css";
+import styles from "./carteira.module.scss";
 import Title from "components/title/Title";
 import Card from "components/card/Card";
 import { useUserStore } from "../../../../store/useUserStore";

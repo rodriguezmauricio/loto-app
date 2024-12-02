@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./verificarJogos.module.css";
+import styles from "./verificarJogos.module.scss";
 import PageHeader from "components/pageHeader/PageHeader";
 import TabsWithFilters from "components/tabsWithFilters/TabsWithFilters";
 import Title from "components/title/Title";

@@ -1,5 +1,5 @@
 import ResultsCard from "components/resultsCard/ResultsCard";
-import styles from "./resultados.module.css";
+import styles from "./resultados.module.scss";
 
 import PageHeader from "components/pageHeader/PageHeader";
 

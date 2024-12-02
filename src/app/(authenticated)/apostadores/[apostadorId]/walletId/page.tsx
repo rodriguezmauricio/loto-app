@@ -1,6 +1,6 @@
 import PageHeader from "components/pageHeader/PageHeader";
 import IconCard from "components/iconCard/IconCard";
-import styles from "./carteiraApostador.module.css";
+import styles from "./carteiraApostador.module.scss";
 import Buttons from "components/(buttons)/buttons/Buttons";
 import Card from "components/card/Card";
 import { IIconCard } from "components/iconCard/IconCard";

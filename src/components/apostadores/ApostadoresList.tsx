@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ROUTES } from "@routes/routes";
-import styles from "./ApostadoresList.module.css";
+import styles from "./ApostadoresList.module.scss";
 import { Apostador } from "../../types/apostador";
 
 interface ApostadoresListProps {

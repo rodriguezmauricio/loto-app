@@ -2,7 +2,7 @@
 import Link from "next/link";
 import logo from "../../../public/images/lotoplay_light_logo.svg";
 
-import styles from "./menu.module.css";
+import styles from "./menu.module.scss";
 import {
     menuLinksHome,
     menuLinksPremios,

@@ -1,6 +1,6 @@
 "use client";
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./tabelasDePremiacoes.module.css";
+import styles from "./tabelasDePremiacoes.module.scss";
 import TabsWithFilters from "components/tabsWithFilters/TabsWithFilters";
 import ResultsTable from "components/resultsTable/ResultsTable";
 

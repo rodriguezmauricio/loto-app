@@ -7,7 +7,7 @@ import Breadcrumbs from "../../../../../../components/breadcrumbs/Breadcrumbs";
 import { ROUTES } from "@routes/routes";
 import { Role } from "../../../../../../types/roles";
 import ProtectedRoute from "components/ProtectedRoute";
-import styles from "./carteiraVendedor.module.css";
+import styles from "./carteiraVendedor.module.scss";
 
 interface Venda {
     id: string;

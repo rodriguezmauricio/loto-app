@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import styles from "./ganhadores.module.css";
+import styles from "./ganhadores.module.scss";
 import PageHeader from "components/pageHeader/PageHeader";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import GanhadoresCards from "components/ganhadoresTable/GanhadoresCards";

@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
-import styles from "./simpleButton.module.css";
+import styles from "./simpleButton.module.scss";
 import { BsDownload, BsSave } from "react-icons/bs";
 
 interface ISimpleButton {

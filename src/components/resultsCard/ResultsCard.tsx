@@ -2,7 +2,7 @@
 
 "use client";
 
-import styles from "./resultsCard.module.css";
+import styles from "./resultsCard.module.scss";
 import NumbersSorteio from "../numbersSorteio/NumbersSorteio";
 import Title from "../title/Title";
 import { toPng, toJpeg } from "html-to-image";

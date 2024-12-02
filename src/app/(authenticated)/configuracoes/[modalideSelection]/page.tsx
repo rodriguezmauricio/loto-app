@@ -1,7 +1,7 @@
 "use client";
 
 import Title from "components/title/Title";
-import styles from "./modalidadeSelection.module.css";
+import styles from "./modalidadeSelection.module.scss";
 import PageHeader from "components/pageHeader/PageHeader";
 import ConfigOptionsCard from "components/configOptionsCard/ConfigOptionsCard";
 import { FaClover } from "react-icons/fa6";

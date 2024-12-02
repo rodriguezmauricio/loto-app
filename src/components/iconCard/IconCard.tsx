@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import styles from "./iconCard.module.css";
+import styles from "./iconCard.module.scss";
 import {
     BsPerson,
     BsPersonBadge,

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import BilheteTable from "components/bilheteTable/BilheteTable";
 import { User, Bilhete } from "../../../../../../types/roles"; // Ensure you have appropriate TypeScript types
+import styles from "./editar.module.scss";
 
 const ApostadorDetailPage = () => {
     const router = useRouter();

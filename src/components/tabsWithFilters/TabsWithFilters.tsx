@@ -1,5 +1,5 @@
 import { useState } from "react"; // Importing the useState hook from React
-import styles from "./tabsWithFilters.module.css"; // Importing the CSS module for styling
+import styles from "./tabsWithFilters.module.scss"; // Importing the CSS module for styling
 
 import { IModalidade } from "app/(authenticated)/apostadores/[apostadorId]/novoBilhete/page";
 

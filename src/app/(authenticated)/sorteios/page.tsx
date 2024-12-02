@@ -1,5 +1,5 @@
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./sorteios.module.css";
+import styles from "./sorteios.module.scss";
 import Buttons from "components/(buttons)/buttons/Buttons";
 import Filter from "components/filter/Filter";
 import Link from "next/link";

@@ -1,7 +1,7 @@
 "use client";
 
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./dashboard.module.css";
+import styles from "./dashboard.module.scss";
 import Title from "components/title/Title";
 import Card from "components/card/Card";
 import { useRouter } from "next/navigation";

@@ -10,7 +10,7 @@ import ProtectedRoute from "components/ProtectedRoute";
 import { ROUTES } from "@routes/routes";
 import Breadcrumbs from "components/breadcrumbs/Breadcrumbs";
 import PageHeader from "components/pageHeader/PageHeader";
-import styles from "./EditVendedorPage.module.css";
+import styles from "./EditVendedorPage.module.scss";
 
 interface EditVendedorPageProps {
     params: { vendedorId: string };

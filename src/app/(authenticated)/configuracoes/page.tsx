@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Title from "components/title/Title";
-import styles from "./configuracoes.module.css";
+import styles from "./configuracoes.module.scss";
 import PageHeader from "components/pageHeader/PageHeader";
 import ConfigOptionsCard from "components/configOptionsCard/ConfigOptionsCard";
 import {

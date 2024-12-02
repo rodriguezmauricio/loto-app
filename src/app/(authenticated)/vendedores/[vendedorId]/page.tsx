@@ -1,58 +1,87 @@
-// src/app/(authenticated)/vendedores/[vendedorId]/page.tsx
+// src/components/vendedores/VendedorDetails.tsx
+
+"use client";
 
 import React from "react";
-import VendedorDetails from "components/vendedores/vendedorDetails";
-import { Vendedor } from "../../../../types/vendedor";
-import { Role } from "../../../../types/roles";
-import ProtectedRoute from "components/ProtectedRoute";
+import styles from "./VendedorDetails.module.scss";
+import { User } from "../../../../types/user"; // Updated import
+import Link from "next/link";
+import { ROUTES } from "../../../../routes/routes"; // Adjust the path as necessary
+import { useRouter } from "next/navigation";
 
-interface VendedorDetailsPageProps {
-    params: { vendedorId: string };
+interface VendedorDetailsProps {
+    vendedor: User; // Updated type
 }
 
-const fetchVendedor = async (vendedorId: string): Promise<Vendedor | null> => {
-    // Replace this with your actual data fetching logic
-    // For example, fetch data from your API
-    // const response = await fetch(`/api/vendedores/${vendedorId}`);
-    // if (!response.ok) return null;
-    // return await response.json();
+const VendedorDetails: React.FC<VendedorDetailsProps> = ({ vendedor }) => {
+    const router = useRouter();
 
-    // Simulated data for demonstration
-    const simulatedData: Vendedor = {
-        id: vendedorId,
-        username: `Vendedor ${vendedorId}`,
-        phoneNumber: "123-456-7890",
-        totalSales: 15000.5,
+    const handleDelete = async () => {
+        if (confirm("Você tem certeza de que deseja deletar este vendedor?")) {
+            try {
+                const res = await fetch(`/api/users/${vendedor.id}`, {
+                    method: "DELETE",
+                });
+
+                if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || "Erro ao deletar vendedor.");
+                }
+
+                alert("Vendedor deletado com sucesso!");
+                router.push(ROUTES.VENDEDORES);
+            } catch (err: any) {
+                alert(err.message || "Ocorreu um erro ao deletar o vendedor.");
+            }
+        }
     };
-    return simulatedData;
-};
-
-const VendedorDetailsPage = async ({ params }: VendedorDetailsPageProps) => {
-    const { vendedorId } = params;
-    const vendedor = await fetchVendedor(vendedorId);
-
-    // Handle the case where the vendedor is not found
-    if (!vendedor) {
-        // You can use Next.js's notFound function to render a 404 page
-        // import { notFound } from 'next/navigation';
-        // notFound();
-
-        // Or render an error message
-        return (
-            <div>
-                <h1>Vendedor Not Found</h1>
-            </div>
-        );
-    }
-
-    // Fetch currentUserRole (replace with actual authentication logic)
-    const currentUserRole: Role = "admin"; // Example role
 
     return (
-        <ProtectedRoute requiredRole="admin" currentUserRole={currentUserRole}>
-            <VendedorDetails vendedor={vendedor} />
-        </ProtectedRoute>
+        <div className={styles.container}>
+            <h1 className={styles.title}>{vendedor.name || vendedor.username}</h1>
+            <div className={styles.details}>
+                {vendedor.phone && (
+                    <p>
+                        <strong>Telefone:</strong> {vendedor.phone}
+                    </p>
+                )}
+                {vendedor.role && (
+                    <p>
+                        <strong>Role:</strong> {vendedor.role}
+                    </p>
+                )}
+                {vendedor.valor_comissao !== undefined && vendedor.valor_comissao !== null && (
+                    <p>
+                        <strong>Comissão (%):</strong> {vendedor.valor_comissao}%
+                    </p>
+                )}
+                {vendedor.created_on && (
+                    <p>
+                        <strong>Data de Criação:</strong>{" "}
+                        {new Date(vendedor.created_on).toLocaleDateString()}
+                    </p>
+                )}
+                {vendedor.updated_on && (
+                    <p>
+                        <strong>Última Atualização:</strong>{" "}
+                        {new Date(vendedor.updated_on).toLocaleDateString()}
+                    </p>
+                )}
+                {/* Add other fields as necessary */}
+            </div>
+            <div className={styles.actions}>
+                <Link href={ROUTES.VENDEDORES} className={styles.button}>
+                    Voltar para Vendedores
+                </Link>
+                <Link href={ROUTES.EDIT_VENDEDOR(vendedor.id)} className={styles.button}>
+                    Editar Vendedor
+                </Link>
+                <button onClick={handleDelete} className={styles.buttonDelete}>
+                    Deletar Vendedor
+                </button>
+            </div>
+        </div>
     );
 };
 
-export default VendedorDetailsPage;
+export default VendedorDetails;

@@ -5,7 +5,8 @@
 import React, { useState } from "react";
 import styles from "./NovoVendedorForm.module.scss";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@routes/routes";
+// Import the unified User type
+import { User } from "../../types/user";
 
 interface NovoVendedorFormProps {}
 
@@ -14,6 +15,7 @@ const NovoVendedorForm: React.FC<NovoVendedorFormProps> = () => {
         name: "",
         email: "",
         phoneNumber: "",
+        valor_comissao: "", // Add commission field
         // Add other fields as necessary
     });
     const [error, setError] = useState<string | null>(null);
@@ -46,13 +48,26 @@ const NovoVendedorForm: React.FC<NovoVendedorFormProps> = () => {
             return;
         }
 
+        if (!formData.valor_comissao || Number(formData.valor_comissao) <= 0) {
+            setError("Comissão deve ser um valor positivo.");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            const res = await fetch("/api/vendedores", {
+            const res = await fetch("/api/users", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    username: formData.name,
+                    email: formData.email,
+                    phone: formData.phoneNumber,
+                    role: "vendedor",
+                    valor_comissao: parseFloat(formData.valor_comissao),
+                    // Add other fields as necessary
+                }),
             });
 
             if (!res.ok) {
@@ -60,13 +75,13 @@ const NovoVendedorForm: React.FC<NovoVendedorFormProps> = () => {
                 throw new Error(data.message || "Algo deu errado.");
             }
 
-            const newVendedor = await res.json();
+            const newVendedor: User = await res.json();
 
             // Optionally, show a success message
             alert("Vendedor criado com sucesso!");
 
             // Redirect to the new vendedor's details page
-            router.push(ROUTES.VENDEDOR(newVendedor.id));
+            router.push(`/vendedores/${newVendedor.id}`);
         } catch (err: any) {
             setError(err.message || "Ocorreu um erro inesperado.");
         } finally {
@@ -110,6 +125,20 @@ const NovoVendedorForm: React.FC<NovoVendedorFormProps> = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleChange}
+                    className={styles.input}
+                />
+            </label>
+            <label className={styles.label} htmlFor="valor_comissao">
+                Comissão (%):
+                <input
+                    id="valor_comissao"
+                    type="number"
+                    name="valor_comissao"
+                    value={formData.valor_comissao}
+                    onChange={handleChange}
+                    min={0.01}
+                    step={0.01}
+                    required
                     className={styles.input}
                 />
             </label>

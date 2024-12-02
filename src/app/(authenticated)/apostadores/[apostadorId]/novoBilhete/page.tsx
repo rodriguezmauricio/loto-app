@@ -4,7 +4,6 @@
 import Title from "components/title/Title";
 import PageHeader from "components/pageHeader/PageHeader";
 import TabsWithFilters from "components/tabsWithFilters/TabsWithFilters";
-import IconCard from "components/iconCard/IconCard";
 import ChooseNumbersComp from "components/chooseNumbersComp/ChooseNumbersComp";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import { useEffect, useState, useRef } from "react";

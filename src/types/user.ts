@@ -1,4 +1,5 @@
 // src/types/user.ts
+import { Transaction, Wallet } from "./roles";
 
 export interface User {
     id: string;
@@ -12,4 +13,5 @@ export interface User {
     valor_comissao?: number | null; // Only for vendedores
     created_on: string; // ISO date string
     updated_on: string; // ISO date string
+    wallet?: Wallet | null;
 }

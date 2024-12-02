@@ -66,18 +66,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     const router = useRouter();
 
     useEffect(() => {
-        if (disableAuth) {
-            return;
-        }
+        // if (disableAuth) {
+        //     return;
+        // }
 
         if (!currentUserRole || currentUserRole !== requiredRole) {
             router.push(ROUTES.LOGIN);
         }
     }, [currentUserRole, requiredRole, router]);
 
-    if (!disableAuth && (!currentUserRole || currentUserRole !== requiredRole)) {
-        return null;
-    }
+    // if (!disableAuth && (!currentUserRole || currentUserRole !== requiredRole)) {
+    //     return null;
+    // }
 
     return <>{children}</>;
 };

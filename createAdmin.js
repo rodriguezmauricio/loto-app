@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
-    const adminUsername = "a1";
-    const adminPassword = "a1"; // Plain text password
+    const adminUsername = "Angel01";
+    const adminPassword = "catarina22"; // Plain text password
     const hashedPassword = await bcrypt.hash(adminPassword, 10); // Hashing with salt rounds = 10
 
     // Check if admin already exists
@@ -32,6 +32,8 @@ async function main() {
                 username: adminUsername,
                 password_hash: hashedPassword,
                 role: "admin",
+                bancaName: "telelotto",
+                name: "Angela",
                 // Populate other required fields as necessary
             },
         });

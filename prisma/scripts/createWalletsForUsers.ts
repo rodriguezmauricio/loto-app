@@ -1,10 +1,19 @@
 // prisma/scripts/createWalletsForUsers.ts
 
+require("dotenv").config();
 const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
 async function createWalletsForUsers() {
+    try {
+        await prisma.$connect();
+        console.log("Database connection successful.");
+    } catch (error) {
+        console.error("Database connection failed:", error);
+        process.exit(1);
+    }
+
     try {
         // Fetch users without wallets
         const usersWithoutWallets = await prisma.user.findMany({

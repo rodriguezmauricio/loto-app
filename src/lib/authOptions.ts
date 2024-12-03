@@ -2,14 +2,10 @@
 
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-// Remove the adapter import
-// import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "../../prisma/client";
 import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-    // Remove the adapter
-    // adapter: PrismaAdapter(prisma),
     providers: [
         CredentialsProvider({
             name: "Credentials",
@@ -54,10 +50,11 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async session({ session, token }) {
             if (session.user && token) {
-                session.user.id = token.id as string;
-                session.user.role = token.role as string;
-                session.user.username = token.username as string;
-                session.user.bancaName = token.bancaName as string;
+                // Type assertion to extend the session user
+                (session.user as any).id = token.id as string;
+                (session.user as any).role = token.role as string;
+                (session.user as any).username = token.username as string;
+                (session.user as any).bancaName = token.bancaName as string;
             }
             return session;
         },
@@ -72,7 +69,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
     session: {
-        strategy: "jwt", // Ensure this is set to 'jwt'
+        strategy: "jwt",
     },
     pages: {
         signIn: "/login",

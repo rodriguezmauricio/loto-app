@@ -36,31 +36,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const saltRounds = 10;
         const password_hash = await bcrypt.hash(password, saltRounds);
 
-        // Create the user and wallet within a transaction
-        const [user, wallet] = await prisma.$transaction([
-            prisma.user.create({
-                data: {
-                    username,
-                    email,
-                    password_hash,
-                    bancaName,
-                    role,
-                    name,
-                    image,
+        // Create the user along with the wallet using nested writes
+        const user = await prisma.user.create({
+            data: {
+                username,
+                email,
+                password_hash,
+                bancaName,
+                role,
+                name,
+                image,
+                wallet: {
+                    create: {
+                        balance: 0.0, // Initialize wallet with a balance of 0
+                    },
                 },
-            }),
-            prisma.wallet.create({
-                data: {
-                    userId: "0", // Temporary, will be updated below
-                    balance: 0.0,
-                },
-            }),
-        ]);
-
-        // Update the wallet with the correct userId
-        await prisma.wallet.update({
-            where: { id: wallet.id },
-            data: { userId: user.id },
+            },
+            include: {
+                wallet: true, // Include wallet in the response if needed
+            },
         });
 
         return res.status(201).json({ message: "User registered successfully" });

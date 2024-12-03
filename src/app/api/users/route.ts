@@ -160,9 +160,16 @@ export async function POST(request: Request) {
         const body = await request.json();
         const parsed = createUserSchema.parse(body);
 
-        const { username, password, phone, pix, role, valor_comissao } = parsed;
+        const { username, password, phone, pix, role, valor_comissao, bancaName } = parsed;
 
-        console.log("POST /api/users - Body:", { username, phone, pix, role, valor_comissao });
+        console.log("POST /api/users - Body:", {
+            username,
+            phone,
+            pix,
+            role,
+            valor_comissao,
+            bancaName,
+        });
 
         // Ensure the session user's role is allowed to create users with the specified role
         if (role === "admin" && !isAdmin(userRole)) {
@@ -215,7 +222,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Username already exists." }, { status: 409 });
         }
 
-        // Create the user in the database with a Wallet if necessary
+        // Create the user in the database with a Wallet
         const newUser = await prisma.user.create({
             data: {
                 username,
@@ -229,10 +236,12 @@ export async function POST(request: Request) {
                 seller_id: sellerId,
                 role,
                 valor_comissao: valor_comissao || null,
-                // Assuming you have a wallet field or relation
-                // wallet: {
-                //     create: { balance: 0 },
-                // },
+                bancaName, // Include bancaName
+                wallet: {
+                    create: {
+                        balance: 0.0, // Initialize wallet with a balance of 0
+                    },
+                },
             },
             select: {
                 id: true,
@@ -246,12 +255,16 @@ export async function POST(request: Request) {
                 valor_comissao: true,
                 created_on: true,
                 updated_on: true,
+                wallet: true, // Include wallet data in the response if needed
             },
         });
 
         console.log("POST /api/users - User Created:", newUser.username);
 
-        return NextResponse.json(newUser, { status: 201 });
+        return NextResponse.json(
+            { message: "User and wallet created successfully", user: newUser },
+            { status: 201 }
+        );
     } catch (error: any) {
         console.error("Error creating user:", error);
         if (error instanceof ZodError) {

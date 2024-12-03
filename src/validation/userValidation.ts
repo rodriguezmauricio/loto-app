@@ -13,6 +13,7 @@ export const createUserSchema = z.object({
         .min(10, { message: "Telefone inválido." })
         .max(15, { message: "Telefone inválido." }),
     pix: z.string().optional(),
+    bancaName: z.string(),
     role: z.enum(["usuario", "vendedor", "admin"]).optional().default("usuario"),
     valor_comissao: z
         .number()

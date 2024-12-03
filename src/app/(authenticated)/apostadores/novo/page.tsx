@@ -1,5 +1,3 @@
-// src/components/AdicionarApostador.tsx
-
 "use client";
 
 import styles from "./novoApostador.module.scss";
@@ -17,8 +15,6 @@ interface IUserDataToDatabase {
     password: string;
     phone: string;
     pix: string;
-    bancaName: string; // Added
-    role: string; // Added
 }
 
 const AdicionarApostador = () => {
@@ -33,8 +29,6 @@ const AdicionarApostador = () => {
         picture: "",
         phone: "",
         pix: "sem pix",
-        bancaName: "", // Initialize
-        role: "user", // Initialize with default role
     });
 
     const handleSubmitForm = async (e: React.FormEvent) => {
@@ -44,8 +38,6 @@ const AdicionarApostador = () => {
             alert("Senhas precisam ser iguais");
             return;
         }
-
-        // Additional validation can be added here
 
         try {
             const response = await fetch("/api/users", {
@@ -61,8 +53,8 @@ const AdicionarApostador = () => {
                 throw new Error(errorData.error || "Erro ao criar usuário.");
             }
 
-            const result = await response.json();
-            alert(result.message || "Usuário criado com sucesso!");
+            const newUser = await response.json();
+            alert("Usuário criado com sucesso!");
 
             // Reset the form
             setUserDataToDatabase({
@@ -73,8 +65,6 @@ const AdicionarApostador = () => {
                 picture: "",
                 phone: "",
                 pix: "sem pix",
-                bancaName: "",
-                role: "user",
             });
             setConfirmPassword("");
 
@@ -120,12 +110,13 @@ const AdicionarApostador = () => {
                     <div className={styles.formSection}>
                         <label htmlFor="email">Email</label>
                         <input
-                            type="email"
+                            type="text"
                             name="email"
                             id="email"
                             className={styles.input}
                             value={userDataToDatabase.email}
                             onChange={handleChange}
+                            required
                         />
                     </div>
                     <div className={styles.formSection}>
@@ -163,34 +154,6 @@ const AdicionarApostador = () => {
                             onChange={handleChange}
                             required
                         />
-                    </div>
-                    <div className={styles.formSection}>
-                        <label htmlFor="bancaName">Nome da Banca</label>
-                        <input
-                            type="text"
-                            name="bancaName"
-                            id="bancaName"
-                            className={styles.input}
-                            value={userDataToDatabase.bancaName}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className={styles.formSection}>
-                        <label htmlFor="role">Função</label>
-                        <select
-                            name="role"
-                            id="role"
-                            className={styles.input}
-                            value={userDataToDatabase.role}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="user">Usuário</option>
-                            <option value="vendedor">Vendedor</option>
-                            <option value="admin">Administrador</option>
-                            {/* Add more roles as needed */}
-                        </select>
                     </div>
                     <div className={styles.formSection}>
                         <label htmlFor="phone">Telefone</label>

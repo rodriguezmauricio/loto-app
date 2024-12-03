@@ -344,18 +344,18 @@ const ApostadorDetail = () => {
                     />
 
                     {/* Carteira Info */}
-                    {apostadorData.wallet ? (
-                        <IconCard
-                            title="Carteira"
-                            description={`Saldo: R$ ${balanceDisplay}`}
-                            icon="wallet"
-                            inIcon
-                            fullWidth={false}
-                            hasCheckbox={false}
-                            isClickable={true}
-                            onClick={openModal} // Make the wallet card clickable to open the modal
-                        />
-                    ) : (
+                    {/* {apostadorData.wallet ? ( */}
+                    <IconCard
+                        title="Carteira"
+                        description={`Saldo: R$ ${balanceDisplay}`}
+                        icon="wallet"
+                        inIcon
+                        fullWidth={false}
+                        hasCheckbox={false}
+                        isClickable={true}
+                        onClick={openModal} // Make the wallet card clickable to open the modal
+                    />
+                    {/* ) : (
                         <IconCard
                             title="Carteira"
                             description="Saldo e transações"
@@ -369,7 +369,7 @@ const ApostadorDetail = () => {
                             }} // Make the wallet card clickable to open the modal
                             linkTo={""}
                         />
-                    )}
+                    )} */}
                 </section>
 
                 {/* Bilhetes Section */}

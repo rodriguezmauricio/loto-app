@@ -59,6 +59,12 @@ export const menuLinksSorteios = [
 
 export const menuLinksPremios = [
     {
+        linkName: "Cadastrar Resultados",
+        href: "/verificarResultados",
+        icon: <BsTable size={iconSize} />,
+        roles: ["admin", "vendedor", "usuario"],
+    },
+    {
         linkName: "Tabela de Premiações",
         href: "/tabelaDePremiacoes",
         icon: <BsTable size={iconSize} />,

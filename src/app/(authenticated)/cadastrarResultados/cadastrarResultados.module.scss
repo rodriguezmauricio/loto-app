@@ -1,7 +1,11 @@
 /* app/(authenticated)/results/results.module.scss */
 
+.hcolor {
+    color: var(--color-light-light);
+}
+
 .formSection {
-    background-color: #ffffff;
+    background-color: var(--color-dark-mid);
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -43,6 +47,13 @@
     border-color: #0070f3;
     outline: none;
     box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+}
+
+.textArea {
+    padding: 0.75rem 1rem;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+    font-size: 1rem;
 }
 
 .winnersSection {

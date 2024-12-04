@@ -1,159 +1,142 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider          = "postgresql"
-    url               = env("POSTGRES_PRISMA_URL")
-    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-}
-
-enum Role {
-    admin
-    vendedor
-    usuario
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
-    id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    name           String? // Nullable; set to `String` if you want it to be required
-    email          String?   @unique // Nullable; set to `String` if you want it to be required and unique
-    image          String? // Nullable; URL or base64 string
-    username       String    @unique @db.VarChar(255)
-    password_hash  String
-    phone          String?   @db.VarChar(15)
-    pix            String?   @default("sem pix") @db.VarChar(255)
-    role           Role      @default(usuario)
-    valor_comissao Decimal?  @db.Decimal(5, 2)
-    admin_id       String?   @db.Uuid
-    seller_id      String?   @db.Uuid
-    created_on     DateTime  @default(now()) @db.Timestamp(6)
-    updated_on     DateTime  @updatedAt @db.Timestamp(6)
-    emailVerified  DateTime? // Added field
-    bancaName      String?
-
-    // Relations
-    wallet Wallet?
-
-    // Relation: User ↔ User (VendedorAdmin)
-    seller  User?  @relation("VendedorAdmin", fields: [seller_id], references: [id])
-    sellers User[] @relation("VendedorAdmin")
-
-    // Relation: User ↔ User (AdminVendedores)
-    admin  User?  @relation("AdminVendedores", fields: [admin_id], references: [id])
-    admins User[] @relation("AdminVendedores")
-
-    // Relation: User ↔ Bet (UserBets)
-    bets Bet[] @relation("UserBets")
-
-    // Relation: User ↔ Bet (VendedorBets)
-    vendas Bet[] @relation("VendedorBets")
-
-    prizes   Prize[]   @relation("UserPrizes")
-    accounts Account[]
-    sessions Session[]
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username       String    @unique @db.VarChar(255)
+  password_hash  String
+  phone          String?   @db.VarChar(15)
+  pix            String?   @default("sem pix") @db.VarChar(255)
+  role           Role      @default(usuario)
+  valor_comissao Decimal?  @db.Decimal(5, 2)
+  admin_id       String?   @db.Uuid
+  seller_id      String?   @db.Uuid
+  created_on     DateTime  @default(now()) @db.Timestamp(6)
+  updated_on     DateTime  @updatedAt @db.Timestamp(6)
+  email          String?   @unique
+  name           String?
+  image          String?
+  emailVerified  DateTime?
+  bancaName      String?
+  accounts       Account[]
+  bets           Bet[]     @relation("UserBets")
+  vendas         Bet[]     @relation("VendedorBets")
+  prizes         Prize[]   @relation("UserPrizes")
+  sessions       Session[]
+  admin          User?     @relation("AdminVendedores", fields: [admin_id], references: [id])
+  admins         User[]    @relation("AdminVendedores")
+  seller         User?     @relation("VendedorAdmin", fields: [seller_id], references: [id])
+  sellers        User[]    @relation("VendedorAdmin")
+  wallet         Wallet?
 }
 
 model Bet {
-    id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    numbers             Int[]
-    modalidade          String
-    acertos             Int
-    premio              Float
-    consultor           String
-    apostador           String
-    quantidadeDeDezenas Int
-    resultado           DateTime
-    data                DateTime
-    hora                String // Stored as 'HH:mm' format
-    lote                String
-    tipoBilhete         String
-    valorBilhete        Float
-    createdAt           DateTime @default(now()) @db.Timestamp(6)
-
-    // Relations
-    userId String @db.Uuid
-    user   User   @relation("UserBets", fields: [userId], references: [id])
-
-    vendedorId String? @db.Uuid
-    vendedor   User?   @relation("VendedorBets", fields: [vendedorId], references: [id])
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  numbers             Int[]
+  modalidade          String
+  acertos             Int
+  premio              Float
+  consultor           String
+  apostador           String
+  quantidadeDeDezenas Int
+  resultado           DateTime
+  data                DateTime
+  hora                String
+  lote                String
+  tipoBilhete         String
+  valorBilhete        Float
+  createdAt           DateTime @default(now()) @db.Timestamp(6)
+  userId              String   @db.Uuid
+  vendedorId          String?  @db.Uuid
+  loteria             String?  @db.VarChar
+  user                User     @relation("UserBets", fields: [userId], references: [id])
+  vendedor            User?    @relation("VendedorBets", fields: [vendedorId], references: [id])
 }
 
 model Wallet {
-    id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    userId    String   @unique @db.Uuid
-    balance   Decimal  @default(0) @db.Decimal(10, 2)
-    createdAt DateTime @default(now()) @db.Timestamp(6)
-    updatedAt DateTime @updatedAt @db.Timestamp(6)
-
-    // Relations
-    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-    transactions Transaction[]
+  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String        @unique @db.Uuid
+  balance      Decimal       @default(0) @db.Decimal(10, 2)
+  createdAt    DateTime      @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime      @updatedAt @db.Timestamp(6)
+  transactions Transaction[]
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Transaction {
-    id          String   @id @default(uuid()) @db.Uuid
-    walletId    String   @db.Uuid
-    type        String // e.g., "credit", "debit"
-    amount      Decimal  @db.Decimal(10, 2)
-    description String?
-    createdAt   DateTime @default(now()) @db.Timestamp(6)
-
-    // Relations
-    wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  id          String   @id @default(uuid()) @db.Uuid
+  walletId    String   @db.Uuid
+  type        String
+  amount      Decimal  @db.Decimal(10, 2)
+  description String?
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
 }
 
 model Prize {
-    id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-    amount     Float
-    awarded_at DateTime @default(now()) @db.Timestamp(6)
-
-    // Relations
-    userId String @db.Uuid
-    user   User   @relation("UserPrizes", fields: [userId], references: [id])
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount     Float
+  awarded_at DateTime @default(now()) @db.Timestamp(6)
+  userId     String   @db.Uuid
+  user       User     @relation("UserPrizes", fields: [userId], references: [id])
 }
 
 model Result {
-    id             String   @id @default(uuid())
-    modalidade     String
-    winningNumbers Int[]
-    premio         Float
-    createdAt      DateTime @default(now())
+  id             String   @id @default(uuid())
+  modalidade     String
+  winningNumbers Int[]
+  createdAt      DateTime @default(now())
+  premio         Float
+  createdBy      String
+  loteria        String?  @db.VarChar(255)
 
-    @@index([modalidade])
+  @@index([modalidade])
 }
 
 model Account {
-    id                Int     @id @default(autoincrement())
-    userId            String  @db.Uuid
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                Int     @id @default(autoincrement())
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           Int      @id @default(autoincrement())
-    sessionToken String   @unique
-    userId       String   @db.Uuid
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           Int      @id @default(autoincrement())
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-    id         Int      @id @default(autoincrement())
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
+}
+
+enum Role {
+  admin
+  vendedor
+  usuario
 }

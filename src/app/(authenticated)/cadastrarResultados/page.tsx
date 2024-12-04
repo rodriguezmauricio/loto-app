@@ -12,21 +12,17 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Import modalidades data
 import { tempDb } from "../../../tempDb";
-import Title from "components/title/Title";
 
 // Define interfaces
 interface Loteria {
     name: string;
+    color: string;
+    betNumbers: number[];
+    trevoAmount: number[];
+    maxNumber?: number; // Optional
 }
 
-interface Modalidade {
-    name: string;
-    loterias: Loteria[];
-}
-
-interface ResultResponse {
-    winners: WinnerBet[];
-}
+type ModalidadeCategory = Record<string, Loteria[]>;
 
 interface WinnerBet {
     id: string;
@@ -37,10 +33,16 @@ interface WinnerBet {
     // Add other fields as needed
 }
 
+interface ModalidadeArrayItem {
+    modalidadesCaixa?: Loteria[];
+    modalidadeSabedoria?: Loteria[];
+    modalidadePersonalizada?: Loteria[];
+}
+
 const CadastrarResultadosPage = () => {
     const router = useRouter();
-    const [modalidades, setModalidades] = useState<Modalidade[]>([]);
-    const [selectedModalidade, setSelectedModalidade] = useState<string>("");
+    const [modalidadeCategories, setModalidadeCategories] = useState<ModalidadeCategory>({});
+    const [selectedModalidadeCategory, setSelectedModalidadeCategory] = useState<string>("");
     const [loterias, setLoterias] = useState<Loteria[]>([]);
     const [selectedLoteria, setSelectedLoteria] = useState<string>("");
     const [winningNumbers, setWinningNumbers] = useState<string>("");
@@ -51,35 +53,41 @@ const CadastrarResultadosPage = () => {
     useEffect(() => {
         const fetchModalidades = () => {
             try {
-                const data = tempDb.modalidades as Modalidade[];
-                setModalidades(data);
+                const data = tempDb.modalidades as ModalidadeArrayItem[];
+
+                const modalidades: ModalidadeCategory = data.reduce((acc, curr) => {
+                    const [key, value] = Object.entries(curr)[0];
+                    acc[key] = value;
+                    return acc;
+                }, {} as ModalidadeCategory);
+
+                setModalidadeCategories(modalidades);
             } catch (error) {
                 console.error("Error fetching modalidades:", error);
+                toast.error("Erro ao carregar modalidades.");
             }
         };
 
         fetchModalidades();
     }, []);
 
-    // Update loterias when selectedModalidade changes
+    // Update loterias when selectedModalidadeCategory changes
     useEffect(() => {
-        if (selectedModalidade) {
-            const modalidade = modalidades.find((mod) => mod.name === selectedModalidade);
-            if (modalidade) {
-                setLoterias(modalidade.loterias);
-                setSelectedLoteria(""); // Reset selected loteria
-            }
+        if (selectedModalidadeCategory) {
+            const loteriasList = modalidadeCategories[selectedModalidadeCategory] || [];
+            setLoterias(loteriasList);
+            setSelectedLoteria(""); // Reset selected loteria
         } else {
             setLoterias([]);
             setSelectedLoteria("");
         }
-    }, [selectedModalidade, modalidades]);
+    }, [selectedModalidadeCategory, modalidadeCategories]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Basic validation
-        if (!selectedModalidade) {
+        if (!selectedModalidadeCategory) {
             toast.error("Por favor, selecione uma modalidade.");
             return;
         }
@@ -94,9 +102,21 @@ const CadastrarResultadosPage = () => {
             return;
         }
 
-        // Validate winning numbers format (e.g., numbers separated by space)
-        const numbersArray = winningNumbers.trim().split(/\s+/).map(Number);
-        if (numbersArray.some(isNaN)) {
+        // Parse winning numbers into an array of integers
+        const numbersArray = winningNumbers
+            .trim()
+            .split(/\s+/)
+            .map((num: string) => parseInt(num, 10))
+            .filter((num: number) => !isNaN(num));
+
+        if (numbersArray.length === 0) {
+            toast.error("Por favor, insira pelo menos um número vencedor.");
+            return;
+        }
+
+        // Validate that all winning numbers are valid integers
+        const isValid = numbersArray.every((num) => Number.isInteger(num) && num > 0);
+        if (!isValid) {
             toast.error("Por favor, insira apenas números válidos, separados por espaço.");
             return;
         }
@@ -110,13 +130,13 @@ const CadastrarResultadosPage = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    modalidade: selectedModalidade,
-                    loteria: selectedLoteria,
-                    winningNumbers: numbersArray,
+                    modalidade: selectedModalidadeCategory, // string
+                    loteria: selectedLoteria, // string
+                    winningNumbers: numbersArray, // array of numbers
                 }),
             });
 
-            const data: ResultResponse = await response.json();
+            const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(
@@ -131,7 +151,7 @@ const CadastrarResultadosPage = () => {
             toast.success("Resultado salvo com sucesso!");
 
             // Optionally, reset the form
-            setSelectedModalidade("");
+            setSelectedModalidadeCategory("");
             setSelectedLoteria("");
             setWinningNumbers("");
         } catch (error: any) {
@@ -148,26 +168,25 @@ const CadastrarResultadosPage = () => {
             <PageHeader title="Cadastrar Resultado" subpage linkTo="/dashboard" />
             <main className="main">
                 <section className={styles.formSection}>
-                    <Title h={2}>Cadastrar Resultado</Title>
-                    <form
-                        onSubmit={handleSubmit}
-                        className={`${styles.resultForm} ${styles.hcolor}`}
-                    >
-                        {/* Modalidade Selection */}
+                    <h2>Cadastrar Resultado</h2>
+                    <form onSubmit={handleSubmit} className={styles.resultForm}>
+                        {/* Modalidade Category Selection */}
                         <div className={styles.formGroup}>
-                            <label htmlFor="modalidade">
-                                <span className={styles.hcolor}>Modalidade:</span>
-                            </label>
+                            <label htmlFor="modalidadeCategory">Modalidade:</label>
                             <select
-                                id="modalidade"
-                                value={selectedModalidade}
-                                onChange={(e) => setSelectedModalidade(e.target.value)}
+                                id="modalidadeCategory"
+                                value={selectedModalidadeCategory}
+                                onChange={(e) => setSelectedModalidadeCategory(e.target.value)}
                                 required
                             >
                                 <option value="">Selecione uma modalidade</option>
-                                {modalidades.map((mod) => (
-                                    <option key={mod.name} value={mod.name}>
-                                        {mod.name}
+                                {Object.keys(modalidadeCategories).map((category) => (
+                                    <option key={category} value={category}>
+                                        {/* Optional: Map category keys to user-friendly names */}
+                                        {category
+                                            .replace("modalidades", "")
+                                            .replace(/([A-Z])/g, " $1")
+                                            .trim()}
                                     </option>
                                 ))}
                             </select>
@@ -175,24 +194,22 @@ const CadastrarResultadosPage = () => {
 
                         {/* Loteria Selection */}
                         <div className={styles.formGroup}>
-                            <label htmlFor="loteria">
-                                <span className={styles.hcolor}>Loteria:</span>
-                            </label>
+                            <label htmlFor="loteria">Loteria:</label>
                             <select
                                 id="loteria"
                                 value={selectedLoteria}
                                 onChange={(e) => setSelectedLoteria(e.target.value)}
                                 required
-                                disabled={!selectedModalidade}
+                                disabled={!selectedModalidadeCategory}
                             >
                                 <option value="">
-                                    {selectedModalidade
+                                    {selectedModalidadeCategory
                                         ? "Selecione uma loteria"
                                         : "Selecione a modalidade primeiro"}
                                 </option>
-                                {loterias.map((lot) => (
-                                    <option key={lot.name} value={lot.name}>
-                                        {lot.name}
+                                {loterias.map((loteria) => (
+                                    <option key={loteria.name} value={loteria.name}>
+                                        {loteria.name}
                                     </option>
                                 ))}
                             </select>
@@ -201,17 +218,16 @@ const CadastrarResultadosPage = () => {
                         {/* Winning Numbers Input */}
                         <div className={styles.formGroup}>
                             <label htmlFor="winningNumbers">
-                                <span className={styles.hcolor}>
-                                    Números Vencedores (separados por espaço):
-                                </span>
+                                Números Vencedores (separados por espaço):
                             </label>
                             <textarea
-                                className={styles.textArea}
                                 id="winningNumbers"
                                 value={winningNumbers}
                                 onChange={(e) => setWinningNumbers(e.target.value)}
                                 placeholder="Ex: 5 12 23 34 45"
                                 required
+                                rows={3}
+                                cols={30}
                             />
                         </div>
 

@@ -6,11 +6,15 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/authOptions";
 import { z } from "zod";
 import { Role } from "../../../types/roles";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 // Define the request body schema
 const resultSchema = z.object({
-    modalidade: z.string().min(1),
-    winningNumbers: z.string().min(1), // Space-separated numbers
+    modalidade: z.string().min(1, { message: "Modalidade é obrigatória." }),
+    loteria: z.string().min(1, { message: "Loteria é obrigatória." }),
+    winningNumbers: z
+        .array(z.number())
+        .min(1, { message: "Insira pelo menos um número vencedor." }), // Array of numbers
 });
 
 // Define the response schema
@@ -21,6 +25,15 @@ const betSchema = z.object({
     userId: z.string(),
     // Add other relevant fields as needed
 });
+
+interface WinnerBet {
+    id: string;
+    numbers: number[];
+    modalidade: string;
+    loteria: string; // Ensure this field exists
+    userId: string;
+    // Add other fields as needed
+}
 
 export async function POST(request: Request) {
     // Authenticate the user
@@ -40,53 +53,52 @@ export async function POST(request: Request) {
         // Parse and validate the request body
         const body = await request.json();
         const parsed = resultSchema.parse(body);
-        const { modalidade, winningNumbers } = parsed;
+        const { modalidade, loteria, winningNumbers } = parsed;
 
-        // Parse winning numbers into an array of integers
-        const winningNumsArray = winningNumbers
-            .split(" ")
-            .map((num: string) => parseInt(num, 10))
-            .filter((num: number) => !isNaN(num));
-
-        if (winningNumsArray.length === 0) {
-            return NextResponse.json(
-                { error: "Please provide valid winning numbers separated by spaces." },
-                { status: 400 }
-            );
-        }
-
-        // Assuming you have logic to determine the prize amount
+        // Calculate the prize (premio)
         const calculatePremio = (): number => {
-            // Your logic here
-            return 1000.0;
+            // Implement your prize calculation logic here
+            return 1000.0; // Example fixed prize
         };
 
         const premioValue = calculatePremio();
 
+        // Create the new result in the database
         const newResult = await prisma.result.create({
             data: {
-                modalidade: "Lotofácil",
-                winningNumbers: [5, 6, 8, 9, 12, 13, 17, 20, 23, 25],
+                modalidade, // From request body
+                loteria, // From request body
+                winningNumbers, // From request body
                 premio: premioValue,
+                createdBy: session.user.id, // From session
             },
         });
-        // Fetch all bets for the modalidade
+
+        // Fetch all bets for the modalidade and loteria
         const allBets = await prisma.bet.findMany({
-            where: { modalidade },
+            where: { modalidade, loteria },
             select: { id: true, numbers: true, modalidade: true, userId: true },
         });
 
         // Define winning criteria (e.g., all winning numbers must be in the bet)
         const winningBets = allBets.filter((bet) =>
-            winningNumsArray.every((num) => bet.numbers.includes(num))
+            winningNumbers.every((num) => bet.numbers.includes(num))
         );
 
         return NextResponse.json({ result: newResult, winners: winningBets }, { status: 201 });
     } catch (error: any) {
-        if (error instanceof z.ZodError) {
-            return NextResponse.json({ error: error.errors }, { status: 400 });
-        }
         console.error("Error saving result:", error);
+
+        if (error instanceof z.ZodError) {
+            const errors = error.errors.map((err) => err.message);
+            return NextResponse.json({ error: errors }, { status: 400 });
+        }
+
+        if (error instanceof PrismaClientKnownRequestError) {
+            // Handle known Prisma errors (e.g., unique constraint violations)
+            return NextResponse.json({ error: error.message }, { status: 400 });
+        }
+
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

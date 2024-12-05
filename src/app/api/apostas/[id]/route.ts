@@ -1,89 +1,68 @@
+// app/api/apostas/[id]/route.ts
+
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@lib/authOptions";
+import { Role } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
-// DELETE method handler
+// Handle DELETE requests - Delete a specific bet by ID
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+    const { id } = params;
+
+    console.log(`DELETE /api/apostas/${id} called`);
+
+    // Authenticate the user
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+        console.log("Unauthorized access attempt.");
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Check user role
+    const userRole = session.user.role as Role;
+    if (userRole !== "admin" && userRole !== "vendedor") {
+        console.log(`Forbidden access attempt by user with role: ${userRole}`);
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     try {
-        // Authenticate the user
-        const session = await getServerSession(authOptions);
-
-        if (!session) {
-            return NextResponse.json({ error: "Unauthorized. Please log in." }, { status: 401 });
-        }
-
-        const { id } = params;
-
-        if (!id) {
-            return NextResponse.json({ error: "Ticket ID is required." }, { status: 400 });
-        }
-
-        // Fetch the ticket to verify ownership
-        const aposta = await prisma.bet.findUnique({
+        // Fetch the bet to verify ownership or permissions
+        const bet = await prisma.bet.findUnique({
             where: { id },
-            include: { user: true }, // Include user data
         });
 
-        if (!aposta) {
-            return NextResponse.json({ error: "Ticket not found." }, { status: 404 });
+        if (!bet) {
+            console.log(`Bet with ID ${id} not found.`);
+            return NextResponse.json({ error: "Bilhete não encontrado." }, { status: 404 });
         }
 
-        // Fetch the authenticated user
-        const authenticatedUser = await prisma.user.findUnique({
-            where: { id: session.user.id },
-        });
-
-        if (!authenticatedUser) {
-            return NextResponse.json({ error: "Authenticated user not found." }, { status: 401 });
-        }
-
-        // Check if the authenticated user is an admin
-        const isAdmin = authenticatedUser.role === "admin";
-
-        // If not admin, check if the user is a seller managing the ticket's owner
-        let isSeller = false;
-
-        if (!isAdmin) {
-            // Fetch the owner of the ticket
-            const ticketOwner = aposta.user;
-
-            if (!ticketOwner) {
-                return NextResponse.json({ error: "Ticket owner not found." }, { status: 404 });
-            }
-
-            // Check if the authenticated user is the seller of the ticket owner
-            isSeller = authenticatedUser.id === ticketOwner.seller_id;
-        }
-
-        if (!isAdmin && !isSeller) {
+        // If the user is a 'vendedor', ensure they own the bet
+        if (userRole === "vendedor" && bet.vendedorId !== session.user.id) {
+            console.log(`Vendedor ${session.user.id} attempting to delete bet they do not own.`);
             return NextResponse.json(
-                { error: "Forbidden. You do not have permission to delete this ticket." },
+                { error: "Forbidden: Você não possui permissão para deletar este bilhete." },
                 { status: 403 }
             );
         }
 
-        // Optionally, handle wallet refund if deleting a ticket should refund the valorBilhete
-        // Uncomment and adjust the following code if needed
-        /*
-      await prisma.wallet.update({
-        where: { id: aposta.userId }, // Ensure this matches your Wallet's identifier
-        data: {
-          balance: {
-            increment: aposta.valorBilhete,
-          },
-        },
-      });
-      */
-
-        // Delete the ticket
+        // Proceed to delete the bet
         await prisma.bet.delete({
             where: { id },
         });
 
-        return NextResponse.json({ message: "Ticket deleted successfully." }, { status: 200 });
+        console.log(`Bet with ID ${id} deleted successfully.`);
+
+        return NextResponse.json({ message: "Bilhete deletado com sucesso." }, { status: 200 });
     } catch (error: any) {
-        console.error("Error deleting ticket:", error);
-        return NextResponse.json({ error: "Internal Server Error." }, { status: 500 });
+        console.error("Error deleting bet:", error.message, error.stack);
+
+        if (error instanceof PrismaClientKnownRequestError) {
+            // Handle specific Prisma errors if needed
+            return NextResponse.json({ error: "Erro no banco de dados." }, { status: 500 });
+        }
+
+        return NextResponse.json({ error: "Erro interno do servidor." }, { status: 500 });
     }
 }

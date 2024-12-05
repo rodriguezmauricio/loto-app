@@ -106,7 +106,7 @@ export async function GET(request: Request) {
             // Find bets corresponding to the sorteio's modalidade
             const betsForModalidade = bets.filter((bet) => bet.modalidade === sorteio.modalidade);
 
-            // Determine winning bets: bets that match all winning numbers
+            // Determine winning bets: all winning numbers are in the bet's numbers
             const winningBets = betsForModalidade.filter((bet) =>
                 sorteio.winningNumbers.every((num) => bet.numbers.includes(num))
             );

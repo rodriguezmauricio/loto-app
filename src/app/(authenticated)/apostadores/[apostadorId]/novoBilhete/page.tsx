@@ -24,6 +24,7 @@ export interface IModalidade {
     betNumbers: number[];
     trevoAmount: number[];
     maxNumber: number;
+    loteria: string;
 }
 
 interface Wallet {
@@ -335,6 +336,7 @@ const NovoBilhete = () => {
                 bets: games.map((game, index) => ({
                     numbers: game, // number[]
                     modalidade: modalidadeContent?.name || "Default Modalidade",
+                    loteria: modalidadeContent?.loteria || "Default Loteria",
                     acertos: Number(formData.acertos) || 0, // Ensure it's a number
                     premio: Number(formData.prize) || 0, // Ensure it's a number
                     consultor: formData.consultantName || "Consultor Desconhecido",

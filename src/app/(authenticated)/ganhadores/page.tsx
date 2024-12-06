@@ -1,23 +1,34 @@
-// app/(authenticated)/ganhadores/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
 import styles from "./ganhadores.module.scss";
 import PageHeader from "components/pageHeader/PageHeader";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
-import GanhadoresCards from "components/ganhadoresTable/GanhadoresCards";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { tempDb } from "../../../tempDb";
-import { WinnerBet } from "../../../types/ganhadores"; // Ensure correct path
 
-const GanhadoresPage = () => {
-    const [modalidades] = useState<string[]>(["Caixa", "Surpresinha", "Personalizado"]);
-    const [selectedModalidade, setSelectedModalidade] = useState<string>("");
+interface WinnerBet {
+    id: string;
+    numbers: number[];
+    modalidade: string;
+    loteria: string;
+    userId: string;
+    userName: string;
+    sorteioDate: string;
+    premio: number;
+}
+
+const modalidadeKeyMap: { [key: string]: string } = {
+    Caixa: "modalidadesCaixa",
+    Surpresinha: "modalidadeSabedoria",
+    Personalizado: "modalidadePersonalizada",
+};
+
+export default function GanhadoresPage() {
+    const [modalidade, setModalidade] = useState<string>("");
     const [loterias, setLoterias] = useState<string[]>([]);
     const [selectedLoteria, setSelectedLoteria] = useState<string>("");
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -25,25 +36,17 @@ const GanhadoresPage = () => {
     const [winners, setWinners] = useState<WinnerBet[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Mapping between selected modalidade and tempDb keys
-    const modalidadeKeyMap: { [key: string]: string } = {
-        Caixa: "modalidadesCaixa",
-        Surpresinha: "modalidadeSabedoria",
-        Personalizado: "modalidadePersonalizada",
-    };
-
-    const updateLoterias = () => {
-        if (selectedModalidade) {
-            const modalidadeKey = modalidadeKeyMap[selectedModalidade];
+    // Update loterias when modalidade changes
+    useEffect(() => {
+        if (modalidade) {
+            const modalidadeKey = modalidadeKeyMap[modalidade];
             if (modalidadeKey) {
                 const modalidadeData = tempDb.modalidades.find(
                     (mod) => Object.keys(mod)[0] === modalidadeKey
-                ) as
-                    | { [key: string]: { name: string; color: string /* other properties */ }[] }
-                    | undefined;
+                ) as any;
 
                 if (modalidadeData && modalidadeData[modalidadeKey]) {
-                    const loteriasList = modalidadeData[modalidadeKey].map((lot) => lot.name);
+                    const loteriasList = modalidadeData[modalidadeKey].map((lot: any) => lot.name);
                     setLoterias(loteriasList);
                 } else {
                     setLoterias([]);
@@ -51,60 +54,71 @@ const GanhadoresPage = () => {
             } else {
                 setLoterias([]);
             }
+            setSelectedLoteria("");
+            setSelectedDate(null);
+            setWinners([]);
+            setAvailableDates([]);
         } else {
             setLoterias([]);
+            setSelectedLoteria("");
+            setSelectedDate(null);
+            setWinners([]);
+            setAvailableDates([]);
         }
-    };
-
-    // Update loterias when selectedModalidade changes
-    useEffect(() => {
-        updateLoterias();
-        setSelectedLoteria("");
-    }, [selectedModalidade]);
+    }, [modalidade]);
 
     // Fetch available dates when selectedLoteria changes
     useEffect(() => {
         const fetchAvailableDates = async () => {
-            if (selectedLoteria) {
-                try {
-                    const response = await fetch(
-                        `/api/sorteios/dates?modalidade=${encodeURIComponent(selectedLoteria)}`
-                    );
-                    if (!response.ok) {
-                        throw new Error("Erro ao buscar datas disponíveis.");
-                    }
-                    const data = await response.json();
-                    const dates = data.dates.map((dateStr: string) => new Date(dateStr));
-                    setAvailableDates(dates);
-                } catch (error) {
-                    console.error("Error fetching available dates:", error);
-                    toast.error("Erro ao buscar datas disponíveis.");
-                    setAvailableDates([]);
-                }
-            } else {
+            if (!selectedLoteria) {
                 setAvailableDates([]);
+                return;
+            }
+
+            setLoading(true);
+            try {
+                const params = new URLSearchParams();
+                params.append("modalidade", selectedLoteria);
+                params.append("loteria", selectedLoteria);
+
+                const response = await fetch(`/api/sorteios/dates?${params.toString()}`, {
+                    method: "GET",
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || "Erro ao buscar datas disponíveis.");
+                }
+
+                const data = await response.json();
+                const dates: string[] = data.dates || [];
+                const parsedDates = dates.map((d) => new Date(d + "T00:00:00Z"));
+                setAvailableDates(parsedDates);
+            } catch (error: any) {
+                console.error("Error fetching available dates:", error);
+                toast.error(error.message || "Erro ao buscar datas disponíveis.");
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchAvailableDates();
+        if (selectedLoteria) {
+            fetchAvailableDates();
+        }
     }, [selectedLoteria]);
 
-    // Fetch winners
     const handleFetchWinners = async () => {
-        if (!selectedLoteria && !selectedDate) {
-            toast.error("Por favor, selecione pelo menos a loteria ou uma data.");
+        if (!selectedLoteria) {
+            toast.error("Por favor, selecione a modalidade e a loteria antes de buscar.");
             return;
         }
 
         setLoading(true);
         setWinners([]);
-
         try {
             const params = new URLSearchParams();
-
-            if (selectedLoteria) {
-                params.append("modalidade", selectedLoteria);
-            }
+            params.append("modalidade", selectedLoteria);
+            params.append("loteria", selectedLoteria);
 
             if (selectedDate) {
                 const dateStr = selectedDate.toISOString().split("T")[0];
@@ -126,8 +140,12 @@ const GanhadoresPage = () => {
                 );
             }
 
-            setWinners(data.winners);
-            toast.success("Ganhadores buscados com sucesso!");
+            setWinners(data.winners || []);
+            if (data.winners && data.winners.length > 0) {
+                toast.success("Ganhadores buscados com sucesso!");
+            } else {
+                toast.info("Nenhum ganhador encontrado.");
+            }
         } catch (error: any) {
             console.error("Error fetching winners:", error);
             toast.error(error.message || "Erro ao buscar ganhadores.");
@@ -136,28 +154,41 @@ const GanhadoresPage = () => {
         }
     };
 
+    const groupWinnersByDate = (): { sorteioDate: string; winners: WinnerBet[] }[] => {
+        const grouped: { [key: string]: WinnerBet[] } = {};
+        for (const w of winners) {
+            if (!grouped[w.sorteioDate]) {
+                grouped[w.sorteioDate] = [];
+            }
+            grouped[w.sorteioDate].push(w);
+        }
+        return Object.keys(grouped).map((date) => ({
+            sorteioDate: date,
+            winners: grouped[date],
+        }));
+    };
+
+    const groupedWinners = groupWinnersByDate();
+
     return (
         <>
             <ToastContainer />
             <PageHeader title="Ganhadores" subpage={false} linkTo={""} />
             <main className="main">
                 <section>
-                    {/* Filter Controls */}
                     <div className={styles.filterRow}>
                         {/* Modalidade Dropdown */}
                         <div className={styles.filterGroup}>
                             <label htmlFor="modalidade">Modalidade:</label>
                             <select
                                 id="modalidade"
-                                value={selectedModalidade}
-                                onChange={(e) => setSelectedModalidade(e.target.value)}
+                                value={modalidade}
+                                onChange={(e) => setModalidade(e.target.value)}
                             >
                                 <option value="">Selecione a Modalidade</option>
-                                {modalidades.map((mod) => (
-                                    <option key={mod} value={mod}>
-                                        {mod}
-                                    </option>
-                                ))}
+                                <option value="Caixa">Caixa</option>
+                                <option value="Surpresinha">Surpresinha</option>
+                                <option value="Personalizado">Personalizado</option>
                             </select>
                         </div>
 
@@ -168,7 +199,7 @@ const GanhadoresPage = () => {
                                 id="loteria"
                                 value={selectedLoteria}
                                 onChange={(e) => setSelectedLoteria(e.target.value)}
-                                disabled={!selectedModalidade}
+                                disabled={!modalidade}
                             >
                                 <option value="">Selecione a Loteria</option>
                                 {loterias.map((lot) => (
@@ -189,7 +220,6 @@ const GanhadoresPage = () => {
                                 dateFormat="dd/MM/yyyy"
                                 highlightDates={availableDates}
                                 placeholderText="Selecione uma data"
-                                isClearable
                             />
                         </div>
 
@@ -206,11 +236,34 @@ const GanhadoresPage = () => {
                     </div>
 
                     {/* Display Winners */}
-                    <GanhadoresCards winners={winners} loading={loading} />
+                    {groupedWinners.length > 0 ? (
+                        <section className={styles.resultsSection}>
+                            {groupedWinners.map((group) => (
+                                <div key={group.sorteioDate} className={styles.dateGroup}>
+                                    <h3>Data do Sorteio: {group.sorteioDate}</h3>
+                                    <div className={styles.winnersList}>
+                                        {group.winners.map((w) => (
+                                            <div key={w.id} className={styles.winnerCard}>
+                                                <p>
+                                                    <strong>Usuário:</strong> {w.userName}
+                                                </p>
+                                                <p>
+                                                    <strong>Números:</strong> {w.numbers.join(", ")}
+                                                </p>
+                                                <p>
+                                                    <strong>Prêmio:</strong> R${w.premio.toFixed(2)}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </section>
+                    ) : (
+                        <p>Nenhum ganhador encontrado.</p>
+                    )}
                 </section>
             </main>
         </>
     );
-};
-
-export default GanhadoresPage;
+}

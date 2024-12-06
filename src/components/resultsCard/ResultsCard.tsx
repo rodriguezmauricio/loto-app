@@ -11,7 +11,7 @@ import { useRef } from "react";
 
 interface IResultsCard {
     data: Date;
-    numbersArr: number[]; // Changed to number[]
+    numbersArr: number[] | string[]; // Changed to number[]
     quantidadeDezenas: number;
     acertos: number;
     hora: Date;
@@ -145,7 +145,7 @@ const ResultsCard = ({
                 <section className={styles.results}>
                     <h3>Resultado</h3>
                     <div className={styles.numbers}>
-                        {numbersArr.map((num: number, index: number) => (
+                        {numbersArr.map((num: any, index: number) => (
                             <NumbersSorteio key={index} numero={num} big={false} />
                         ))}
                     </div>

@@ -1,21 +1,21 @@
-"use client"; // Marks the component to be rendered on the client side
+"use client";
 
-// Importing required components and CSS styles from the project structure
-import Title from "components/title/Title";
+import React, { useState, useEffect, useRef } from "react";
 import PageHeader from "components/pageHeader/PageHeader";
+import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
+import Title from "components/title/Title";
 import TabsWithFilters from "components/tabsWithFilters/TabsWithFilters";
 import ChooseNumbersComp from "components/chooseNumbersComp/ChooseNumbersComp";
-import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
-import { useEffect, useState, useRef } from "react";
-import { tempDb } from "tempDb"; // Import tempDb
 import ResultsCard from "components/resultsCard/ResultsCard";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { useUserStore } from "../../../../../../store/useUserStore";
+import { useRouter, useParams } from "next/navigation";
+import { tempDb } from "tempDb";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { toPng, toJpeg } from "html-to-image";
 import { saveAs } from "file-saver";
-import { useRouter, useParams } from "next/navigation";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import styles from "./novoBilhete.module.scss";
 
 export interface IModalidade {
@@ -24,13 +24,12 @@ export interface IModalidade {
     betNumbers: number[];
     trevoAmount: number[];
     maxNumber: number;
-    loteria: string;
 }
 
 interface Wallet {
     id: string;
     balance: number;
-    // Add other fields if necessary
+    transactions?: any[];
 }
 
 interface Apostador {
@@ -41,32 +40,37 @@ interface Apostador {
     role: string;
     admin_id: string | null;
     seller_id: string | null;
-    created_on: string; // ISO date string
+    created_on: string;
     wallet: Wallet | null;
-    // Add other fields as necessary
 }
 
 const NovoBilhete = () => {
-    // VARS: FOR SPECIFIC APOSTADOR
     const router = useRouter();
     const params = useParams();
     const { apostadorId } = params;
+    const user = useUserStore((state: any) => state.user);
+
+    // Now the top-level tab is the Loteria (Caixa, Sabedoria, Personalizado)
+    // and the chosen button inside is the Modalidade.
+    const [selectedLoteria, setSelectedLoteria] = useState<string>("Caixa"); // Default top-level (previously modalidade)
+    const [selectedModalidade, setSelectedModalidade] = useState<string>("");
+
     const [apostador, setApostador] = useState<Apostador | null>(null);
-
-    //VARS: GENERATE TICKET
-    const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
     const [modalidadeSetting, setModalidadeSetting] = useState<any[]>([]);
-    const [modalidadeContent, setModalidadeContent] = useState<IModalidade>();
-    const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1); // selected numbers for random games
-    const [generatedGames, setGeneratedGames] = useState<number[][]>([]); // games that were generated
-    const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<any[][]>([]); // games that were generated and formatted to display
-    const [numberOfGames, setNumberOfGames] = useState<number>(1); // number of games to be generated
-    const [quantidadeBilhetes, setQuantidadeBilhetes] = useState<number>(1);
-    const [selectedFilter, setSelectedFilter] = useState<string | null>(null); // 'importar', 'manual', 'random' or null
+    const [modalidadeContent, setModalidadeContent] = useState<IModalidade | null>(null);
 
-    const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]); // selected numbers in the game as strings
+    const [addBilheteSelectedButton, setAddBilheteSelectedButton] = useState("importar");
+    const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+
+    const [selectedNumbersArr, setSelectedNumbersArr] = useState<string[]>([]);
     const [importedNumbersArr, setImportedNumbersArr] = useState<string[][]>([]);
-    const [importtextAreaValue, setImportTextAreaValue] = useState(""); // content of the text area for imported games
+    const [importtextAreaValue, setImportTextAreaValue] = useState("");
+    const [quantidadeDeDezenas, setQuantidadeDeDezenas] = useState<number>(1);
+    const [quantidadeBilhetes, setQuantidadeBilhetes] = useState<number>(1);
+    const [numberOfGames, setNumberOfGames] = useState<number>(1);
+
+    const [generatedGames, setGeneratedGames] = useState<number[][]>([]);
+    const [generatedGamesDisplay, setGeneratedGamesDisplay] = useState<string[][]>([]);
 
     const [maxTickets, setMaxTickets] = useState<number>(0);
 
@@ -77,11 +81,11 @@ const NovoBilhete = () => {
         ticketNumber: number;
         acertos: number;
         prize: number;
-        resultDate: Date | null; // Allow null
+        resultDate: Date | null;
         numberOfGames: number;
         currentDate: Date;
         ticketType: string;
-        valorBilhete: number; // Added field
+        valorBilhete: number;
     }>({
         consultantName: "Consultor Desconhecido",
         apostadorName: "Apostador Desconhecido",
@@ -93,25 +97,32 @@ const NovoBilhete = () => {
         numberOfGames: 0,
         currentDate: new Date(),
         ticketType: "Tipo Desconhecido",
-        valorBilhete: 1, // Initialize
+        valorBilhete: 1,
     });
 
-    const divRefs = useRef<(HTMLDivElement | null)[]>([]); // Refs for divs to export to PDF
-    const cardRef = useRef<HTMLDivElement | null>(null); // Ref for exporting individually
+    const divRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const cardRef = useRef<HTMLDivElement | null>(null);
 
-    // Compute whether there is at least one bet
     const hasBets =
         modalidadeContent?.name &&
         ((importedNumbersArr && importedNumbersArr.length > 0) ||
             (generatedGames && generatedGames.length > 0) ||
             (selectedNumbersArr && selectedNumbersArr.length > 0));
 
-    //HANDLERS:
+    // Updated handleModalidadeContent: now receives (settingsObj, modalidadeName, loteriaName)
+    // because top-level is Loteria, inside is Modalidade.
+    const handleModalidadeContent = (
+        settingsObj: IModalidade,
+        modalidadeName: string,
+        loteriaName: string
+    ) => {
+        setModalidadeContent(settingsObj);
+        setSelectedLoteria(loteriaName);
+        setSelectedModalidade(modalidadeName);
+    };
 
-    //exports image for single tickets in jpg, png or copying to the clipboard
     const exportAsImage = async (format = "png", saveToClipboard = false) => {
         if (cardRef.current === null) return;
-
         try {
             let dataUrl;
             if (format === "jpeg") {
@@ -120,7 +131,6 @@ const NovoBilhete = () => {
                 dataUrl = await toPng(cardRef.current);
             }
 
-            // Convert data URL to Blob
             const response = await fetch(dataUrl);
             const blob = await response.blob();
 
@@ -139,16 +149,8 @@ const NovoBilhete = () => {
         }
     };
 
-    const modalidadeSettingObj = {
-        modalidadesCaixa: modalidadeSetting[0],
-        modalidadeSabedoria: modalidadeSetting[1],
-        modalidadePersonalizada: modalidadeSetting[2],
-    };
-
-    // export all tickets to a single PDF
     const handleExportPDF = async () => {
         let pdf: jsPDF | null = null;
-
         for (let i = 0; i < divRefs.current.length; i++) {
             const div = divRefs.current[i];
             if (div) {
@@ -157,7 +159,7 @@ const NovoBilhete = () => {
                 const divWidth = canvas.width;
                 const divHeight = canvas.height;
 
-                const pdfWidth = divWidth * 0.264583; // Convert pixels to mm
+                const pdfWidth = divWidth * 0.264583;
                 const pdfHeight = divHeight * 0.264583;
 
                 if (i === 0) {
@@ -182,19 +184,13 @@ const NovoBilhete = () => {
         }
     };
 
-    const handleModalidadeContent = (settingsObj: IModalidade) => {
-        setModalidadeContent(settingsObj);
+    const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setNumberOfGames(Number(e.target.value));
     };
 
-    const handleQuantidadeDezenasSelecionadas = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(event.target.value); // Ensure it's a number
-        setQuantidadeDeDezenas(value);
-    };
-
-    const handleTextAreaContent = (e: any) => {
+    const handleTextAreaContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const content = e.target.value;
         setImportTextAreaValue(content);
-
         if (!content.trim()) {
             setImportedNumbersArr([]);
             return;
@@ -205,7 +201,7 @@ const NovoBilhete = () => {
                 .trim()
                 .split(" ")
                 .filter((num) => num !== "")
-                .map((num) => num.padStart(2, "0")); // Keep as strings with leading zero
+                .map((num) => num.padStart(2, "0"));
             return numbers;
         });
 
@@ -214,17 +210,27 @@ const NovoBilhete = () => {
 
     const handleSelectedBilhete = (selected: string) => {
         setAddBilheteSelectedButton(selected);
-        setSelectedFilter(selected); // Update the selected filter
+        setSelectedFilter(selected);
     };
 
-    const handleNumberOfGamesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNumberOfGames(Number(e.target.value));
+    const handleQuantidadeDeDezenasSelecionadas = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Number(event.target.value);
+        setQuantidadeDeDezenas(value);
+    };
+
+    const generateRandomGame = (maxNumber: number, gameSize: number): number[] => {
+        const game = new Set<number>();
+        while (game.size < gameSize) {
+            const randomNum = Math.floor(Math.random() * maxNumber) + 1;
+            game.add(randomNum);
+        }
+        return Array.from(game).sort((a, b) => a - b);
     };
 
     const handleGenerateGames = () => {
         if (!modalidadeContent || modalidadeContent.maxNumber < quantidadeDeDezenas) {
             console.error("Invalid modalidade settings or numbersPerGame is too high.");
-            return; // Prevent further execution if validation fails
+            return;
         }
 
         const games: number[][] = [];
@@ -232,13 +238,12 @@ const NovoBilhete = () => {
 
         for (let i = 0; i < quantidadeBilhetes; i++) {
             const game = generateRandomGame(modalidadeContent.maxNumber, quantidadeDeDezenas);
-            games.push(game); // Store the generated game as numbers
-
-            const gameDisplay = game.map((num) => num.toString().padStart(2, "0")); // Keep as strings with leading zero
+            games.push(game);
+            const gameDisplay = game.map((num) => num.toString().padStart(2, "0"));
             gamesDisplay.push(gameDisplay);
         }
 
-        setGeneratedGames(games); // Update state with number arrays
+        setGeneratedGames(games);
         setGeneratedGamesDisplay(gamesDisplay);
     };
 
@@ -259,24 +264,26 @@ const NovoBilhete = () => {
             alert("Quantidade de dezenas deve ser pelo menos 1.");
             return false;
         }
-        // Add other validations as needed
+        if (!selectedModalidade) {
+            alert("Por favor, selecione uma modalidade.");
+            return false;
+        }
+        if (!selectedLoteria) {
+            alert("Por favor, selecione uma loteria.");
+            return false;
+        }
         return true;
     };
 
     const handleSubmitApostas = async () => {
         if (!validateForm()) return;
 
-        console.log("handle submit active");
         try {
             let games: number[][] = [];
-
-            // Collect games based on the selected method
             if (addBilheteSelectedButton === "importar") {
-                games = importedNumbersArr.map((game: string[]) =>
-                    game.map((num) => parseInt(num, 10))
-                );
+                games = importedNumbersArr.map((game) => game.map((num) => parseInt(num, 10)));
             } else if (addBilheteSelectedButton === "random") {
-                games = generatedGames; // Already an array of arrays of numbers
+                games = generatedGames;
             } else if (addBilheteSelectedButton === "manual") {
                 if (selectedNumbersArr.length === 0) {
                     console.error("No numbers selected for manual game");
@@ -292,7 +299,6 @@ const NovoBilhete = () => {
                 return;
             }
 
-            // Validate required form fields
             if (!formData.consultantName.trim()) {
                 alert("Por favor, insira o nome do consultor.");
                 return;
@@ -308,13 +314,9 @@ const NovoBilhete = () => {
                 return;
             }
 
-            // Ensure resultDate is a Date object
             const resultDate = formData.resultDate || new Date();
-
-            // Calculate total amount
             const totalAmount = formData.valorBilhete * games.length;
 
-            // Validate against balance
             if (
                 apostador?.wallet?.balance !== undefined &&
                 totalAmount > apostador.wallet.balance
@@ -323,7 +325,6 @@ const NovoBilhete = () => {
                 return;
             }
 
-            // Format the 'hora' field correctly ('HH:mm')
             const horaFormatted = formData.currentDate
                 ? formData.currentDate.toLocaleTimeString("en-GB", {
                       hour: "2-digit",
@@ -331,34 +332,33 @@ const NovoBilhete = () => {
                   })
                 : "00:00";
 
+            // Now loteira = top-level, modalidade = chosen button
             const apostaData = {
                 userId: apostadorId,
                 bets: games.map((game, index) => ({
-                    numbers: game, // number[]
-                    modalidade: modalidadeContent?.name || "Default Modalidade",
-                    loteria: modalidadeContent?.loteria || "Default Loteria",
-                    acertos: Number(formData.acertos) || 0, // Ensure it's a number
-                    premio: Number(formData.prize) || 0, // Ensure it's a number
+                    numbers: game,
+                    modalidade: selectedModalidade,
+                    loteria: selectedLoteria,
+                    acertos: Number(formData.acertos) || 0,
+                    premio: Number(formData.prize) || 0,
                     consultor: formData.consultantName || "Consultor Desconhecido",
                     apostador: formData.apostadorName || "Apostador Desconhecido",
-                    quantidadeDeDezenas: Number(quantidadeDeDezenas) || 0, // Ensure it's a number
-                    resultado: formData.resultDate
-                        ? formData.resultDate.toISOString()
-                        : new Date().toISOString(),
+                    quantidadeDeDezenas: Number(quantidadeDeDezenas) || 0,
+                    resultado: resultDate.toISOString(),
                     data: formData.currentDate.toISOString(),
-                    hora: horaFormatted, // Correct format
+                    hora: horaFormatted,
                     lote: formData.lote || "Lote Desconhecido",
                     tipoBilhete: formData.ticketType || "Tipo Desconhecido",
-                    valorBilhete: Number(formData.valorBilhete) || 0, // Ensure it's a number
+                    valorBilhete: Number(formData.valorBilhete) || 0,
                 })),
-                totalAmount: Number(formData.valorBilhete) * games.length, // Ensure it's a number
+                totalAmount: totalAmount,
             };
 
-            console.log("Aposta Data to be sent:", JSON.stringify(apostaData, null, 2)); // Log the data
+            console.log("Aposta Data to be sent:", JSON.stringify(apostaData, null, 2));
 
             for (let i = 0; i < games.length; i++) {
                 for (let j = 0; j < games[i].length; j++) {
-                    if (games[i][j] > modalidadeContent?.maxNumber!) {
+                    if (games[i][j] > (modalidadeContent?.maxNumber || 60)) {
                         alert(
                             `Número ${games[i][j]} no jogo ${
                                 i + 1
@@ -377,7 +377,7 @@ const NovoBilhete = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(apostaData),
-                credentials: "include", // Include cookies for authentication
+                credentials: "include",
             });
 
             if (response.ok) {
@@ -385,20 +385,20 @@ const NovoBilhete = () => {
                 console.log("Apostas created successfully:", result);
                 alert("Bilhetes criados com sucesso!");
 
-                // Optionally, update the apostador's wallet and redirect
                 const updatedApostadorResponse = await fetch(`/api/users/${apostadorId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    credentials: "include", // Include cookies for authentication
+                    credentials: "include",
                 });
+
                 if (updatedApostadorResponse.ok) {
                     const updatedApostador: Apostador = await updatedApostadorResponse.json();
                     setApostador(updatedApostador);
                     console.log("Updated Apostador data:", updatedApostador);
                 }
-                // Optionally redirect or display a success message
+
                 router.push(`/apostadores/${apostadorId}`);
             } else {
                 const errorData = await response.json();
@@ -411,7 +411,6 @@ const NovoBilhete = () => {
         }
     };
 
-    //FUNCTIONS:
     const addBilheteCompToRender = (button: string) => {
         const renderExportButtons = () => (
             <div className={styles.buttonRow}>
@@ -466,11 +465,10 @@ const NovoBilhete = () => {
                             <Title
                                 h={3}
                             >{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
-                            <Title h={3}>{`Jogos Importados`}</Title>
+                            <Title h={3}>Jogos Importados</Title>
                             {importedNumbersArr.map((item: any, index) => (
                                 <article key={index}>
-                                    {`Jogo ${index + 1} : `}
-                                    {item.join(" ")}
+                                    {`Jogo ${index + 1} : `} {item.join(" ")}
                                     <div
                                         ref={(el) => {
                                             divRefs.current[index] = el;
@@ -481,7 +479,7 @@ const NovoBilhete = () => {
                                                 numeroBilhete={
                                                     formData.ticketNumber - 1 + 1 + index
                                                 }
-                                                modalidade={modalidadeContent?.name}
+                                                modalidade={selectedModalidade}
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
@@ -503,8 +501,7 @@ const NovoBilhete = () => {
                             <Title h={2}>{`${importedNumbersArr.length} Jogos Gerados`}</Title>
                             {importedNumbersArr.map((item: any, index) => (
                                 <article key={index}>
-                                    {`Jogo ${index + 1} : `}
-                                    {item.join(" ")}
+                                    {`Jogo ${index + 1} : `} {item.join(" ")}
                                 </article>
                             ))}
                         </section>
@@ -543,7 +540,7 @@ const NovoBilhete = () => {
                                                 numeroBilhete={
                                                     formData.ticketNumber - 1 + 1 + index
                                                 }
-                                                modalidade={modalidadeContent?.name}
+                                                modalidade={selectedModalidade}
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
@@ -603,7 +600,7 @@ const NovoBilhete = () => {
                                 !modalidadeContent ||
                                 quantidadeBilhetes <= 0 ||
                                 quantidadeBilhetes > maxTickets ||
-                                quantidadeDeDezenas > modalidadeContent.maxNumber
+                                quantidadeDeDezenas > (modalidadeContent?.maxNumber || 60)
                             }
                         />
                     </div>
@@ -628,7 +625,7 @@ const NovoBilhete = () => {
                                                 numeroBilhete={
                                                     formData.ticketNumber - 1 + 1 + index
                                                 }
-                                                modalidade={modalidadeContent?.name}
+                                                modalidade={selectedModalidade}
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
@@ -644,7 +641,6 @@ const NovoBilhete = () => {
                                             />
                                         </div>
                                     </div>
-                                    {renderExportButtons()}
                                 </article>
                             ))}
 
@@ -658,17 +654,7 @@ const NovoBilhete = () => {
             );
         }
 
-        return null; // Default return for unsupported options
-    };
-
-    // Function to generate a random game of unique numbers
-    const generateRandomGame = (maxNumber: number, gameSize: number): number[] => {
-        const game = new Set<number>(); // Use Set to avoid duplicates
-        while (game.size < gameSize) {
-            const randomNum = Math.floor(Math.random() * maxNumber) + 1;
-            game.add(randomNum);
-        }
-        return Array.from(game).sort((a, b) => a - b); // Convert Set to array and sort
+        return null;
     };
 
     useEffect(() => {
@@ -687,38 +673,29 @@ const NovoBilhete = () => {
                 }
 
                 const data: Apostador = await response.json();
-                console.log(data);
-
                 setApostador(data);
             } catch (error) {
                 console.error("Error fetching apostador:", error);
-                // Handle error appropriately, e.g., show a notification or redirect
             }
         };
 
         fetchApostador();
     }, [apostadorId]);
 
-    console.log("Apostador Balance", apostador?.wallet?.balance);
     useEffect(() => {
         if (formData.valorBilhete > 0 && apostador?.wallet?.balance) {
             const calculatedMax = Math.floor(apostador.wallet.balance / formData.valorBilhete);
             setMaxTickets(calculatedMax);
-            console.log("Calculated maxTickets:", calculatedMax);
         } else {
             setMaxTickets(0);
-            console.log("Set maxTickets to 0"); // Debugging line
         }
     }, [formData.valorBilhete, apostador]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await tempDb.modalidades; // Adjust according to how tempDb is used
-                setModalidadeSetting(data); // Make sure data is an array
-                // if (data.length > 0) {
-                //     setModalidadeContent(data[0]); // Set to the first item
-                // }
+                const data = tempDb.modalidades;
+                setModalidadeSetting(data);
             } catch (error) {
                 console.log("Error fetching data:", error);
             }
@@ -727,33 +704,25 @@ const NovoBilhete = () => {
         fetchData();
     }, []);
 
-    // SECTION: COMPONENTS RETURN STATEMENT
-    //RETURN:
     return (
         <>
-            <PageHeader title="Novo Bilhete" subpage linkTo={`/apostadorNamees`} />
+            <PageHeader title="Novo Bilhete" subpage linkTo={`/apostadores`} />
             <main className="main">
                 <section>
                     <div className={styles.sectionContainer}>
                         <Title h={2}>Sorteios</Title>
                         <section className={styles.buttonFilterRow}>
                             <TabsWithFilters
-                                modalidadeSetting={modalidadeSettingObj}
+                                modalidadeSetting={{
+                                    modalidadesCaixa: modalidadeSetting[0],
+                                    modalidadeSabedoria: modalidadeSetting[1],
+                                    modalidadePersonalizada: modalidadeSetting[2],
+                                }}
                                 handleModalidadeContent={handleModalidadeContent}
                             />
                         </section>
-                        {/* <section>
-                            <IconCard
-                                icon="lotto"
-                                title="Título do Sorteio"
-                                description="Data e Hora do Sorteio"
-                                fullWidth
-                                isClickable={false}
-                            />
-                        </section> */}
                     </div>
 
-                    {/* Conditionally render the form only if a modalidade is selected */}
                     {modalidadeContent && (
                         <>
                             <div className={styles.sectionContainer}>
@@ -796,7 +765,6 @@ const NovoBilhete = () => {
                                 {`Quantidade Máxima de Bilhetes Disponíveis: ${maxTickets}`}
                             </div>
 
-                            {/* Form Fields */}
                             <div className={styles.sectionContainer}>
                                 <div className={styles.inputsRow}>
                                     <div className={styles.inputGroup}>
@@ -917,8 +885,8 @@ const NovoBilhete = () => {
                                             id="quantidadeDeDezenas"
                                             value={quantidadeDeDezenas}
                                             min={1}
-                                            max={Math.min(modalidadeContent?.maxNumber)} // Cap at 60
-                                            onChange={handleQuantidadeDezenasSelecionadas}
+                                            max={modalidadeContent?.maxNumber || 60}
+                                            onChange={handleQuantidadeDeDezenasSelecionadas}
                                         />
                                     </div>
                                 </div>
@@ -932,7 +900,7 @@ const NovoBilhete = () => {
                                                 setFormData({ ...formData, resultDate: date })
                                             }
                                             dateFormat="dd/MM/yyyy"
-                                            className={styles.datePicker} // Apply a new dedicated class
+                                            className={styles.datePicker}
                                         />
                                     </div>
                                 </div>
@@ -940,14 +908,13 @@ const NovoBilhete = () => {
                         </>
                     )}
                 </section>
-                {/* Render jogosRow and fixed button only if modalidadeContent is selected */}
+
                 {modalidadeContent && (
                     <>
                         <section className={styles.jogosRow}>
                             {addBilheteCompToRender(addBilheteSelectedButton)}
                         </section>
 
-                        {/* Fixed "Salvar Apostas" Button */}
                         <SimpleButton
                             btnTitle="Salvar Apostas"
                             func={handleSubmitApostas}
@@ -961,7 +928,6 @@ const NovoBilhete = () => {
                     </>
                 )}
 
-                {/* Optionally, display a prompt to select modalidade if not selected */}
                 {!modalidadeContent && (
                     <div className={styles.promptContainer}>
                         <Title h={3}>Por favor, selecione uma modalidade para começar.</Title>

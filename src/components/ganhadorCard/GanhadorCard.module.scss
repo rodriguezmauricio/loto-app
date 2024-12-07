@@ -1,0 +1,22 @@
+.container {
+    background-color: var(--color-dark-light);
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.numbersContainer {
+    padding: 10px 0 10px 0;
+}
+
+.numbers {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}

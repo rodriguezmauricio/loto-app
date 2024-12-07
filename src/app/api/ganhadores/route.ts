@@ -1,133 +1,138 @@
-// app/api/ganhadores/route.ts
-
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
+import { z } from "zod";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/authOptions";
-import { z } from "zod";
 import { Role } from "../../../types/roles";
 
-// Define the query schema using Zod
-const ganhadoresQuerySchema = z.object({
-    modalidade: z.string().optional(),
-    startDate: z.string().optional(), // ISO date string
-    endDate: z.string().optional(), // ISO date string
+const querySchema = z.object({
+    modalidade: z.string().min(1),
+    loteria: z.string().min(1),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
 });
 
-// Define the response schema for winners
-interface WinnerBet {
-    id: string;
-    numbers: number[];
-    modalidade: string;
-    userId: string;
-    userName: string;
-    sorteioDate: string;
-    premio: number;
-}
-
 export async function GET(request: Request) {
-    // Authenticate the user
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userRole = session.user.role as Role;
-
-    // Only allow admin and vendedor roles
     if (userRole !== "admin" && userRole !== "vendedor") {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Parse query parameters
-    const url = new URL(request.url);
-    const queryParams = {
-        modalidade: url.searchParams.get("modalidade") || undefined,
-        startDate: url.searchParams.get("startDate") || undefined,
-        endDate: url.searchParams.get("endDate") || undefined,
-    };
+    const { searchParams } = new URL(request.url);
+    const query = Object.fromEntries(searchParams.entries());
 
-    // Validate query parameters
-    const parsedQuery = ganhadoresQuerySchema.safeParse(queryParams);
+    const parsedQuery = querySchema.safeParse(query);
     if (!parsedQuery.success) {
-        return NextResponse.json({ error: parsedQuery.error.errors }, { status: 400 });
+        const errors = parsedQuery.error.errors.map((err) => err.message);
+        return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const { modalidade, startDate, endDate } = parsedQuery.data;
+    const { modalidade, loteria, startDate, endDate } = parsedQuery.data;
 
     try {
-        // Build the where clause based on filters
-        const whereClause: any = {};
-
-        if (modalidade) {
-            whereClause.modalidade = modalidade;
-        }
-
-        if (startDate || endDate) {
-            whereClause.createdAt = {};
-            if (startDate) {
-                whereClause.createdAt.gte = new Date(startDate);
-            }
-            if (endDate) {
-                whereClause.createdAt.lte = new Date(endDate);
-            }
-        }
-
-        // Fetch the latest sorteios based on filters
-        const sorteios = await prisma.result.findMany({
-            where: whereClause,
+        // Fetch the LATEST result for the given modalidade/loteria (like first snippet)
+        const result = await prisma.result.findFirst({
+            where: { modalidade, loteria },
             orderBy: { createdAt: "desc" },
-            take: 10, // Adjust the number as needed for "latest sorteios"
         });
 
-        if (sorteios.length === 0) {
-            return NextResponse.json({ winners: [] }, { status: 200 });
+        if (!result) {
+            return NextResponse.json(
+                { error: "Nenhum resultado encontrado para os filtros fornecidos." },
+                { status: 404 }
+            );
         }
 
-        // Extract modalidades from sorteios
-        const modalidades = sorteios.map((sorteio) => sorteio.modalidade);
+        const winningNumbers = result.winningNumbers;
+        // Build conditions for bets that must include all winning numbers
+        const andConditions = winningNumbers.map((num) => ({
+            numbers: { has: num },
+        }));
 
-        // Fetch all bets related to these modalidades, including user names
+        const betWhere: any = {
+            modalidade,
+            loteria,
+            AND: andConditions,
+        };
+
+        if (startDate && endDate) {
+            betWhere.createdAt = {
+                gte: new Date(startDate),
+                lte: new Date(endDate),
+            };
+        }
+
         const bets = await prisma.bet.findMany({
-            where: { modalidade: { in: modalidades } },
-            select: {
-                id: true,
-                numbers: true,
-                modalidade: true,
-                userId: true,
-                user: { select: { username: true } }, // Fetch user's name
+            where: betWhere,
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        name: true,
+                        role: true,
+                        admin_id: true,
+                        seller_id: true,
+                    },
+                },
             },
         });
 
-        // Determine winners
-        const winners: WinnerBet[] = [];
+        // Role-based filtering (from second snippet):
+        if (userRole === "admin") {
+            const adminId = session.user.id;
+            const sellers = await prisma.user.findMany({
+                where: { admin_id: adminId, role: "vendedor" },
+                select: { id: true },
+            });
+            const sellerIds = sellers.map((s) => s.id);
 
-        sorteios.forEach((sorteio) => {
-            // Find bets corresponding to the sorteio's modalidade
-            const betsForModalidade = bets.filter((bet) => bet.modalidade === sorteio.modalidade);
+            // Filter bets for apostadores linked to this admin
+            const filteredBets = bets.filter((bet) => {
+                const u = bet.user;
+                if (u.role !== "usuario") return false;
+                const directByAdmin = u.admin_id === adminId;
+                const createdByAdminViaSeller = u.seller_id && sellerIds.includes(u.seller_id);
+                return directByAdmin || createdByAdminViaSeller;
+            });
 
-            // Determine winning bets: all winning numbers are in the bet's numbers
-            const winningBets = betsForModalidade.filter((bet) =>
-                sorteio.winningNumbers.every((num) => bet.numbers.includes(num))
-            );
+            return formatWinners(filteredBets, result);
+        } else if (userRole === "vendedor") {
+            const vendedorId = session.user.id;
+            const filteredBets = bets.filter((bet) => {
+                const u = bet.user;
+                if (u.role !== "usuario") return false;
+                return u.seller_id === vendedorId;
+            });
 
-            // Map winners with additional details
-            const mappedWinners = winningBets.map((bet) => ({
-                id: bet.id,
-                numbers: bet.numbers,
-                modalidade: bet.modalidade,
-                userId: bet.userId,
-                userName: bet.user?.username || "Unknown",
-                sorteioDate: sorteio.createdAt.toISOString().split("T")[0],
-                premio: sorteio.premio || 0,
-            }));
+            return formatWinners(filteredBets, result);
+        }
 
-            winners.push(...mappedWinners);
-        });
-
-        return NextResponse.json({ winners }, { status: 200 });
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     } catch (error: any) {
-        console.error("Error fetching winners:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        console.error("Error fetching ganhadores:", error);
+        return NextResponse.json({ error: "Erro interno do servidor." }, { status: 500 });
     }
+}
+
+// Helper to format winners as in the first snippet, using bet.premio and single result
+function formatWinners(bets: any[], result: any) {
+    // The first snippet used bet.premio directly, so we keep that.
+    const winners = bets.map((bet) => ({
+        id: bet.id,
+        numbers: bet.numbers,
+        modalidade: bet.modalidade,
+        loteria: bet.loteria,
+        userId: bet.userId,
+        userName: bet.user?.name ? bet.user.name : bet.user?.username || "Usuário Desconhecido",
+        sorteioDate: result.createdAt.toISOString().split("T")[0],
+        premio: bet.premio, // Using bet.premio as per first snippet logic
+    }));
+
+    return NextResponse.json({ winners }, { status: 200 });
 }

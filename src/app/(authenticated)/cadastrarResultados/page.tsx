@@ -102,7 +102,7 @@ const CadastrarResultadosPage = () => {
             return;
         }
 
-        // Parse winning numbers into an array of integers
+        // Parse winning numbers into an array of integers for validation
         const numbersArray = winningNumbers
             .trim()
             .split(/\s+/)
@@ -130,9 +130,9 @@ const CadastrarResultadosPage = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    modalidade: selectedModalidadeCategory, // string
-                    loteria: selectedLoteria, // string
-                    winningNumbers: numbersArray, // array of numbers
+                    modalidade: selectedLoteria, // string
+                    loteria: selectedModalidadeCategory, // string
+                    winningNumbers: winningNumbers.trim(), // string
                 }),
             });
 
@@ -146,9 +146,13 @@ const CadastrarResultadosPage = () => {
                 );
             }
 
-            // Set the winners
-            setWinners(data.winners);
-            toast.success("Resultado salvo com sucesso!");
+            // Set the winners from the POST response
+            setWinners(data.winners || []);
+            if (data.winners && data.winners.length > 0) {
+                toast.success("Resultado salvo e vencedores atualizados com sucesso!");
+            } else {
+                toast.info("Resultado salvo, mas nenhum vencedor encontrado.");
+            }
 
             // Optionally, reset the form
             setSelectedModalidadeCategory("");
@@ -256,14 +260,14 @@ const CadastrarResultadosPage = () => {
                                         <strong>Números:</strong> {bet.numbers.join(", ")}
                                     </p>
                                     <p>
-                                        <strong>Modalidade:</strong> {bet.modalidade}
+                                        <strong>Modalidade:</strong> {bet.loteria}{" "}
+                                        {/* Swapped Value */}
                                     </p>
                                     <p>
-                                        <strong>Loteria:</strong> {bet.loteria}
+                                        <strong>Loteria:</strong> {bet.modalidade}{" "}
+                                        {/* Swapped Value */}
                                     </p>
-                                    <p>
-                                        <strong>Usuário ID:</strong> {bet.userId}
-                                    </p>
+
                                     {/* Add more details as needed */}
                                 </div>
                             ))}

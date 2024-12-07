@@ -242,13 +242,12 @@ export default function GanhadoresPage() {
                                     <h3>Data do Sorteio: {group.sorteioDate}</h3>
                                     <div className={styles.winnersList}>
                                         {group.winners.map((w) => (
-                                            <>
-                                                <GanhadorCard
-                                                    username={w.userName}
-                                                    numbers={w.numbers}
-                                                    prize={w.premio.toFixed(2)}
-                                                />
-                                            </>
+                                            <GanhadorCard
+                                                key={w.id}
+                                                username={w.userName}
+                                                numbers={w.numbers}
+                                                prize={w.premio.toFixed(2)}
+                                            />
                                         ))}
                                     </div>
                                 </div>

@@ -715,9 +715,9 @@ const NovoBilhete = () => {
                         <section className={styles.buttonFilterRow}>
                             <TabsWithFilters
                                 modalidadeSetting={{
-                                    modalidadesCaixa: modalidadeSetting[0],
-                                    modalidadeSabedoria: modalidadeSetting[1],
-                                    modalidadePersonalizada: modalidadeSetting[2],
+                                    Caixa: modalidadeSetting[0],
+                                    Sabedoria: modalidadeSetting[1],
+                                    Personalizada: modalidadeSetting[2],
                                 }}
                                 handleModalidadeContent={handleModalidadeContent}
                             />

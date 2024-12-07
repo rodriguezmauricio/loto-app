@@ -4,9 +4,9 @@ import { IModalidade } from "app/(authenticated)/apostadores/[apostadorId]/novoB
 
 // Adjust the interface as needed
 interface ModalidadeSetObj {
-    modalidadesCaixa?: { modalidadesCaixa?: IModalidade[] };
-    modalidadeSabedoria?: { modalidadeSabedoria?: IModalidade[] };
-    modalidadePersonalizada?: { modalidadePersonalizada?: IModalidade[] };
+    Caixa?: { Caixa?: IModalidade[] };
+    Sabedoria?: { Sabedoria?: IModalidade[] };
+    Personalizada?: { Personalizada?: IModalidade[] };
 }
 
 interface TabsWithFiltersProps {
@@ -29,9 +29,9 @@ const TabsWithFilters: React.FC<TabsWithFiltersProps> = ({
     const [selectedTab, setSelectedTab] = useState(0);
 
     const {
-        modalidadesCaixa = { modalidadesCaixa: [] },
-        modalidadeSabedoria = { modalidadeSabedoria: [] },
-        modalidadePersonalizada = { modalidadePersonalizada: [] },
+        Caixa = { Caixa: [] },
+        Sabedoria = { Sabedoria: [] },
+        Personalizada = { Personalizada: [] },
     } = modalidadeSetting || {};
 
     // Determine modalidadeName based on the selected tab
@@ -70,15 +70,12 @@ const TabsWithFilters: React.FC<TabsWithFiltersProps> = ({
     };
 
     const conteudoRenderizado = () => {
-        if (selectedTab === 0 && modalidadesCaixa.modalidadesCaixa) {
-            return renderButtonsForTab(modalidadesCaixa.modalidadesCaixa, "Caixa");
-        } else if (selectedTab === 1 && modalidadeSabedoria.modalidadeSabedoria) {
-            return renderButtonsForTab(modalidadeSabedoria.modalidadeSabedoria, "Surpresinha");
-        } else if (selectedTab === 2 && modalidadePersonalizada.modalidadePersonalizada) {
-            return renderButtonsForTab(
-                modalidadePersonalizada.modalidadePersonalizada,
-                "Personalizado"
-            );
+        if (selectedTab === 0 && Caixa.Caixa) {
+            return renderButtonsForTab(Caixa.Caixa, "Caixa");
+        } else if (selectedTab === 1 && Sabedoria.Sabedoria) {
+            return renderButtonsForTab(Sabedoria.Sabedoria, "Surpresinha");
+        } else if (selectedTab === 2 && Personalizada.Personalizada) {
+            return renderButtonsForTab(Personalizada.Personalizada, "Personalizado");
         }
         return null;
     };

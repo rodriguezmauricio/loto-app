@@ -27,9 +27,9 @@ function VerificarJogos() {
     const [gamesToVerify, setGamesToVerify] = useState("");
 
     const modalidadeSettingObj = {
-        modalidadesCaixa: modalidadeSetting[0], // Assuming modalidadesCaixa is the first item in the array
-        modalidadeSabedoria: modalidadeSetting[1], // Assuming modalidadeSabedoria is the second item
-        modalidadePersonalizada: modalidadeSetting[2], // Assuming modalidadePersonalizada is the third item
+        Caixa: modalidadeSetting[0], // Assuming Caixa is the first item in the array
+        Sabedoria: modalidadeSetting[1], // Assuming Sabedoria is the second item
+        Personalizada: modalidadeSetting[2], // Assuming Personalizada is the third item
     };
 
     //HANDLERS:

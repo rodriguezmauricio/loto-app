@@ -9,6 +9,8 @@ import "react-toastify/dist/ReactToastify.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { tempDb } from "../../../tempDb";
+import GanhadoresCards from "components/ganhadoresTable/GanhadoresCards";
+import GanhadorCard from "components/ganhadorCard/GanhadorCard";
 
 interface WinnerBet {
     id: string;
@@ -21,10 +23,11 @@ interface WinnerBet {
     premio: number;
 }
 
+// This map must match the keys used in tempDb for each modalidade type.
 const modalidadeKeyMap: { [key: string]: string } = {
-    Caixa: "modalidadesCaixa",
-    Surpresinha: "modalidadeSabedoria",
-    Personalizado: "modalidadePersonalizada",
+    Caixa: "Caixa",
+    Surpresinha: "Sabedoria",
+    Personalizado: "Personalizada",
 };
 
 export default function GanhadoresPage() {
@@ -67,10 +70,10 @@ export default function GanhadoresPage() {
         }
     }, [modalidade]);
 
-    // Fetch available dates when selectedLoteria changes
+    // Fetch available dates when selectedLoteria or modalidade changes
     useEffect(() => {
         const fetchAvailableDates = async () => {
-            if (!selectedLoteria) {
+            if (!selectedLoteria || !modalidade) {
                 setAvailableDates([]);
                 return;
             }
@@ -78,7 +81,7 @@ export default function GanhadoresPage() {
             setLoading(true);
             try {
                 const params = new URLSearchParams();
-                params.append("modalidade", selectedLoteria);
+                params.append("modalidade", modalidade);
                 params.append("loteria", selectedLoteria);
 
                 const response = await fetch(`/api/sorteios/dates?${params.toString()}`, {
@@ -102,13 +105,13 @@ export default function GanhadoresPage() {
             }
         };
 
-        if (selectedLoteria) {
+        if (selectedLoteria && modalidade) {
             fetchAvailableDates();
         }
-    }, [selectedLoteria]);
+    }, [selectedLoteria, modalidade]);
 
     const handleFetchWinners = async () => {
-        if (!selectedLoteria) {
+        if (!selectedLoteria || !modalidade) {
             toast.error("Por favor, selecione a modalidade e a loteria antes de buscar.");
             return;
         }
@@ -117,8 +120,9 @@ export default function GanhadoresPage() {
         setWinners([]);
         try {
             const params = new URLSearchParams();
+            // this params are swapped to get the correct result from the mess up in the database I've made before
             params.append("modalidade", selectedLoteria);
-            params.append("loteria", selectedLoteria);
+            params.append("loteria", modalidade);
 
             if (selectedDate) {
                 const dateStr = selectedDate.toISOString().split("T")[0];
@@ -135,7 +139,7 @@ export default function GanhadoresPage() {
             if (!response.ok) {
                 throw new Error(
                     Array.isArray(data.error)
-                        ? data.error.map((err: any) => err.message).join(", ")
+                        ? data.error.map((err: any) => err).join(", ")
                         : data.error
                 );
             }
@@ -177,7 +181,6 @@ export default function GanhadoresPage() {
             <main className="main">
                 <section>
                     <div className={styles.filterRow}>
-                        {/* Modalidade Dropdown */}
                         <div className={styles.filterGroup}>
                             <label htmlFor="modalidade">Modalidade:</label>
                             <select
@@ -192,7 +195,6 @@ export default function GanhadoresPage() {
                             </select>
                         </div>
 
-                        {/* Loteria Dropdown */}
                         <div className={styles.filterGroup}>
                             <label htmlFor="loteria">Loteria:</label>
                             <select
@@ -210,7 +212,6 @@ export default function GanhadoresPage() {
                             </select>
                         </div>
 
-                        {/* Date Picker */}
                         <div className={styles.filterGroup}>
                             <label htmlFor="sorteioDate">Data do Sorteio:</label>
                             <DatePicker
@@ -223,7 +224,6 @@ export default function GanhadoresPage() {
                             />
                         </div>
 
-                        {/* Fetch Button */}
                         <div className={styles.filterGroup}>
                             <SimpleButton
                                 btnTitle={loading ? "Buscando..." : "Buscar Ganhadores"}
@@ -235,7 +235,6 @@ export default function GanhadoresPage() {
                         </div>
                     </div>
 
-                    {/* Display Winners */}
                     {groupedWinners.length > 0 ? (
                         <section className={styles.resultsSection}>
                             {groupedWinners.map((group) => (
@@ -243,17 +242,13 @@ export default function GanhadoresPage() {
                                     <h3>Data do Sorteio: {group.sorteioDate}</h3>
                                     <div className={styles.winnersList}>
                                         {group.winners.map((w) => (
-                                            <div key={w.id} className={styles.winnerCard}>
-                                                <p>
-                                                    <strong>Usuário:</strong> {w.userName}
-                                                </p>
-                                                <p>
-                                                    <strong>Números:</strong> {w.numbers.join(", ")}
-                                                </p>
-                                                <p>
-                                                    <strong>Prêmio:</strong> R${w.premio.toFixed(2)}
-                                                </p>
-                                            </div>
+                                            <>
+                                                <GanhadorCard
+                                                    username={w.userName}
+                                                    numbers={w.numbers}
+                                                    prize={w.premio.toFixed(2)}
+                                                />
+                                            </>
                                         ))}
                                     </div>
                                 </div>

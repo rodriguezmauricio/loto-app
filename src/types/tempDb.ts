@@ -24,6 +24,6 @@ export interface ModalidadePersonalizada {
 }
 
 export type Modalidade =
-    | { modalidadesCaixa: ModalidadeCaixa[] }
-    | { modalidadeSabedoria: ModalidadeSabedoria[] }
-    | { modalidadePersonalizada: ModalidadePersonalizada[] };
+    | { Caixa: ModalidadeCaixa[] }
+    | { Sabedoria: ModalidadeSabedoria[] }
+    | { Personalizada: ModalidadePersonalizada[] };

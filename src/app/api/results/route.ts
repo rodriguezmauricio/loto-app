@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../prisma/client";
+import { z } from "zod";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/authOptions";
-import { z } from "zod";
 import { Role } from "../../../types/roles";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const resultSchema = z.object({
     modalidade: z.string().min(1, { message: "Modalidade é obrigatória." }),
     loteria: z.string().min(1, { message: "Loteria é obrigatória." }),
-    winningNumbers: z.string().min(1),
+    winningNumbers: z.string().min(1, { message: "WinningNumbers são obrigatórias." }),
 });
 
 export async function POST(request: Request) {
@@ -59,10 +58,6 @@ export async function POST(request: Request) {
         if (error instanceof z.ZodError) {
             const errors = error.errors.map((err) => err.message);
             return NextResponse.json({ error: errors }, { status: 400 });
-        }
-
-        if (error instanceof PrismaClientKnownRequestError) {
-            return NextResponse.json({ error: error.message }, { status: 400 });
         }
 
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -1,7 +1,7 @@
 export const tempDb = {
     modalidades: [
         {
-            modalidadesCaixa: [
+            Caixa: [
                 {
                     name: "Lotofácil",
                     color: "#930089",
@@ -112,7 +112,7 @@ export const tempDb = {
             ],
         },
         {
-            modalidadeSabedoria: [
+            Sabedoria: [
                 {
                     name: "Erre X",
                     color: "#A8CF45",
@@ -146,7 +146,7 @@ export const tempDb = {
             ],
         },
         {
-            modalidadePersonalizada: [
+            Personalizada: [
                 {
                     name: "Super 5",
                     color: "#A8CF45",

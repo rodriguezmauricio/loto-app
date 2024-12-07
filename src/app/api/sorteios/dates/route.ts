@@ -1,33 +1,29 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../../../lib/authOptions";
-import { Role } from "../../../../types/roles";
+import { z } from "zod";
+
+const querySchema = z.object({
+    modalidade: z.string().min(1),
+    loteria: z.string().min(1),
+});
 
 export async function GET(request: Request) {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { searchParams } = new URL(request.url);
+    const query = Object.fromEntries(searchParams.entries());
+
+    const parsedQuery = querySchema.safeParse(query);
+    if (!parsedQuery.success) {
+        const errors = parsedQuery.error.errors.map((err) => err.message);
+        return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const userRole = session.user.role as Role;
-    if (userRole !== "admin" && userRole !== "vendedor") {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
-
-    const url = new URL(request.url);
-    const modalidade = url.searchParams.get("modalidade");
-    const loteria = url.searchParams.get("loteria");
-
-    if (!modalidade || !loteria) {
-        return NextResponse.json({ error: "modalidade and loteria are required" }, { status: 400 });
-    }
+    const { modalidade, loteria } = parsedQuery.data;
 
     try {
         const results = await prisma.result.findMany({
             where: { modalidade, loteria },
-            orderBy: { createdAt: "desc" },
             select: { createdAt: true },
+            orderBy: { createdAt: "desc" },
         });
 
         const dates = Array.from(
@@ -36,7 +32,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ dates }, { status: 200 });
     } catch (error: any) {
-        console.error("Error fetching dates:", error);
-        return NextResponse.json({ error: "Erro ao buscar datas disponíveis." }, { status: 500 });
+        console.error("Error fetching available dates:", error);
+        return NextResponse.json({ error: "Erro interno do servidor." }, { status: 500 });
     }
 }

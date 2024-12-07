@@ -34,9 +34,9 @@ interface WinnerBet {
 }
 
 interface ModalidadeArrayItem {
-    modalidadesCaixa?: Loteria[];
-    modalidadeSabedoria?: Loteria[];
-    modalidadePersonalizada?: Loteria[];
+    Caixa?: Loteria[];
+    Sabedoria?: Loteria[];
+    Personalizada?: Loteria[];
 }
 
 const CadastrarResultadosPage = () => {

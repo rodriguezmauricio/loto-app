@@ -55,6 +55,7 @@ const TabsWithFilters: React.FC<TabsWithFiltersProps> = ({
                                     betNumbers: button.betNumbers,
                                     trevoAmount: button.trevoAmount,
                                     maxNumber: button.maxNumber,
+                                    loteria: button.loteria,
                                 },
                                 button.name, // This is the loteria
                                 modalidadeName // This is the modalidade derived from tab selection

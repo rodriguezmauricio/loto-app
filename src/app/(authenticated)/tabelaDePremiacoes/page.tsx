@@ -10,9 +10,7 @@ const page = () => {
             <PageHeader title="Tabela de Premiações" subpage={false} linkTo={""} />
             <main className="main">
                 <section className={styles.container}>
-                    <div>
-                        <TabsWithFilters />
-                    </div>
+                    <div>{/* <TabsWithFilters  /> */}</div>
                     <ResultsTable />
                 </section>
             </main>

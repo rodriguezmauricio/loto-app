@@ -1,3 +1,13 @@
+export type ModalidadeKey = "Caixa" | "Sabedoria" | "Personalizada";
+
+export interface Modalidade {
+    name: string;
+    color: string;
+    betNumbers: number[];
+    trevoAmount: number[];
+    maxNumber?: number;
+}
+
 export const tempDb = {
     modalidades: [
         {

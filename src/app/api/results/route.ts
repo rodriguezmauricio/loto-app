@@ -220,7 +220,7 @@ function formatWinners(bets: Bet[], result: Result) {
         id: bet.id,
         numbers: bet.numbers, // Directly assign the number array
         modalidade: bet.modalidade,
-        loteria: bet.loteria,
+        loteria: bet.loteria ?? "Default Loteria",
         userId: bet.userId,
         userName: bet.user?.name ? bet.user.name : bet.user?.username || "Usuário Desconhecido",
         sorteioDate: sorteioDateStr, // Using result.createdAt as the displayed date

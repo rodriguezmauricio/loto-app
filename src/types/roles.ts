@@ -55,7 +55,7 @@ export interface Bet {
 export interface Result {
     id: string;
     modalidade: string;
-    loteria?: string;
+    loteria: string | null;
     winningNumbers: number[];
     createdAt: Date;
     premio: number;

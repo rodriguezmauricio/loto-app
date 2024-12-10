@@ -132,6 +132,7 @@ function formatWinners(bets: any[], result: any) {
         userName: bet.user?.name ? bet.user.name : bet.user?.username || "Usuário Desconhecido",
         sorteioDate: result.createdAt.toISOString().split("T")[0],
         premio: bet.premio, // Using bet.premio as per first snippet logic
+        betPlacedDate: bet.createdAt,
     }));
 
     return NextResponse.json({ winners }, { status: 200 });

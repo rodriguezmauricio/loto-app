@@ -301,7 +301,7 @@ export default function GanhadoresPage() {
                                 locale="pt-BR"
                                 dateFormat="dd/MM/yyyy"
                                 placeholderText="Data final"
-                                minDate={startDate}
+                                minDate={startDate || undefined} // Updated line
                                 maxDate={new Date()}
                             />
                         </div>

@@ -198,39 +198,40 @@ export default function GanhadoresPage() {
             <main className="main">
                 <section>
                     <div className={styles.filterRow}>
-                        <div className="categoriesGroup">
+                        <div className={styles.categoriesGroup}>
                             <label>Categorias:</label>
-                            <div className="categoryButtons">
-                                <button
-                                    type="button"
+                            <div className={styles.categoryButtons}>
+                                <SimpleButton
+                                    btnTitle="Caixa"
                                     onClick={() => setCategory("Caixa")}
                                     className={category === "Caixa" ? "selectedCategory" : ""}
-                                >
-                                    Caixa
-                                </button>
-                                <button
-                                    type="button"
+                                    func={() => setCategory("Caixa")}
+                                    isSelected={true}
+                                />
+                                <SimpleButton
+                                    btnTitle="Surpresinha"
                                     onClick={() => setCategory("Surpresinha")}
                                     className={category === "Surpresinha" ? "selectedCategory" : ""}
-                                >
-                                    Surpresinha
-                                </button>
-                                <button
-                                    type="button"
+                                    func={() => setCategory("Surpresinha")}
+                                    isSelected={true}
+                                />
+
+                                <SimpleButton
+                                    btnTitle="Personalizada"
                                     onClick={() => setCategory("Personalizada")}
                                     className={
                                         category === "Personalizada" ? "selectedCategory" : ""
                                     }
-                                >
-                                    Personalizada
-                                </button>
+                                    func={() => setCategory("Personalizada")}
+                                    isSelected={true}
+                                />
                             </div>
                         </div>
 
                         {category && (
-                            <div className="modalidadesGroup">
+                            <div className={styles.modalidadesGroup}>
                                 <label>Modalidades:</label>
-                                <div className="modalidadesOptions">
+                                <div className={styles.modalidadesOptions}>
                                     <label
                                         className={`todosOption ${
                                             selectedModalities.includes("Todos") ? "selected" : ""
@@ -325,7 +326,7 @@ export default function GanhadoresPage() {
                         )}
 
                         {totalPages > 1 && (
-                            <div className="pagination">
+                            <div className={styles.pagination}>
                                 <button
                                     onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                                     disabled={currentPage === 1}

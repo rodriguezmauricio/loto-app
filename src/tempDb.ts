@@ -24,10 +24,12 @@ export interface ModalidadePersonalizada {
     maxNumber?: number; // Optional
 }
 
-export type Modalidade =
-    | { Caixa: ModalidadeCaixa[] }
-    | { Sabedoria: ModalidadeSabedoria[] }
-    | { Personalizada: ModalidadePersonalizada[] };
+export interface Modalidade {
+    Caixa?: ModalidadeCaixa[];
+    Sabedoria?: ModalidadeSabedoria[];
+    Personalizada?: ModalidadePersonalizada[];
+}
+
 export const tempDb = {
     modalidades: [
         {

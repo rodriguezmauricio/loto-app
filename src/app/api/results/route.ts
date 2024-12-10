@@ -102,7 +102,7 @@ export async function GET(request: Request) {
         const winningNumbers = result.winningNumbers;
         console.log("Winning numbers:", winningNumbers);
 
-        let bets: Bet[] = [];
+        let bets: any[] = [];
 
         if (result.modalidade === "ERRE X") {
             // **"ERRE X" Logic:** Fetch bets where none of the bet numbers are in winningNumbers

@@ -34,6 +34,9 @@ export async function GET(request: Request) {
 
     const { modalidade, loteria, startDate, endDate } = parsedQuery.data;
 
+    const actualModalidade = loteria;
+    const actualLoteria = modalidade;
+
     try {
         // Fetch the LATEST result for the given modalidade/loteria (like first snippet)
         const result = await prisma.result.findFirst({
@@ -67,21 +70,49 @@ export async function GET(request: Request) {
             };
         }
 
-        const bets = await prisma.bet.findMany({
-            where: betWhere,
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        username: true,
-                        name: true,
-                        role: true,
-                        admin_id: true,
-                        seller_id: true,
+        let bets: any[] = [];
+
+        if (result.modalidade === "ERRE X") {
+            bets = await prisma.bet.findMany({
+                where: {
+                    modalidade,
+                    loteria,
+                    NOT: {
+                        numbers: {
+                            hasSome: winningNumbers,
+                        },
                     },
                 },
-            },
-        });
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            name: true,
+                            role: true,
+                            admin_id: true,
+                            seller_id: true,
+                        },
+                    },
+                },
+            });
+        } else {
+            bets = await prisma.bet.findMany({
+                where: betWhere,
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            username: true,
+                            name: true,
+                            role: true,
+                            admin_id: true,
+                            seller_id: true,
+                        },
+                    },
+                },
+            });
+        }
 
         // Role-based filtering (from second snippet):
         if (userRole === "admin") {

@@ -39,3 +39,37 @@ export interface Bilhete {
     apostadorId: string;
     // Other fields as necessary
 }
+
+export interface Bet {
+    id: string;
+    numbers: number[];
+    modalidade: string;
+    loteria: string;
+    userId: string;
+    premio: number;
+    createdAt: Date;
+    vendedorId: string | null;
+    user: User;
+}
+
+export interface Result {
+    id: string;
+    modalidade: string;
+    loteria: string;
+    winningNumbers: number[];
+    createdAt: Date;
+    premio: number;
+    createdBy: string;
+}
+
+export interface Winner {
+    id: string;
+    numbers: number[];
+    modalidade: string;
+    loteria: string;
+    userId: string;
+    userName: string;
+    sorteioDate: string;
+    premio: number;
+    betPlacedDate: string;
+}

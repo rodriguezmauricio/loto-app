@@ -1,13 +1,33 @@
 export type ModalidadeKey = "Caixa" | "Sabedoria" | "Personalizada";
 
-export interface Modalidade {
+export interface ModalidadeCaixa {
     name: string;
     color: string;
     betNumbers: number[];
     trevoAmount: number[];
-    maxNumber?: number;
+    maxNumber: number;
 }
 
+export interface ModalidadeSabedoria {
+    name: string;
+    color: string;
+    betNumbers: number[];
+    trevoAmount: number[];
+    maxNumber?: number; // Optional as some categories may not have it
+}
+
+export interface ModalidadePersonalizada {
+    name: string;
+    color: string;
+    betNumbers: number[];
+    trevoAmount: number[];
+    maxNumber?: number; // Optional
+}
+
+export type Modalidade =
+    | { Caixa: ModalidadeCaixa[] }
+    | { Sabedoria: ModalidadeSabedoria[] }
+    | { Personalizada: ModalidadePersonalizada[] };
 export const tempDb = {
     modalidades: [
         {

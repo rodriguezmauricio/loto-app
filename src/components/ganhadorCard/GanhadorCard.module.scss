@@ -1,22 +1,46 @@
 .container {
-    background-color: var(--color-dark-light);
-    padding: 16px;
-    margin-bottom: 16px;
+    width: 100%;
+    padding: 20px;
     border-radius: 8px;
-}
+    margin-bottom: 15px;
+    color: #fff;
+    background-color: #364156;
+    transition: background-color 0.3s ease-in-out;
 
-.header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
+    .header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
 
-.numbersContainer {
-    padding: 10px 0 10px 0;
-}
+    .user,
+    .prize {
+        font-weight: bold;
+    }
 
-.numbers {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
+    .modalidade {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .dateInfo {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .numbersContainer {
+        .numberTitle {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            width: 100%;
+        }
+    }
 }

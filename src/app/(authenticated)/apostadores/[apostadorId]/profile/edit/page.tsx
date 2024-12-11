@@ -16,6 +16,7 @@ import Modal from "components/modal/Modal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import styles from "./editar.module.scss";
+import Avatar from "components/avatar/Avatar";
 
 // Define User Interface
 interface User {
@@ -288,27 +289,7 @@ const EditUserPage = () => {
                 <div className={styles.container}>
                     <h2 className={styles.title}>Editar Informações do Apostador</h2>
                     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-                        {/* Avatar Upload */}
-                        <div className={styles.avatarSection}>
-                            {userData.image ? (
-                                <img src={userData.image} alt="Avatar" className={styles.avatar} />
-                            ) : (
-                                <FaUserEdit className={styles.placeholderAvatar} />
-                            )}
-                            <div className={styles.uploadButtonContainer}>
-                                <label htmlFor="image" className={styles.uploadLabel}>
-                                    <FaUpload />
-                                    Alterar Avatar
-                                </label>
-                                <input
-                                    id="image"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleAvatarUpload}
-                                    className={styles.uploadInput}
-                                />
-                            </div>
-                        </div>
+                        <Avatar username={userData.name ?? ""} />
 
                         {/* Username */}
                         <div className={styles.formGroup}>
@@ -446,7 +427,7 @@ const EditUserPage = () => {
                         )}
 
                         {/* Banca Name (Optional) */}
-                        <div className={styles.formGroup}>
+                        {/* <div className={styles.formGroup}>
                             <label htmlFor="bancaName" className={styles.label}>
                                 Nome da Banca
                             </label>
@@ -461,7 +442,7 @@ const EditUserPage = () => {
                             {errors.bancaName && (
                                 <p className={styles.errorMessage}>{errors.bancaName.message}</p>
                             )}
-                        </div>
+                        </div> */}
 
                         {/* Password (Optional) */}
                         <div className={styles.formGroup}>

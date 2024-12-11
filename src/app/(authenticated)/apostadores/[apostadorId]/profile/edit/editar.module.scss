@@ -1,32 +1,53 @@
-/* src/app/(authenticated)/apostadores/[apostadorId]/profile/edit/editar.module.scss */
+/* src/app/(authenticated)/apostadores/[apostadorId]/profile/edit/edit.module.scss */
 
 .main {
     padding: 2rem;
-    background-color: #f9fafb; /* Light gray background */
+    background-color: #f0f4f8; /* Light blue-gray background */
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 900px;
     background-color: #ffffff; /* White background */
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
 }
 
 .title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: #1f2937; /* Dark gray */
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #2d3748; /* Dark blue-gray */
     text-align: center;
+    position: relative;
+
+    &::after {
+        content: "";
+        position: absolute;
+        width: 50px;
+        height: 4px;
+        background-color: #4c51bf; /* Indigo */
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+    }
 }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.75rem;
 }
 
 .formGroup {
@@ -36,105 +57,140 @@
 
 .label {
     margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #4b5563; /* Gray */
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a5568; /* Gray */
 }
 
 .required {
-    color: #dc2626; /* Red */
+    color: #e53e3e; /* Red */
     margin-left: 0.25rem;
 }
 
-.input {
-    padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db; /* Gray border */
-    border-radius: 4px;
-    font-size: 1rem;
-    color: #374151; /* Darker gray */
-    transition: border-color 0.2s;
-}
-
-.inputError {
-    border-color: #dc2626; /* Red border */
-}
-
+.input,
 .select {
-    padding: 0.75rem 1rem;
-    border: 1px solid #d1d5db; /* Gray border */
-    border-radius: 4px;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid #cbd5e0; /* Light gray */
+    border-radius: 8px;
     font-size: 1rem;
-    color: #374151; /* Darker gray */
-    background-color: #ffffff; /* White background */
-    transition: border-color 0.2s;
+    color: #2d3748; /* Dark blue-gray */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus {
+        outline: none;
+        border-color: #4c51bf; /* Indigo */
+        box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.3);
+    }
+}
+
+.inputError,
+.selectError {
+    border-color: #e53e3e; /* Red */
 }
 
 .errorMessage {
-    color: #dc2626; /* Red */
+    color: #e53e3e; /* Red */
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
 
 .submitButton {
-    padding: 0.75rem 1rem;
-    background-color: #4f46e5; /* Indigo-600 */
+    padding: 0.75rem 1.5rem;
+    background-color: #4c51bf; /* Indigo */
     color: #ffffff;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
+    transition: background-color 0.3s ease, transform 0.2s ease;
 
-.submitButton:hover {
-    background-color: #4338ca; /* Indigo-700 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: #434190; /* Darker indigo */
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background-color: #a0aec0; /* Gray */
+        cursor: not-allowed;
+    }
 }
 
 .deleteSection {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
 }
 
 .deleteButton {
-    padding: 0.75rem 1rem;
-    background-color: #dc2626; /* Red-600 */
+    padding: 0.75rem 1.5rem;
+    background-color: #e53e3e; /* Red */
     color: #ffffff;
     border: none;
-    border-radius: 4px;
-    font-size: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
+    transition: background-color 0.3s ease, transform 0.2s ease;
 
-.deleteButton:hover {
-    background-color: #b91c1c; /* Red-700 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        background-color: #c53030; /* Darker red */
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+
+    &:disabled {
+        background-color: #a0aec0; /* Gray */
+        cursor: not-allowed;
+    }
 }
 
 .avatarSection {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 .avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #d1d5db;
+    border: 3px solid #cbd5e0; /* Light gray */
+    transition: border-color 0.3s ease, transform 0.3s ease;
+
+    &:hover {
+        border-color: #4c51bf; /* Indigo */
+        transform: scale(1.05);
+    }
 }
 
 .placeholderAvatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background-color: #d1d5db; /* Gray background */
+    background-color: #cbd5e0; /* Light gray */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6b7280; /* Gray */
-    font-size: 2rem;
+    color: #4a5568; /* Gray */
+    font-size: 3rem;
 }
 
 .uploadButtonContainer {
@@ -146,17 +202,23 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #4f46e5; /* Indigo-600 */
+    padding: 0.75rem 1.5rem;
+    background-color: #48bb78; /* Green */
     color: #ffffff;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: 500;
-}
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    font-size: 1rem;
 
-.uploadLabel:hover {
-    background-color: #4338ca; /* Indigo-700 */
+    &:hover {
+        background-color: #38a169; /* Darker green */
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
 }
 
 .uploadInput {

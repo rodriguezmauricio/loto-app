@@ -1,22 +1,23 @@
-// app/(authenticated)/apostadores/[apostadorId]/page.tsx
+// src/app/(authenticated)/apostadores/[apostadorId]/profile/edit/page.tsx
 
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import BilheteTable from "components/bilheteTable/BilheteTable";
-import { Bilhete } from "../../../../../../types/roles"; // Ensure you have appropriate TypeScript types
-import styles from "./editar.module.scss";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FaUserEdit, FaTrash, FaUpload } from "react-icons/fa";
-import { updateUserSchema } from "validation/userValidation";
+import { updateUserSchema } from "../../../../../../validation/userValidation";
 import { z } from "zod";
 import PageHeader from "components/pageHeader/PageHeader";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import Modal from "components/modal/Modal";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import styles from "./editar.module.scss";
 
+// Define User Interface
 interface User {
     id: string;
     username: string;
@@ -62,7 +63,6 @@ const EditUserPage = () => {
     const [userData, setUserData] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
     // Initialize React Hook Form
@@ -127,6 +127,7 @@ const EditUserPage = () => {
         fetchUser();
     }, [apostadorId, status, reset]);
 
+    // Handle Form Submission
     const onSubmit = async (data: UpdateUserInput) => {
         try {
             const response = await fetch(`/api/users/${apostadorId}`, {
@@ -142,14 +143,14 @@ const EditUserPage = () => {
 
             if (response.ok) {
                 setUserData(responseData);
-                alert("Perfil atualizado com sucesso!");
+                toast.success("Perfil atualizado com sucesso!");
                 router.push(`/apostadores/${apostadorId}/profile`);
             } else {
-                alert(`Erro: ${responseData.error}`);
+                toast.error(`Erro: ${responseData.error}`);
             }
         } catch (err) {
             console.error("Error updating user:", err);
-            alert("Erro ao atualizar perfil.");
+            toast.error("Erro ao atualizar perfil.");
         }
     };
 
@@ -170,21 +171,21 @@ const EditUserPage = () => {
             });
 
             if (response.ok) {
-                alert("Apostador excluído com sucesso!");
+                toast.success("Apostador excluído com sucesso!");
                 router.push("/apostadores");
             } else {
                 const data = await response.json();
-                alert(`Erro: ${data.error}`);
+                toast.error(`Erro: ${data.error}`);
             }
         } catch (err) {
             console.error("Error deleting user:", err);
-            alert("Erro ao excluir apostador.");
+            toast.error("Erro ao excluir apostador.");
         } finally {
             setIsDeleting(false);
         }
     };
 
-    // Handle Avatar Upload (Optional)
+    // Handle Avatar Upload
     const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -210,13 +211,13 @@ const EditUserPage = () => {
                           }
                         : prev
                 );
-                alert("Avatar atualizado com sucesso!");
+                toast.success("Avatar atualizado com sucesso!");
             } else {
-                alert(`Erro: ${data.error}`);
+                toast.error(`Erro: ${data.error}`);
             }
         } catch (err) {
             console.error("Error uploading avatar:", err);
-            alert("Erro ao fazer upload do avatar.");
+            toast.error("Erro ao fazer upload do avatar.");
         }
     };
 
@@ -225,9 +226,12 @@ const EditUserPage = () => {
         return (
             <>
                 <PageHeader title="Editar Apostador" subpage linkTo={`/apostadores`} />
-                <main className="main">
-                    <p>Carregando...</p>
+                <main className={styles.main}>
+                    <div className={styles.container}>
+                        <p>Carregando...</p>
+                    </div>
                 </main>
+                <ToastContainer />
             </>
         );
     }
@@ -237,9 +241,12 @@ const EditUserPage = () => {
         return (
             <>
                 <PageHeader title="Editar Apostador" subpage linkTo={`/apostadores`} />
-                <main className="main">
-                    <p>Você precisa estar logado para ver esta página.</p>
+                <main className={styles.main}>
+                    <div className={styles.container}>
+                        <p>Você precisa estar logado para ver esta página.</p>
+                    </div>
                 </main>
+                <ToastContainer />
             </>
         );
     }
@@ -249,9 +256,12 @@ const EditUserPage = () => {
         return (
             <>
                 <PageHeader title="Editar Apostador" subpage linkTo={`/apostadores`} />
-                <main className="main">
-                    <p>Erro: {error}</p>
+                <main className={styles.main}>
+                    <div className={styles.container}>
+                        <p>Erro: {error}</p>
+                    </div>
                 </main>
+                <ToastContainer />
             </>
         );
     }
@@ -261,9 +271,12 @@ const EditUserPage = () => {
         return (
             <>
                 <PageHeader title="Editar Apostador" subpage linkTo={`/apostadores`} />
-                <main className="main">
-                    <p>Apostador não encontrado.</p>
+                <main className={styles.main}>
+                    <div className={styles.container}>
+                        <p>Apostador não encontrado.</p>
+                    </div>
                 </main>
+                <ToastContainer />
             </>
         );
     }
@@ -271,123 +284,139 @@ const EditUserPage = () => {
     return (
         <>
             <PageHeader title={`Editar: ${userData.username}`} subpage linkTo={`/apostadores`} />
-            <main className="main p-6">
-                <div className="max-w-4xl mx-auto bg-white shadow-md rounded px-8 py-6">
-                    <h2 className="text-2xl font-semibold mb-4">Informações do Apostador</h2>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <main className={styles.main}>
+                <div className={styles.container}>
+                    <h2 className={styles.title}>Editar Informações do Apostador</h2>
+                    <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+                        {/* Avatar Upload */}
+                        <div className={styles.avatarSection}>
+                            {userData.image ? (
+                                <img src={userData.image} alt="Avatar" className={styles.avatar} />
+                            ) : (
+                                <FaUserEdit className={styles.placeholderAvatar} />
+                            )}
+                            <div className={styles.uploadButtonContainer}>
+                                <label htmlFor="image" className={styles.uploadLabel}>
+                                    <FaUpload />
+                                    Alterar Avatar
+                                </label>
+                                <input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleAvatarUpload}
+                                    className={styles.uploadInput}
+                                />
+                            </div>
+                        </div>
+
                         {/* Username */}
-                        <div>
-                            <label htmlFor="username" className="block text-gray-700">
-                                Username<span className="text-red-500">*</span>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="username" className={styles.label}>
+                                Username<span className={styles.required}>*</span>
                             </label>
                             <input
                                 id="username"
                                 type="text"
                                 {...register("username")}
-                                className={`mt-1 block w-full border ${
-                                    errors.username ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${
+                                    errors.username ? styles.inputError : ""
+                                }`}
                             />
                             {errors.username && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.username.message}
-                                </p>
+                                <p className={styles.errorMessage}>{errors.username.message}</p>
                             )}
                         </div>
 
                         {/* Name */}
-                        <div>
-                            <label htmlFor="name" className="block text-gray-700">
+                        <div className={styles.formGroup}>
+                            <label htmlFor="name" className={styles.label}>
                                 Nome
                             </label>
                             <input
                                 id="name"
                                 type="text"
                                 {...register("name")}
-                                className={`mt-1 block w-full border ${
-                                    errors.name ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${
+                                    errors.name ? styles.inputError : ""
+                                }`}
                             />
                             {errors.name && (
-                                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                                <p className={styles.errorMessage}>{errors.name.message}</p>
                             )}
                         </div>
 
                         {/* Email */}
-                        <div>
-                            <label htmlFor="email" className="block text-gray-700">
+                        <div className={styles.formGroup}>
+                            <label htmlFor="email" className={styles.label}>
                                 Email
                             </label>
                             <input
                                 id="email"
                                 type="email"
                                 {...register("email")}
-                                className={`mt-1 block w-full border ${
-                                    errors.email ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${
+                                    errors.email ? styles.inputError : ""
+                                }`}
                             />
                             {errors.email && (
-                                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                                <p className={styles.errorMessage}>{errors.email.message}</p>
                             )}
                         </div>
 
                         {/* Phone */}
-                        <div>
-                            <label htmlFor="phone" className="block text-gray-700">
-                                Telefone<span className="text-red-500">*</span>
+                        <div className={styles.formGroup}>
+                            <label htmlFor="phone" className={styles.label}>
+                                Telefone<span className={styles.required}>*</span>
                             </label>
                             <input
                                 id="phone"
                                 type="tel"
                                 {...register("phone")}
-                                className={`mt-1 block w-full border ${
-                                    errors.phone ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${
+                                    errors.phone ? styles.inputError : ""
+                                }`}
                             />
                             {errors.phone && (
-                                <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                                <p className={styles.errorMessage}>{errors.phone.message}</p>
                             )}
                         </div>
 
                         {/* PIX */}
-                        <div>
-                            <label htmlFor="pix" className="block text-gray-700">
+                        <div className={styles.formGroup}>
+                            <label htmlFor="pix" className={styles.label}>
                                 PIX
                             </label>
                             <input
                                 id="pix"
                                 type="text"
                                 {...register("pix")}
-                                className={`mt-1 block w-full border ${
-                                    errors.pix ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${errors.pix ? styles.inputError : ""}`}
                             />
                             {errors.pix && (
-                                <p className="text-red-500 text-sm mt-1">{errors.pix.message}</p>
+                                <p className={styles.errorMessage}>{errors.pix.message}</p>
                             )}
                         </div>
 
                         {/* Role (Admin Only) */}
                         {session?.user.role === "admin" && (
-                            <div>
-                                <label htmlFor="role" className="block text-gray-700">
-                                    Função<span className="text-red-500">*</span>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="role" className={styles.label}>
+                                    Função<span className={styles.required}>*</span>
                                 </label>
                                 <select
                                     id="role"
                                     {...register("role")}
-                                    className={`mt-1 block w-full border ${
-                                        errors.role ? "border-red-500" : "border-gray-300"
-                                    } bg-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                    className={`${styles.select} ${
+                                        errors.role ? styles.selectError : ""
+                                    }`}
                                 >
                                     <option value="usuario">Usuário</option>
                                     <option value="vendedor">Vendedor</option>
-                                    <option value="admin">Admin</option>
+                                    {/* <option value="admin">Admin</option> */}
                                 </select>
                                 {errors.role && (
-                                    <p className="text-red-500 text-sm mt-1">
-                                        {errors.role.message}
-                                    </p>
+                                    <p className={styles.errorMessage}>{errors.role.message}</p>
                                 )}
                             </div>
                         )}
@@ -395,21 +424,21 @@ const EditUserPage = () => {
                         {/* Valor Comissão (Vendedor Only) */}
                         {((session?.user.role === "admin" && userData.role === "vendedor") ||
                             userData.role === "vendedor") && (
-                            <div>
-                                <label htmlFor="valor_comissao" className="block text-gray-700">
-                                    Comissão (%)<span className="text-red-500">*</span>
+                            <div className={styles.formGroup}>
+                                <label htmlFor="valor_comissao" className={styles.label}>
+                                    Comissão (%)<span className={styles.required}>*</span>
                                 </label>
                                 <input
                                     id="valor_comissao"
                                     type="number"
                                     step="0.01"
                                     {...register("valor_comissao", { valueAsNumber: true })}
-                                    className={`mt-1 block w-full border ${
-                                        errors.valor_comissao ? "border-red-500" : "border-gray-300"
-                                    } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                    className={`${styles.input} ${
+                                        errors.valor_comissao ? styles.inputError : ""
+                                    }`}
                                 />
                                 {errors.valor_comissao && (
-                                    <p className="text-red-500 text-sm mt-1">
+                                    <p className={styles.errorMessage}>
                                         {errors.valor_comissao.message}
                                     </p>
                                 )}
@@ -417,86 +446,69 @@ const EditUserPage = () => {
                         )}
 
                         {/* Banca Name (Optional) */}
-                        <div>
-                            <label htmlFor="bancaName" className="block text-gray-700">
+                        <div className={styles.formGroup}>
+                            <label htmlFor="bancaName" className={styles.label}>
                                 Nome da Banca
                             </label>
                             <input
                                 id="bancaName"
                                 type="text"
                                 {...register("bancaName")}
-                                className={`mt-1 block w-full border ${
-                                    errors.bancaName ? "border-red-500" : "border-gray-300"
-                                } rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500`}
+                                className={`${styles.input} ${
+                                    errors.bancaName ? styles.inputError : ""
+                                }`}
                             />
                             {errors.bancaName && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {errors.bancaName.message}
-                                </p>
+                                <p className={styles.errorMessage}>{errors.bancaName.message}</p>
                             )}
                         </div>
 
-                        {/* Profile Image Upload */}
-                        <div>
-                            <label htmlFor="image" className="block text-gray-700">
-                                Avatar
+                        {/* Password (Optional) */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="password" className={styles.label}>
+                                Senha
                             </label>
-                            <div className="flex items-center mt-1">
-                                {userData.image ? (
-                                    <img
-                                        src={userData.image}
-                                        alt="Avatar"
-                                        className="w-16 h-16 rounded-full mr-4 object-cover"
-                                    />
-                                ) : (
-                                    <FaUserEdit className="w-16 h-16 text-gray-400 mr-4" />
-                                )}
-                                <input
-                                    id="image"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleAvatarUpload}
-                                    className="hidden"
-                                />
-                                <label
-                                    htmlFor="image"
-                                    className="flex items-center px-3 py-2 bg-indigo-600 text-white rounded-md cursor-pointer hover:bg-indigo-700 transition-colors"
-                                >
-                                    <FaUpload className="mr-2" />
-                                    Upload Avatar
-                                </label>
-                            </div>
+                            <input
+                                id="password"
+                                type="password"
+                                {...register("password")}
+                                placeholder="Deixe em branco para não alterar"
+                                className={`${styles.input} ${
+                                    errors.password ? styles.inputError : ""
+                                }`}
+                            />
+                            {errors.password && (
+                                <p className={styles.errorMessage}>{errors.password.message}</p>
+                            )}
                         </div>
 
                         {/* Submit Button */}
-                        <div className="flex justify-end">
-                            <SimpleButton
-                                btnTitle={isSubmitting ? "Atualizando..." : "Salvar Alterações"}
+                        <div className={styles.formGroup}>
+                            <button
                                 type="submit"
-                                isSelected={false}
                                 disabled={isSubmitting}
-                                className="bg-indigo-600 text-white hover:bg-indigo-700"
-                                func={() => {}}
-                            />
+                                className={`${styles.submitButton} ${
+                                    isSubmitting ? styles.disabledButton : ""
+                                }`}
+                            >
+                                {isSubmitting ? "Atualizando..." : "Salvar Alterações"}
+                            </button>
                         </div>
                     </form>
 
                     {/* Delete Button */}
-                    <div className="mt-6 flex justify-end">
-                        <SimpleButton
-                            btnTitle={isDeleting ? "Excluindo..." : "Excluir Apostador"}
-                            type="button"
-                            func={handleDelete}
-                            isSelected={false}
-                            danger // Assuming 'danger' prop applies red styling
+                    <div className={styles.deleteSection}>
+                        <button
+                            className={styles.deleteButton}
+                            onClick={handleDelete}
                             disabled={isDeleting}
-                        />
+                        >
+                            {isDeleting ? "Excluindo..." : "Excluir Apostador"}
+                        </button>
                     </div>
-
-                    {/* Optional: Password Update Modal */}
-                    {/* You can implement a separate modal for password updates if desired */}
                 </div>
             </main>
+            <ToastContainer />
         </>
     );
 };

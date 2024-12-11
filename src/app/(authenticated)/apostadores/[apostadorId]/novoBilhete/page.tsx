@@ -1,3 +1,5 @@
+// src/app/(authenticated)/apostadores/[apostadorId]/profile/edit/novoBilhete/page.tsx
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -35,6 +37,7 @@ interface Wallet {
 
 interface Apostador {
     id: string;
+    name: string;
     username: string;
     phone: string;
     pix: string;
@@ -51,9 +54,8 @@ const NovoBilhete = () => {
     const { apostadorId } = params;
     const user = useUserStore((state: any) => state.user);
 
-    // Now the top-level tab is the Loteria (Caixa, Sabedoria, Personalizado)
-    // and the chosen button inside is the Modalidade.
-    const [selectedLoteria, setSelectedLoteria] = useState<string>("Caixa"); // Default top-level (previously modalidade)
+    // State Variables
+    const [selectedLoteria, setSelectedLoteria] = useState<string>("Caixa");
     const [selectedModalidade, setSelectedModalidade] = useState<string>("");
 
     const [apostador, setApostador] = useState<Apostador | null>(null);
@@ -75,9 +77,9 @@ const NovoBilhete = () => {
 
     const [maxTickets, setMaxTickets] = useState<number>(0);
 
+    // Removed apostadorName from formData
     const [formData, setFormData] = useState<{
         consultantName: string;
-        apostadorName: string;
         lote: string;
         ticketNumber: number;
         acertos: number;
@@ -89,7 +91,6 @@ const NovoBilhete = () => {
         valorBilhete: number;
     }>({
         consultantName: "Consultor Desconhecido",
-        apostadorName: "Apostador Desconhecido",
         lote: "Lote Desconhecido",
         ticketNumber: 0,
         acertos: 0,
@@ -110,8 +111,7 @@ const NovoBilhete = () => {
             (generatedGames && generatedGames.length > 0) ||
             (selectedNumbersArr && selectedNumbersArr.length > 0));
 
-    // Updated handleModalidadeContent: now receives (settingsObj, modalidadeName, loteriaName)
-    // because top-level is Loteria, inside is Modalidade.
+    // Handle Modalidade Content
     const handleModalidadeContent = (
         settingsObj: IModalidade,
         modalidadeName: string,
@@ -122,6 +122,7 @@ const NovoBilhete = () => {
         setSelectedModalidade(modalidadeName);
     };
 
+    // Export as Image Functions
     const exportAsImage = async (format = "png", saveToClipboard = false) => {
         if (cardRef.current === null) return;
         try {
@@ -253,10 +254,7 @@ const NovoBilhete = () => {
             alert("Por favor, insira o nome do consultor.");
             return false;
         }
-        if (!formData.apostadorName.trim()) {
-            alert("Por favor, insira o nome do apostador.");
-            return false;
-        }
+        // Removed apostadorName validation as it's now automatic
         if (isNaN(formData.valorBilhete) || formData.valorBilhete <= 0) {
             alert("Por favor, insira um valor válido para o bilhete.");
             return false;
@@ -300,20 +298,7 @@ const NovoBilhete = () => {
                 return;
             }
 
-            if (!formData.consultantName.trim()) {
-                alert("Por favor, insira o nome do consultor.");
-                return;
-            }
-
-            if (!formData.apostadorName.trim()) {
-                alert("Por favor, insira o nome do apostador.");
-                return;
-            }
-
-            if (!formData.valorBilhete || formData.valorBilhete <= 0) {
-                alert("Por favor, insira um valor válido para o bilhete.");
-                return;
-            }
+            // Removed apostadorName validation
 
             const resultDate = formData.resultDate || new Date();
             const totalAmount = formData.valorBilhete * games.length;
@@ -343,7 +328,8 @@ const NovoBilhete = () => {
                     acertos: Number(formData.acertos) || 0,
                     premio: Number(formData.prize) || 0,
                     consultor: formData.consultantName || "Consultor Desconhecido",
-                    apostador: formData.apostadorName || "Apostador Desconhecido",
+                    // Use apostador.username instead of formData.apostadorName
+                    apostador: apostador?.name || apostador?.username,
                     quantidadeDeDezenas: Number(quantidadeDeDezenas) || 0,
                     resultado: resultDate.toISOString(),
                     data: formData.currentDate.toISOString(),
@@ -415,24 +401,7 @@ const NovoBilhete = () => {
     const addBilheteCompToRender = (button: string) => {
         const renderExportButtons = () => (
             <div className={styles.buttonRow}>
-                <SimpleButton
-                    isSelected={addBilheteSelectedButton === "importar"}
-                    btnTitle="Importar"
-                    func={() => handleSelectedBilhete("importar")}
-                    className={addBilheteSelectedButton === "importar" ? styles.selectedButton : ""}
-                />
-                <SimpleButton
-                    isSelected={addBilheteSelectedButton === "manual"}
-                    btnTitle="Adicionar Manualmente"
-                    func={() => handleSelectedBilhete("manual")}
-                    className={addBilheteSelectedButton === "manual" ? styles.selectedButton : ""}
-                />
-                <SimpleButton
-                    isSelected={addBilheteSelectedButton === "random"}
-                    btnTitle="Aleatório"
-                    func={() => handleSelectedBilhete("random")}
-                    className={addBilheteSelectedButton === "random" ? styles.selectedButton : ""}
-                />
+                <SimpleButton btnTitle="Exportar Pdf" func={handleExportPDF} isSelected />
             </div>
         );
 
@@ -458,11 +427,7 @@ const NovoBilhete = () => {
                     </section>
                     {importedNumbersArr.length > 0 && (
                         <section className={styles.inputRow}>
-                            <SimpleButton
-                                btnTitle="Exportar Pdf"
-                                func={handleExportPDF}
-                                isSelected
-                            />
+                            {renderExportButtons()}
                             <Title
                                 h={3}
                             >{`Total de jogos importados: ${importedNumbersArr.length}`}</Title>
@@ -484,7 +449,7 @@ const NovoBilhete = () => {
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
-                                                apostador={formData.apostadorName}
+                                                apostador={apostador?.name || apostador!.username}
                                                 quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={formData.resultDate}
                                                 data={formData.currentDate}
@@ -522,11 +487,7 @@ const NovoBilhete = () => {
                     />
                     {generatedGames.length > 0 && (
                         <div>
-                            <SimpleButton
-                                btnTitle="Exportar Pdf"
-                                func={handleExportPDF}
-                                isSelected
-                            />
+                            {renderExportButtons()}
                             <h3>Jogos Gerados:</h3>
                             {generatedGamesDisplay.map((item, index) => (
                                 <article key={index}>
@@ -545,7 +506,7 @@ const NovoBilhete = () => {
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
-                                                apostador={formData.apostadorName}
+                                                apostador={apostador?.name || apostador!.username}
                                                 quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={formData.resultDate}
                                                 data={formData.currentDate}
@@ -607,11 +568,7 @@ const NovoBilhete = () => {
                     </div>
                     {generatedGames.length > 0 && (
                         <div>
-                            <SimpleButton
-                                btnTitle="Exportar Pdf"
-                                func={handleExportPDF}
-                                isSelected
-                            />
+                            {renderExportButtons()}
                             <h3>Jogos Gerados:</h3>
                             {generatedGamesDisplay.map((item, index) => (
                                 <article key={index}>
@@ -630,7 +587,7 @@ const NovoBilhete = () => {
                                                 numbersArr={[...item]}
                                                 acertos={formData.acertos}
                                                 premio={formData.prize}
-                                                apostador={formData.apostadorName}
+                                                apostador={apostador?.name || apostador!.username}
                                                 quantidadeDezenas={quantidadeDeDezenas}
                                                 resultado={formData.resultDate}
                                                 data={formData.currentDate}
@@ -783,21 +740,7 @@ const NovoBilhete = () => {
                                             placeholder="Consultor"
                                         />
                                     </div>
-                                    <div className={styles.inputGroup}>
-                                        <label htmlFor="apostadorName">Nome do Apostador:</label>
-                                        <input
-                                            type="text"
-                                            id="apostadorName"
-                                            value={formData.apostadorName}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    apostadorName: e.target.value,
-                                                })
-                                            }
-                                            placeholder="Apostador"
-                                        />
-                                    </div>
+                                    {/* Removed Apostador Name Input Field */}
                                 </div>
                                 <div className={styles.inputsRow}>
                                     <div className={styles.inputGroup}>

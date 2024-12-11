@@ -24,12 +24,13 @@ export const createUserSchema = z.object({
 
 export const updateUserSchema = z.object({
     username: z.string(),
-    password: z.string(),
+    name: z.string().optional(),
+    email: z.string().email().optional(),
     phone: z.string(),
     pix: z.string().optional(),
     role: z.enum(["admin", "vendedor", "usuario"]).optional(),
     valor_comissao: z.number().optional(),
-    name: z.string().optional(),
-    email: z.string().email().optional(),
+    password: z.string(),
     image: z.string().url().optional(),
+    bancaName: z.string().optional().nullable(),
 });

@@ -1,0 +1,164 @@
+/* src/app/(authenticated)/apostadores/[apostadorId]/profile/edit/editar.module.scss */
+
+.main {
+    padding: 2rem;
+    background-color: #f9fafb; /* Light gray background */
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ffffff; /* White background */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1f2937; /* Dark gray */
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4b5563; /* Gray */
+}
+
+.required {
+    color: #dc2626; /* Red */
+    margin-left: 0.25rem;
+}
+
+.input {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db; /* Gray border */
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #374151; /* Darker gray */
+    transition: border-color 0.2s;
+}
+
+.inputError {
+    border-color: #dc2626; /* Red border */
+}
+
+.select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db; /* Gray border */
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #374151; /* Darker gray */
+    background-color: #ffffff; /* White background */
+    transition: border-color 0.2s;
+}
+
+.errorMessage {
+    color: #dc2626; /* Red */
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.submitButton {
+    padding: 0.75rem 1rem;
+    background-color: #4f46e5; /* Indigo-600 */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+    background-color: #4338ca; /* Indigo-700 */
+}
+
+.deleteSection {
+    margin-top: 2rem;
+}
+
+.deleteButton {
+    padding: 0.75rem 1rem;
+    background-color: #dc2626; /* Red-600 */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+    background-color: #b91c1c; /* Red-700 */
+}
+
+.avatarSection {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #d1d5db;
+}
+
+.placeholderAvatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #d1d5db; /* Gray background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280; /* Gray */
+    font-size: 2rem;
+}
+
+.uploadButtonContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.uploadLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #4f46e5; /* Indigo-600 */
+    color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.uploadLabel:hover {
+    background-color: #4338ca; /* Indigo-700 */
+}
+
+.uploadInput {
+    display: none;
+}

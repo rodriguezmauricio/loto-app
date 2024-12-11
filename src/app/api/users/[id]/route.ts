@@ -1,4 +1,4 @@
-// src/app/api/users/[Id]/route.ts
+// src/app/api/users/[id]/route.ts
 
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
@@ -14,7 +14,7 @@ const isAdmin = (role: Role): boolean => role === "admin";
 const isVendedor = (role: Role): boolean => role === "vendedor";
 
 /**
- * Handles GET, PUT, DELETE requests for /api/users/[userId]
+ * Handles GET, PUT, DELETE requests for /api/users/[id]
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
@@ -47,6 +47,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
                 pix: true,
                 role: true,
                 valor_comissao: true,
+                bancaName: true,
                 created_on: true,
                 updated_on: true,
                 wallet: {
@@ -76,7 +77,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { userId: string } }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
     try {
         // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
@@ -91,7 +92,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
 
         // Fetch the user by ID
         const user = await prisma.user.findUnique({
-            where: { id: params.userId },
+            where: { id: params.id },
         });
 
         if (!user) {
@@ -143,9 +144,17 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
             updateData.password_hash = hashedPassword;
         }
 
+        // Check if username is being updated to an existing one
+        if (username !== user.username) {
+            const existingUser = await prisma.user.findUnique({ where: { username } });
+            if (existingUser) {
+                return NextResponse.json({ error: "Username already exists." }, { status: 409 });
+            }
+        }
+
         // Update the user
         const updatedUser = await prisma.user.update({
-            where: { id: params.userId },
+            where: { id: params.id },
             data: updateData,
             select: {
                 id: true,
@@ -157,6 +166,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
                 pix: true,
                 role: true,
                 valor_comissao: true,
+                bancaName: true,
                 created_on: true,
                 updated_on: true,
                 wallet: {
@@ -188,7 +198,7 @@ export async function PUT(request: Request, { params }: { params: { userId: stri
     }
 }
 
-export async function DELETE(request: Request, { params }: { params: { userId: string } }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
     try {
         // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
@@ -208,7 +218,7 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
 
         // Fetch the user by ID
         const user = await prisma.user.findUnique({
-            where: { id: params.userId },
+            where: { id: params.id },
         });
 
         if (!user) {
@@ -217,7 +227,7 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
 
         // Delete the user
         const deletedUser = await prisma.user.delete({
-            where: { id: params.userId },
+            where: { id: params.id },
             select: {
                 id: true,
                 username: true,
@@ -228,6 +238,7 @@ export async function DELETE(request: Request, { params }: { params: { userId: s
                 pix: true,
                 role: true,
                 valor_comissao: true,
+                bancaName: true,
                 created_on: true,
                 updated_on: true,
             },

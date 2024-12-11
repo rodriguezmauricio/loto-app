@@ -400,7 +400,7 @@ const NovoBilhete = () => {
                     console.log("Updated Apostador data:", updatedApostador);
                 }
 
-                router.push(`/apostadores/${apostadorId}`);
+                // router.push(`/apostadores/${apostadorId}`);
             } else {
                 const errorData = await response.json();
                 console.error("Failed to create apostas:", errorData);

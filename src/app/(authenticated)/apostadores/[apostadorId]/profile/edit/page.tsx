@@ -2,15 +2,16 @@
 
 "use client";
 
-import { useRouter } from "next/router";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import BilheteTable from "components/bilheteTable/BilheteTable";
 import { User, Bilhete } from "../../../../../../types/roles"; // Ensure you have appropriate TypeScript types
 import styles from "./editar.module.scss";
 
 const ApostadorDetailPage = () => {
-    const router = useRouter();
-    const { apostadorId } = router.query;
+    const router = useRouter(); // For navigation purposes
+    const params = useParams(); // To access route parameters
+    const { apostadorId } = params; // Correct usage
 
     const [apostador, setApostador] = useState<User | null>(null);
     const [bilhetes, setBilhetes] = useState<Bilhete[]>([]);

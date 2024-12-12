@@ -46,6 +46,7 @@ const CadastrarResultadosPage = () => {
     const [loterias, setLoterias] = useState<Loteria[]>([]);
     const [selectedLoteria, setSelectedLoteria] = useState<string>("");
     const [winningNumbers, setWinningNumbers] = useState<string>("");
+    const [dataResultado, setDataResultado] = useState<string>("");
     const [winners, setWinners] = useState<WinnerBet[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -217,6 +218,18 @@ const CadastrarResultadosPage = () => {
                                     </option>
                                 ))}
                             </select>
+                        </div>
+
+                        {/* Data do Resultado Input */}
+                        <div className={styles.formGroup}>
+                            <label htmlFor="dataResultado">Data do Resultado:</label>
+                            <input
+                                type="date"
+                                id="dataResultado"
+                                value={dataResultado}
+                                onChange={(e) => setDataResultado(e.target.value)}
+                                required
+                            />
                         </div>
 
                         {/* Winning Numbers Input */}

@@ -1,5 +1,3 @@
-// src/types/roles.ts
-
 export type Role = "admin" | "vendedor" | "usuario";
 
 export interface Transaction {
@@ -15,11 +13,10 @@ export interface Wallet {
     transactions: Transaction[];
 }
 
-// Optionally, define a User interface
 export interface User {
     id: string;
     username: string;
-    name: string;
+    name: string | null; // Changed to allow null
     email: string;
     phone: string;
     pix: string;
@@ -29,7 +26,10 @@ export interface User {
     created_on: string | number | Date;
     updated_on: string; // ISO date string
     wallet: Wallet | null;
-    // Add other relevant fields
+    valor_comissao?: number;
+    image?: string;
+    emailVerified?: Date;
+    bancaName?: string;
 }
 
 export interface Bilhete {
@@ -37,14 +37,13 @@ export interface Bilhete {
     numbers: string;
     created_at: Date;
     apostadorId: string;
-    // Other fields as necessary
 }
 
 export interface Bet {
     id: string;
     numbers: number[];
     modalidade: string;
-    loteria: string;
+    loteria: string | null; // Allow null
     userId: string;
     premio: number;
     createdAt: Date;

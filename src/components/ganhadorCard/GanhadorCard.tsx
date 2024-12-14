@@ -1,59 +1,60 @@
-import React from "react";
-import styles from "./GanhadorCard.module.scss";
-import NumbersSorteio from "components/numbersSorteio/NumbersSorteio";
+// ganhadorCard/GanhadorCard.tsx
 
-interface IGanhadorCard {
-    username: string;
+import React from "react";
+import styles from "./ganhadorCard.module.scss";
+
+interface WinnerBet {
+    id: string;
     numbers: number[];
-    prize: string;
     modalidade: string;
+    loteria: string;
+    userId: string;
+    userName: string;
     sorteioDate: string;
-    betPlacedDate: string; // New prop
+    premio: number;
+    betPlacedDate: string;
 }
 
-const GanhadorCard = ({
-    username,
-    numbers,
-    prize,
-    modalidade,
-    sorteioDate,
-    betPlacedDate,
-}: IGanhadorCard) => {
-    // Format the betPlacedDate to a more readable format, e.g., DD/MM/YYYY HH:MM
-    let formattedBetDate: string;
-    const dateObj = new Date(betPlacedDate);
-    if (!isNaN(dateObj.getTime())) {
-        formattedBetDate = dateObj.toLocaleString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        });
-    } else {
-        formattedBetDate = "Data desconhecida";
-    }
+interface GanhadorCardProps {
+    winner: WinnerBet;
+}
 
+const GanhadorCard: React.FC<GanhadorCardProps> = ({ winner }) => {
     return (
-        <article className={styles.container}>
-            <div className={styles.header}>
-                <div className={styles.user}>Usuário: {username}</div>
-                <div className={styles.prize}>Prêmio: R${prize}</div>
+        <div className={styles.card}>
+            <div className={styles.cardHeader}>
+                <h4 className={styles.userName}>{winner.userName}</h4>
+                <span className={styles.premio}>Prêmio: R$ {winner.premio.toFixed(2)}</span>
             </div>
-            <div className={styles.modalidade}>Modalidade: {modalidade}</div>
-            <div className={styles.dateInfo}>Data do Sorteio: {sorteioDate}</div>
-            <div className={styles.betInfo}>
-                <div className={styles.betPlaced}>Aposta realizada em: {formattedBetDate}</div>
-            </div>
-            <div className={styles.numbersContainer}>
-                <div className={styles.numberTitle}>Números:</div>
+            <div className={styles.cardBody}>
+                <div className={styles.detail}>
+                    <span className={styles.label}>Modalidade:</span>
+                    <span className={styles.value}>{winner.modalidade}</span>
+                </div>
+                <div className={styles.detail}>
+                    <span className={styles.label}>Loteria:</span>
+                    <span className={styles.value}>{winner.loteria}</span>
+                </div>
                 <div className={styles.numbers}>
-                    {numbers.map((num) => (
-                        <NumbersSorteio big={false} numero={num} key={num} />
-                    ))}
+                    <span className={styles.label}>Números Sorteados:</span>
+                    <div className={styles.numbersList}>
+                        {winner.numbers.map((num) => (
+                            <span key={num} className={styles.number}>
+                                {num}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </div>
-        </article>
+            <div className={styles.cardFooter}>
+                <span className={styles.sorteioDate}>
+                    Sorteio: {new Date(winner.sorteioDate).toLocaleDateString("pt-BR")}
+                </span>
+                <span className={styles.betPlacedDate}>
+                    Apostado em: {new Date(winner.betPlacedDate).toLocaleString("pt-BR")}
+                </span>
+            </div>
+        </div>
     );
 };
 

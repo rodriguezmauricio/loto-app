@@ -6,3 +6,5 @@
 */
 -- AlterTable
 ALTER TABLE "Result" ADD COLUMN     "createdBy" TEXT NOT NULL;
+ALTER TABLE "Result" ADD COLUMN IF NOT EXISTS "loteria" TEXT;
+ALTER TABLE "Bet" ADD COLUMN IF NOT EXISTS "loteria" TEXT;

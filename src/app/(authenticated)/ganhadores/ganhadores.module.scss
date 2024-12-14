@@ -1,155 +1,388 @@
+/* ganhadores.module.scss */
+
+/* Main Container */
 .main {
     display: flex;
-    flex: 1;
     flex-direction: column;
-    gap: 15px;
-    padding: 20px;
+    align-items: center;
+    padding: 2rem;
+    background-color: var(--color-dark-dark);
+    min-height: 100vh;
+    color: var(--color-light-light);
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.buttonsRow {
-    display: flex;
-    flex-direction: row;
-    gap: 30px;
-    margin-bottom: 15px;
-}
-
-/* Container for filters */
+/* Filter Row */
 .filterRow {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 1200px; /* Prevents filters from stretching too wide */
+    box-sizing: border-box;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+}
+
+/* Individual Filter Groups */
+.categoriesGroup,
+.modalidadesGroup,
+.searchFilters,
+.dateFilters {
+    background-color: var(--color-dark-mid);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    min-width: 250px; /* Ensures readability on smaller screens */
+    box-sizing: border-box;
+
+    @media (max-width: 767px) {
+        width: 100%; /* Full width on small screens */
+    }
+}
+
+/* Labels */
+.label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--color-light-light);
+}
+
+/* Category Buttons */
+.categoryButtons {
+    display: flex;
     flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.categoryButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--color-dark-light);
+    color: var(--color-light-light);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 1rem;
+
+    &:hover {
+        background-color: var(--accent-main);
+        color: var(--color-light-light);
+    }
+
+    &.selectedCategory {
+        background-color: var(--accent-main);
+        color: var(--color-light-light);
+    }
+
+    @media (max-width: 767px) {
+        flex: 1 1 calc(50% - 0.75rem); /* Two buttons per row on small screens */
+    }
+}
+
+/* Modalidades Options */
+.modalidadesOptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.modalidadeOption {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-dark-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem;
+
+    &:hover {
+        background-color: var(--accent-main);
+        color: var(--color-light-light);
+    }
+
+    &.selectedModalidade {
+        background-color: var(--accent-success);
+        color: var(--color-dark-dark);
+    }
+
+    .checkbox {
+        margin-right: 0.5rem;
+        width: 16px;
+        height: 16px;
+    }
+
+    span {
+        color: inherit;
+    }
+
+    @media (max-width: 767px) {
+        flex: 1 1 calc(50% - 0.5rem); /* Two options per row on small screens */
+    }
+}
+
+/* Search Filters */
+.searchFilters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 1.5rem;
+    }
+}
+
+.searchGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.searchInput {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-dark-light);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+    background-color: var(--color-dark-mid);
+    color: var(--color-light-light);
+
+    &::placeholder {
+        color: var(--color-light-dark);
+    }
+
+    &:focus {
+        border-color: var(--accent-main);
+        box-shadow: 0 0 0 2px rgba(var(--callout-rgb), 0.3);
+    }
+
+    @media (max-width: 767px) {
+        width: 100%;
+    }
+}
+
+/* Date Filters */
+.dateFilters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 1.5rem;
+    }
+}
+
+.dateGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.datePicker {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-dark-light);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+    background-color: var(--color-dark-mid);
+    color: var(--color-light-light);
+
+    &:focus {
+        border-color: var(--accent-main);
+        box-shadow: 0 0 0 2px rgba(var(--callout-rgb), 0.3);
+    }
+
+    @media (max-width: 767px) {
+        width: 100%;
+    }
+}
+
+/* Buttons Row */
+.buttonsRow {
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
     margin-bottom: 2rem;
-    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px; /* Consistent with filterRow */
 
-    .categoriesGroup {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        background: var(--color-dark-light);
-        padding: 1rem;
-        border-radius: 6px;
-
-        label {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #555555;
-        }
-
-        .categoryButtons {
-            display: flex;
-            gap: 0.5rem;
-        }
-    }
-
-    .modalidadesGroup {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        background: var(--color-dark-light);
-        padding: 1rem;
-        border-radius: 6px;
-
-        label {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #555555;
-        }
-
-        .modalidadesOptions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-
-            label {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                background: #eee;
-                border-radius: 4px;
-                padding: 0.3rem 0.6rem;
-                cursor: pointer;
-                transition: background 0.2s ease;
-                font-size: 0.9rem;
-
-                &:hover {
-                    background: #ddd;
-                }
-
-                &.selected {
-                    background: #00a67f;
-                    color: #fff;
-                }
-
-                &.todosOption {
-                    font-weight: bold;
-                }
-
-                input[type="checkbox"] {
-                    margin: 0;
-                }
-            }
-        }
-    }
-
-    select,
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    input[type="time"] {
-        padding: 0.5rem 1rem;
-        border: 1px solid #dddddd;
-        border-radius: 4px;
-        font-size: 1rem;
+    @media (min-width: 768px) {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 }
 
-/* Section for displaying winners */
+.fetchButtonGroup,
+.downloadButtonGroup {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+
+    @media (min-width: 768px) {
+        width: auto;
+    }
+}
+
+.fetchButton,
+.downloadButton {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    font-size: 1rem;
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    &.disabledButton {
+        background-color: var(--color-dark-light);
+        color: var(--color-light-dark);
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+}
+
+.fetchButton {
+    background-color: var(--accent-main);
+    color: var(--color-light-light);
+
+    &:hover {
+        background-color: var(--accent-purple);
+    }
+}
+
+.downloadButton {
+    background-color: var(--accent-success);
+    color: var(--color-dark-dark);
+
+    &:hover {
+        background-color: var(--accent-repeat);
+    }
+}
+
+/* Winners Section */
 .winnersSection {
-    margin-top: 2rem;
+    width: 100%;
+    max-width: 1200px; /* Consistent with filterRow */
+    box-sizing: border-box;
+}
 
-    .dateHeader {
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        color: #333;
-        font-weight: 700;
-    }
+/* Loading Indicator */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: var(--accent-main);
+}
 
-    .winnersList {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
+.spinner {
+    animation: spin 1s linear infinite;
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
     }
 }
 
-/* Pagination after the winners */
+.opacity25 {
+    opacity: 0.25;
+}
+
+.opacity75 {
+    opacity: 0.75;
+}
+
+/* Grid for Winner Cards */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+
+    @media (min-width: 600px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Date Section */
+.dateSection {
+    margin-top: 2rem;
+}
+
+.dateHeader {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-light-light);
+    margin-bottom: 1rem;
+}
+
+/* Pagination */
 .pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 1rem;
+    margin-top: 2rem;
+}
 
-    button {
-        background-color: #00a67f;
-        color: #fff;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+.paginationButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    font-size: 1rem;
 
-        &:hover {
-            background-color: #00956d;
-        }
+    background-color: var(--accent-blue);
+    color: var(--color-light-light);
 
-        &:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
+    &:hover {
+        background-color: var(--accent-purple);
     }
 
-    span {
-        font-weight: bold;
+    &.disabledPagination {
+        background-color: var(--color-dark-light);
+        color: var(--color-light-dark);
+        cursor: not-allowed;
+        opacity: 0.7;
     }
+
+    &.activePagination {
+        background-color: var(--accent-blue);
+        color: var(--color-light-light);
+    }
+}
+
+.paginationInfo {
+    font-weight: 600;
+    color: var(--color-light-light);
+}
+
+.noWinnersText {
+    text-align: center;
+    color: var(--color-light-dark);
+    font-size: 1rem;
 }

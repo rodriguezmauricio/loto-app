@@ -28,7 +28,6 @@ const postSchema = z.object({
     loteria: z.string().min(1),
     winningNumbers: z.string().min(1),
 });
-
 interface Winner {
     id: string;
     numbers: number[];

@@ -145,11 +145,11 @@ export default function GanhadoresPage() {
                         `Error fetching winners for ${modName}:`,
                         data.error || response.statusText
                     );
-                    toast.error(
-                        `Erro ao buscar ganhadores para ${modName}: ${
-                            data.error || "Erro desconhecido."
-                        }`
-                    );
+                    // toast.error(
+                    //     `Erro ao buscar ganhadores para ${modName}: ${
+                    //         data.error || "Erro desconhecido."
+                    //     }`
+                    // );
                     return [];
                 }
 

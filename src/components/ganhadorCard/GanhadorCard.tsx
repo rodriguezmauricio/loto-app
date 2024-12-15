@@ -1,7 +1,7 @@
 // ganhadorCard/GanhadorCard.tsx
 
 import React from "react";
-import styles from "./ganhadorCard.module.scss";
+import styles from "./GanhadorCard.module.scss";
 
 interface WinnerBet {
     id: string;

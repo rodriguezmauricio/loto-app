@@ -1,0 +1,28 @@
+/* Loading Indicator */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: var(--accent-main);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.opacity25 {
+    opacity: 0.25;
+}
+
+.opacity75 {
+    opacity: 0.75;
+}

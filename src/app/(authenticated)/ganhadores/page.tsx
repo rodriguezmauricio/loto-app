@@ -19,6 +19,7 @@ import {
 import GanhadorCard from "components/ganhadorCard/GanhadorCard";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import LoadingSpinner from "components/loadingSpinner/LoadingSpinner";
 
 interface WinnerBet {
     id: string;
@@ -430,29 +431,30 @@ export default function GanhadoresPage() {
                     {/* Winners Section */}
                     <div className={styles.winnersSection}>
                         {loading ? (
-                            <div className={styles.loading}>
-                                <svg
-                                    className={styles.spinner}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <circle
-                                        className={styles.opacity25}
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        strokeWidth="4"
-                                    ></circle>
-                                    <path
-                                        className={styles.opacity75}
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8v8H4z"
-                                    ></path>
-                                </svg>
-                                <span>Carregando ganhadores...</span>
-                            </div>
+                            // <div className={styles.loading}>
+                            //     <svg
+                            //         className={styles.spinner}
+                            //         xmlns="http://www.w3.org/2000/svg"
+                            //         fill="none"
+                            //         viewBox="0 0 24 24"
+                            //     >
+                            //         <circle
+                            //             className={styles.opacity25}
+                            //             cx="12"
+                            //             cy="12"
+                            //             r="10"
+                            //             stroke="currentColor"
+                            //             strokeWidth="4"
+                            //         ></circle>
+                            //         <path
+                            //             className={styles.opacity75}
+                            //             fill="currentColor"
+                            //             d="M4 12a8 8 0 018-8v8H4z"
+                            //         ></path>
+                            //     </svg>
+                            //     <span>Carregando ganhadores...</span>
+                            // </div>
+                            <LoadingSpinner />
                         ) : winners.length > 0 ? (
                             <>
                                 <div className={styles.grid}>

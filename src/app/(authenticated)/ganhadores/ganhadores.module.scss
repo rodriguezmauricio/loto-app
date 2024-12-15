@@ -33,29 +33,14 @@
 /* Individual Filter Groups */
 .categoriesGroup,
 .modalidadesGroup,
+.searchFilters,
 .dateFilters {
     background-color: var(--color-dark-mid);
     padding: 1.5rem;
     border-radius: var(--border-radius);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    flex: 1;
-    min-width: 250px; /* Ensures readability on smaller screens */
-    box-sizing: border-box;
-
-    @media (max-width: 767px) {
-        width: 100%; /* Full width on small screens */
-    }
-}
-
-.searchFilters {
-    background-color: var(--color-dark-mid);
-    padding: 1.5rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
     // flex: 1;
-    min-width: 250px; /* Ensures readability on smaller screens */
+    width: 100%; /* Ensures readability on smaller screens */
     box-sizing: border-box;
 
     @media (max-width: 767px) {
@@ -400,8 +385,4 @@
     text-align: center;
     color: var(--color-light-dark);
     font-size: 1rem;
-}
-
-.resetGit {
-    //
 }

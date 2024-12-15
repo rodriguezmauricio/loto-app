@@ -17,7 +17,7 @@ import {
     ModalidadePersonalizada,
 } from "../../../tempDb";
 import GanhadorCard from "components/ganhadorCard/GanhadorCard";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
 interface WinnerBet {
@@ -278,6 +278,66 @@ export default function GanhadoresPage() {
                             </div>
                         </div>
 
+                        {/* Modalidades Group */}
+                        {category && (
+                            <div className={styles.modalidadesGroup}>
+                                <label className={styles.label}>Modalidades:</label>
+                                <div className={styles.modalidadesOptions}>
+                                    {/* "Todos" Option */}
+                                    <label
+                                        className={`${styles.modalidadeOption} ${
+                                            selectedModalities.includes("Todos")
+                                                ? styles.selectedModalidade
+                                                : ""
+                                        }`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedModalities.includes("Todos")}
+                                            onChange={() =>
+                                                handleCheckboxChange(
+                                                    "Todos",
+                                                    selectedModalities,
+                                                    setSelectedModalities
+                                                )
+                                            }
+                                            className={styles.checkbox}
+                                        />
+                                        <span>Todos</span>
+                                    </label>
+                                    {/* Individual Modalidades */}
+                                    {modalities.map((mod) => (
+                                        <label
+                                            key={mod}
+                                            className={`${styles.modalidadeOption} ${
+                                                selectedModalities.includes(mod) &&
+                                                !selectedModalities.includes("Todos")
+                                                    ? styles.selectedModalidade
+                                                    : ""
+                                            }`}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                checked={
+                                                    selectedModalities.includes(mod) &&
+                                                    !selectedModalities.includes("Todos")
+                                                }
+                                                onChange={() =>
+                                                    handleCheckboxChange(
+                                                        mod,
+                                                        selectedModalities,
+                                                        setSelectedModalities
+                                                    )
+                                                }
+                                                className={styles.checkbox}
+                                            />
+                                            <span>{mod}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Search Filters */}
                         <div className={styles.searchFilters}>
                             {/* Search by User Name */}
@@ -335,66 +395,6 @@ export default function GanhadoresPage() {
                             </div>
                         </div>
                     </div>
-
-                    {/* Modalidades Group */}
-                    {category && (
-                        <div className={styles.modalidadesGroup}>
-                            <label className={styles.label}>Modalidades:</label>
-                            <div className={styles.modalidadesOptions}>
-                                {/* "Todos" Option */}
-                                <label
-                                    className={`${styles.modalidadeOption} ${
-                                        selectedModalities.includes("Todos")
-                                            ? styles.selectedModalidade
-                                            : ""
-                                    }`}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedModalities.includes("Todos")}
-                                        onChange={() =>
-                                            handleCheckboxChange(
-                                                "Todos",
-                                                selectedModalities,
-                                                setSelectedModalities
-                                            )
-                                        }
-                                        className={styles.checkbox}
-                                    />
-                                    <span>Todos</span>
-                                </label>
-                                {/* Individual Modalidades */}
-                                {modalities.map((mod) => (
-                                    <label
-                                        key={mod}
-                                        className={`${styles.modalidadeOption} ${
-                                            selectedModalities.includes(mod) &&
-                                            !selectedModalities.includes("Todos")
-                                                ? styles.selectedModalidade
-                                                : ""
-                                        }`}
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={
-                                                selectedModalities.includes(mod) &&
-                                                !selectedModalities.includes("Todos")
-                                            }
-                                            onChange={() =>
-                                                handleCheckboxChange(
-                                                    mod,
-                                                    selectedModalities,
-                                                    setSelectedModalities
-                                                )
-                                            }
-                                            className={styles.checkbox}
-                                        />
-                                        <span>{mod}</span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-                    )}
 
                     {/* Fetch and Download Buttons */}
                     <div className={styles.buttonsRow}>

@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../../lib/authOptions";
 import { Role } from "../../../types/roles";
 import { Prisma } from "@prisma/client"; // Import Prisma types
+import { parseISO } from "date-fns"; // for parsing YYYY-MM-DD string if needed
 
 // Using Prisma's generated types for Bet and including the user relation
 type BetWithUser = Prisma.BetGetPayload<{
@@ -27,6 +28,7 @@ const postSchema = z.object({
     modalidade: z.string().min(1),
     loteria: z.string().min(1),
     winningNumbers: z.string().min(1),
+    resultDate: z.string().min(1),
 });
 interface Winner {
     id: string;
@@ -41,7 +43,8 @@ interface Winner {
 }
 
 function formatWinners(bets: BetWithUser[], result: PrismaResult): Winner[] {
-    const sorteioDateStr = result.createdAt.toISOString().split("T")[0];
+    const sorteioDate = result.resultDate || result.createdAt;
+    const sorteioDateStr = sorteioDate.toISOString().split("T")[0];
 
     return bets.map((bet) => ({
         id: bet.id,
@@ -85,9 +88,9 @@ export async function GET(request: Request) {
         where: {
             modalidade,
             loteria,
-            ...(startDate || endDate ? { createdAt: dateFilters } : {}),
+            ...(startDate || endDate ? { resultDate: dateFilters } : {}),
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: { resultDate: "desc" },
     });
 
     if (!result) {
@@ -175,7 +178,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: errors }, { status: 400 });
     }
 
-    const { modalidade, loteria, winningNumbers } = parsedBody.data;
+    const { modalidade, loteria, winningNumbers, resultDate } = parsedBody.data;
     const numbersArray = winningNumbers
         .trim()
         .split(/\s+/)
@@ -197,6 +200,11 @@ export async function POST(request: Request) {
         );
     }
 
+    const parsedResultDate = parseISO(resultDate); // converts YYYY-MM-DD to Date
+    if (isNaN(parsedResultDate.getTime())) {
+        return NextResponse.json({ error: "Invalid resultDate." }, { status: 400 });
+    }
+
     const newResult = await prisma.result.create({
         data: {
             modalidade,
@@ -204,6 +212,7 @@ export async function POST(request: Request) {
             winningNumbers: numbersArray,
             createdBy: session.user.id,
             premio: 0,
+            resultDate: parsedResultDate,
         },
     });
 

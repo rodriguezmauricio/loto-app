@@ -134,6 +134,7 @@ const CadastrarResultadosPage = () => {
                     modalidade: selectedLoteria, // string
                     loteria: selectedModalidadeCategory, // string
                     winningNumbers: winningNumbers.trim(), // string
+                    resultDate: dataResultado,
                 }),
             });
 

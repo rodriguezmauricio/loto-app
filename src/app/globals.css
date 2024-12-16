@@ -91,12 +91,13 @@ main {
     display: flex;
     flex-direction: column;
     color: var(--color-light-light);
+    padding: 0px;
 }
 
 /* Main Element Styling */
 main {
     flex: 1;
-    padding: 20px;
+    padding: 0px;
     max-width: 1100px;
     color: var(--color-light-light);
     background-color: var(--color-dark-dark);

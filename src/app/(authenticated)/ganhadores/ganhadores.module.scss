@@ -280,6 +280,8 @@
     width: 100%;
     max-width: 1200px; /* Consistent with filterRow */
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Loading Indicator */
@@ -313,17 +315,19 @@
 
 /* Grid for Winner Cards */
 .grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    // display: grid;
+    // grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
 
-    @media (min-width: 600px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    // @media (min-width: 600px) {
+    //     grid-template-columns: repeat(2, 1fr);
+    // }
 
-    @media (min-width: 1024px) {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    // @media (min-width: 1024px) {
+    //     grid-template-columns: repeat(3, 1fr);
+    // }
 }
 
 /* Date Section */

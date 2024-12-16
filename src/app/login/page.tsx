@@ -8,6 +8,7 @@ import styles from "./login.module.scss"; // Make sure path is correct "./LoginP
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import logo from "../../../public/images/lotoplay_light_logo1.svg";
 import Image from "next/image";
+import { useDataStore } from "../../../store/useDataStore";
 
 function LoginPage() {
     const [username, setUsername] = useState("");
@@ -24,7 +25,20 @@ function LoginPage() {
         }
     }, [session, setUser]);
 
-    console.log("login User: ", user);
+    const setData = useDataStore((state) => state.setData);
+
+    useEffect(() => {
+        if (session?.user) {
+            fetch("/api/data")
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.error) {
+                        setData(data);
+                    }
+                })
+                .catch((err) => console.error("Error fetching data:", err));
+        }
+    }, [session, setData]);
 
     //HANDLERS:
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

@@ -1,5 +1,3 @@
-// src/app/api/users/[id]/route.ts
-
 import { NextResponse } from "next/server";
 import prisma from "../../../../../prisma/client";
 import { getServerSession } from "next-auth/next";
@@ -18,15 +16,11 @@ const isVendedor = (role: Role): boolean => role === "vendedor";
  */
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
-        // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
-        console.log("Session:", session);
-
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Extract user information from session
         const userRole = session.user?.role as Role;
         const currentUserId = session.user?.id as string;
 
@@ -51,11 +45,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
                 created_on: true,
                 updated_on: true,
                 wallet: {
-                    // Include wallet data
                     select: {
                         id: true,
                         balance: true,
-                        transactions: true, // Adjust based on your schema
+                        transactions: true,
                     },
                 },
             },
@@ -70,6 +63,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
+        // Return the user data
         return NextResponse.json(user, { status: 200 });
     } catch (error: any) {
         console.error("Error fetching user:", error);
@@ -79,22 +73,15 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     try {
-        // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
-
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Extract user information from session
         const userRole = session.user.role as Role;
         const userId = session.user.id as string;
 
-        // Fetch the user by ID
-        const user = await prisma.user.findUnique({
-            where: { id: params.id },
-        });
-
+        const user = await prisma.user.findUnique({ where: { id: params.id } });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
@@ -104,10 +91,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        // Parse and validate the request body
         const body = await request.json();
-
-        // Validate using Zod
         const parsed = updateUserSchema.safeParse(body);
         if (!parsed.success) {
             const errors = parsed.error.errors.map((err: any) => err.message).join(", ");
@@ -117,7 +101,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         const { username, phone, name, email, image, pix, valor_comissao, password, role } =
             parsed.data;
 
-        // Prepare update data
         const updateData: any = {
             username,
             phone,
@@ -134,7 +117,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         }
 
         // Include valor_comissao only if the role is vendedor
-        if (role === "vendedor" || user.role === "vendedor") {
+        if ((role === "vendedor" || user.role === "vendedor") && valor_comissao !== undefined) {
             updateData.valor_comissao = valor_comissao || 0;
         }
 
@@ -145,14 +128,13 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         }
 
         // Check if username is being updated to an existing one
-        if (username !== user.username) {
+        if (username && username !== user.username) {
             const existingUser = await prisma.user.findUnique({ where: { username } });
             if (existingUser) {
                 return NextResponse.json({ error: "Username already exists." }, { status: 409 });
             }
         }
 
-        // Update the user
         const updatedUser = await prisma.user.update({
             where: { id: params.id },
             data: updateData,
@@ -170,16 +152,16 @@ export async function PUT(request: Request, { params }: { params: { id: string }
                 created_on: true,
                 updated_on: true,
                 wallet: {
-                    // Include wallet data
                     select: {
                         id: true,
                         balance: true,
-                        transactions: true, // Adjust based on your schema
+                        transactions: true,
                     },
                 },
             },
         });
 
+        // Return updated user data so the frontend can update zustand stores
         return NextResponse.json(updatedUser, { status: 200 });
     } catch (error: any) {
         console.error("Error updating user:", error);
@@ -187,7 +169,6 @@ export async function PUT(request: Request, { params }: { params: { id: string }
             const errors = error.errors.map((err) => err.message).join(", ");
             return NextResponse.json({ error: errors }, { status: 400 });
         }
-        // Handle unique constraint violation (e.g., duplicate username)
         if (error.code === "P2002") {
             if (error.meta.target.includes("username")) {
                 return NextResponse.json({ error: "Username already exists." }, { status: 409 });
@@ -200,14 +181,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
     try {
-        // Authenticate the user using getServerSession
         const session = await getServerSession(authOptions);
-
         if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Extract user information from session
         const userRole = session.user.role as Role;
         const userId = session.user.id as string;
 
@@ -216,16 +194,11 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        // Fetch the user by ID
-        const user = await prisma.user.findUnique({
-            where: { id: params.id },
-        });
-
+        const user = await prisma.user.findUnique({ where: { id: params.id } });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
 
-        // Delete the user
         const deletedUser = await prisma.user.delete({
             where: { id: params.id },
             select: {
@@ -244,6 +217,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
             },
         });
 
+        // Return deleted user data so frontend can remove it from zustand stores if necessary
         return NextResponse.json(deletedUser, { status: 200 });
     } catch (error: any) {
         console.error("Error deleting user:", error);

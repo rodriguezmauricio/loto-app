@@ -1,9 +1,9 @@
 // src/store/useDataStore.ts
+
 import { create } from "zustand";
+import { Apostador } from "../src/types/apostador"; // Corrected path
 
-// Define TypeScript interfaces based on your Prisma schema
-
-// Basic User interface (client-side)
+// Define other interfaces based on your Prisma schema
 interface AppUser {
     id: string;
     username: string;
@@ -11,14 +11,12 @@ interface AppUser {
     admin_id?: string | null;
     seller_id?: string | null;
     bancaName?: string | null;
-    // Add fields as needed: email, name, etc.
     email?: string | null;
     name?: string | null;
     phone?: string | null;
     pix?: string | null;
 }
 
-// Bet interface
 interface Bet {
     id: string;
     numbers: number[];
@@ -28,8 +26,8 @@ interface Bet {
     consultor: string;
     apostador: string;
     quantidadeDeDezenas: number;
-    resultado: string; // Date as ISO string in the frontend
-    data: string; // Date as ISO string
+    resultado: string; // ISO string
+    data: string; // ISO string
     hora: string;
     lote: string;
     tipoBilhete: string;
@@ -42,7 +40,6 @@ interface Bet {
     vendedor?: AppUser;
 }
 
-// Result interface
 interface Result {
     id: string;
     modalidade: string;
@@ -51,10 +48,9 @@ interface Result {
     premio: number;
     createdBy: string;
     loteria?: string | null;
-    resultDate?: string | null; // new field as ISO date string
+    resultDate?: string | null; // ISO date
 }
 
-// Wallet interface
 interface Wallet {
     id: string;
     userId: string;
@@ -63,7 +59,6 @@ interface Wallet {
     updatedAt: string;
 }
 
-// Transaction interface
 interface Transaction {
     id: string;
     walletId: string;
@@ -73,7 +68,6 @@ interface Transaction {
     createdAt: string;
 }
 
-// Prize interface
 interface Prize {
     id: string;
     amount: number;
@@ -81,47 +75,61 @@ interface Prize {
     userId: string;
 }
 
-// Data fetched from the DB (example structure)
-// Adjust depending on what you actually return from your API
 interface FetchedData {
-    users: AppUser[];
-    bets: Bet[];
-    results: Result[];
-    wallets: Wallet[];
-    transactions: Transaction[];
-    prizes: Prize[];
+    users?: AppUser[];
+    bets?: Bet[];
+    results?: Result[];
+    wallets?: Wallet[];
+    transactions?: Transaction[];
+    prizes?: Prize[];
 }
 
+// Merged store interface
 interface DataStore {
+    // Global arrays
     users: AppUser[];
     bets: Bet[];
     results: Result[];
     wallets: Wallet[];
     transactions: Transaction[];
     prizes: Prize[];
+
+    // Apostadores state
+    apostadores: Apostador[];
+    loading: boolean;
+    error: string | null;
+    totalPages: number;
 
     setData: (data: Partial<FetchedData>) => void;
 
-    // Update methods
+    // Bet methods
     updateBet: (updatedBet: Bet) => void;
     addBet: (newBet: Bet) => void;
     removeBet: (id: string) => void;
 
+    // Result methods
     updateResult: (updatedResult: Result) => void;
     addResult: (newResult: Result) => void;
     removeResult: (id: string) => void;
 
-    // Similar methods can be created for users, wallets, etc.
+    // Apostadores methods
+    fetchApostadores: (search?: string, sort?: string, page?: number) => Promise<void>;
+    deleteApostador: (id: string) => Promise<void>;
+    getApostadorById: (id: string) => Apostador | null;
 }
 
-// Create the store
-export const useDataStore = create<DataStore>((set) => ({
+export const useDataStore = create<DataStore>((set, get) => ({
     users: [],
     bets: [],
     results: [],
     wallets: [],
     transactions: [],
     prizes: [],
+
+    apostadores: [],
+    loading: false,
+    error: null,
+    totalPages: 1,
 
     setData: (data) =>
         set((state) => ({
@@ -160,4 +168,83 @@ export const useDataStore = create<DataStore>((set) => ({
         set((state) => ({
             results: state.results.filter((r) => r.id !== id),
         })),
+
+    // Apostadores methods
+    async fetchApostadores(search = "", sort = "name_asc", page = 1) {
+        set({ loading: true, error: null });
+        try {
+            let sortField = "username";
+            let sortOrder: "asc" | "desc" = "asc";
+            switch (sort) {
+                case "name_asc":
+                    sortField = "username";
+                    sortOrder = "asc";
+                    break;
+                case "name_desc":
+                    sortField = "username";
+                    sortOrder = "desc";
+                    break;
+                case "date_newest":
+                    sortField = "created_on";
+                    sortOrder = "desc";
+                    break;
+                case "date_oldest":
+                    sortField = "created_on";
+                    sortOrder = "asc";
+                    break;
+                default:
+                    break;
+            }
+
+            const response = await fetch(
+                `/api/users?search=${encodeURIComponent(
+                    search
+                )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=10`
+            );
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Erro ao buscar apostadores.");
+            }
+            const data = await response.json();
+            if (!Array.isArray(data.apostadores)) {
+                throw new Error("Formato de dados inesperado.");
+            }
+
+            set({
+                apostadores: data.apostadores,
+                totalPages: data.totalPages ?? 1,
+                error: null,
+            });
+        } catch (err: any) {
+            console.error("Error fetching apostadores:", err);
+            set({ error: err.message || "Erro desconhecido.", apostadores: [], totalPages: 1 });
+        } finally {
+            set({ loading: false });
+        }
+    },
+
+    async deleteApostador(id: string) {
+        try {
+            const response = await fetch(`/api/users/${id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Erro ao deletar apostador.");
+            }
+            // Remove from store
+            const updated = get().apostadores.filter((a) => a.id !== id);
+            set({ apostadores: updated });
+            alert("Apostador deletado com sucesso.");
+        } catch (err: any) {
+            console.error("Error deleting apostador:", err);
+            alert(err.message || "Erro desconhecido ao deletar apostador.");
+        }
+    },
+
+    getApostadorById(id: string): Apostador | null {
+        const apostador = get().apostadores.find((a) => a.id === id) || null;
+        return apostador;
+    },
 }));

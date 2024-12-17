@@ -14,138 +14,71 @@ import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import Modal from "components/modal/Modal";
 import TicketList from "components/ticketList/TicketList";
 import { Bilhete } from "../../../../types/roles";
+import { useDataStore } from "../../../../../store/useDataStore";
+import { Apostador, Wallet } from "../../../../types/apostador";
 
-// Define Wallet Interface
-interface Wallet {
-    id: string;
-    balance: number;
-    transactions: any[]; // Replace `any[]` with the appropriate type if available
-    // Add other fields as necessary
-}
-
-// Define Apostador Interface
-interface Apostador {
-    id: string;
-    username: string;
-    phone: string;
-    pix: string;
-    role: string;
-    admin_id: string | null;
-    seller_id: string | null;
-    created_on: string; // ISO date string
-    wallet: Wallet | null;
-    // Add other fields as necessary
-}
+// Adjust your interfaces to match your data
 
 const ApostadorDetail = () => {
-    // Router and Params
     const router = useRouter();
     const params = useParams();
-    const { apostadorId } = params;
 
-    // Session Management
+    // Handle apostadorId as a string
+    const paramApostadorId = Array.isArray(params.apostadorId)
+        ? params.apostadorId[0]
+        : params.apostadorId;
+    const apostadorId: string = paramApostadorId as string;
+
     const { data: session, status } = useSession();
+    const { apostadores, getApostadorById, fetchApostadores } = useDataStore();
 
-    // State Variables
     const [apostadorData, setApostadorData] = useState<Apostador | null>(null);
     const [bilhetes, setBilhetes] = useState<Bilhete[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Modal State Variables
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [updateError, setUpdateError] = useState<string | null>(null);
     const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
-    // Balance Update Variables
-    const [operation, setOperation] = useState<string>("add"); // "add" or "subtract"
+    const [operation, setOperation] = useState<string>("add");
     const [amount, setAmount] = useState<string>("");
 
-    // Calculate Balance Display
-    const balanceValue = apostadorData?.wallet?.balance;
-    let balanceDisplay = "Indisponível";
-
-    if (balanceValue !== null && balanceValue !== undefined) {
-        const numericBalance = Number(balanceValue);
-        if (!isNaN(numericBalance)) {
-            balanceDisplay = numericBalance.toFixed(2);
-        }
-    }
-
-    // Handlers for Modal
-    const openModal = () => {
-        console.log("openModal called"); // Debugging
-        setUpdateError(null);
-        setIsUpdating(false);
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => setIsModalOpen(false);
-
-    // Fetch Apostador and Bilhetes
     useEffect(() => {
-        if (!apostadorId || status !== "authenticated") return;
+        if (status !== "authenticated") return;
+        setLoading(true);
 
-        const fetchApostador = async () => {
-            try {
-                const response = await fetch(`/api/users/${apostadorId}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include", // Include cookies for authentication
+        const apostador = getApostadorById(apostadorId);
+        if (!apostador) {
+            // If not found in store, fetch from backend
+            fetchApostadores()
+                .then(() => {
+                    const fetched = getApostadorById(apostadorId);
+                    if (!fetched) {
+                        setError("Apostador não encontrado.");
+                    } else {
+                        setApostadorData(fetched);
+                    }
+                    setLoading(false);
+                })
+                .catch((err: any) => {
+                    console.error(err);
+                    setError("Erro ao buscar apostador.");
+                    setLoading(false);
                 });
-                const data = await response.json();
-
-                if (response.ok) {
-                    setApostadorData(data);
-                } else {
-                    setError(data.error || "Erro ao buscar apostador.");
-                }
-            } catch (err) {
-                console.error("Error fetching apostador:", err);
-                setError("Erro ao buscar apostador.");
-            }
-        };
-
-        const fetchBilhetes = async () => {
-            try {
-                const response = await fetch(`/api/users/${apostadorId}/bilhetes`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                });
-                const data = await response.json();
-
-                if (response.ok) {
-                    setBilhetes(data.bilhetes);
-                } else {
-                    setError(data.error || "Erro ao buscar bilhetes.");
-                }
-            } catch (err) {
-                console.error("Error fetching bilhetes:", err);
-                setError("Erro ao buscar bilhetes.");
-            }
-        };
-
-        const fetchData = async () => {
-            setLoading(true);
-            await Promise.all([fetchApostador(), fetchBilhetes()]);
+        } else {
+            setApostadorData(apostador);
             setLoading(false);
-        };
+        }
+    }, [apostadorId, status, fetchApostadores, getApostadorById]);
 
-        fetchData();
-    }, [apostadorId, status]);
-
-    // Handle Unauthorized Access
     useEffect(() => {
         if (error === "Acesso negado.") {
             alert("Você não tem permissão para visualizar este apostador.");
-            router.push("/apostadores"); // Redirect to the apostadores list
+            router.push("/apostadores");
         }
     }, [error, router]);
 
-    // Loading State
     if (loading || status === "loading") {
         return (
             <>
@@ -157,7 +90,6 @@ const ApostadorDetail = () => {
         );
     }
 
-    // Authentication Check
     if (status === "unauthenticated") {
         return (
             <>
@@ -169,7 +101,6 @@ const ApostadorDetail = () => {
         );
     }
 
-    // Error State
     if (error) {
         return (
             <>
@@ -181,7 +112,6 @@ const ApostadorDetail = () => {
         );
     }
 
-    // No Apostador Found
     if (!apostadorData) {
         return (
             <>
@@ -193,7 +123,24 @@ const ApostadorDetail = () => {
         );
     }
 
-    // Handler for Balance Update
+    const balanceValue = apostadorData?.wallet?.balance;
+    let balanceDisplay = "Indisponível";
+
+    if (balanceValue !== null && balanceValue !== undefined) {
+        const numericBalance = Number(balanceValue);
+        if (!isNaN(numericBalance)) {
+            balanceDisplay = numericBalance.toFixed(2);
+        }
+    }
+
+    const openModal = () => {
+        setUpdateError(null);
+        setIsUpdating(false);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => setIsModalOpen(false);
+
     const handleBalanceUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsUpdating(true);
@@ -205,7 +152,6 @@ const ApostadorDetail = () => {
                 throw new Error("Por favor, insira um valor válido maior que zero.");
             }
 
-            // Send the amount and operation to the API
             const response = await fetch(
                 `/api/users/${apostadorData.id}/wallets/${apostadorData.wallet?.id}`,
                 {
@@ -224,8 +170,6 @@ const ApostadorDetail = () => {
             }
 
             const updatedWallet: Wallet = await response.json();
-
-            // Update the local state
             setApostadorData((prev) =>
                 prev
                     ? {
@@ -235,9 +179,7 @@ const ApostadorDetail = () => {
                     : prev
             );
 
-            // Close the modal
             closeModal();
-            // Reset form fields
             setAmount("");
             setOperation("add");
         } catch (err: any) {
@@ -248,12 +190,10 @@ const ApostadorDetail = () => {
         }
     };
 
-    // Handler for Editing Apostador
     const handleEdit = () => {
         router.push(`/apostadores/${apostadorId}/profile/edit`);
     };
 
-    // Handler for Deleting Apostador
     const handleDelete = async () => {
         const confirmDelete = confirm("Tem certeza de que deseja excluir este apostador?");
         if (!confirmDelete) return;
@@ -273,14 +213,13 @@ const ApostadorDetail = () => {
             }
 
             alert("Apostador excluído com sucesso!");
-            router.push("/apostadores"); // Redirect to the apostadores list
+            router.push("/apostadores");
         } catch (err: any) {
             console.error("Error deleting apostador:", err);
             alert(err.message || "Erro ao excluir apostador.");
         }
     };
 
-    // Render the component
     return (
         <>
             <PageHeader
@@ -289,7 +228,6 @@ const ApostadorDetail = () => {
                 linkTo={`/apostadores`}
             />
             <main className="main">
-                {/* Modal for Balance Update */}
                 {isModalOpen && (
                     <Modal onClose={closeModal}>
                         <form onSubmit={handleBalanceUpdate} className={styles.modalForm}>
@@ -329,12 +267,10 @@ const ApostadorDetail = () => {
                     </Modal>
                 )}
 
-                {/* Apostador and Wallet Info */}
                 <section className={styles.row}>
-                    {/* Apostador Info */}
                     <IconCard
                         title={apostadorData.username}
-                        description={`Telefone: ${apostadorData.phone}`}
+                        description={`Telefone: ${apostadorData.phone || "N/A"}`}
                         icon="user"
                         inIcon={false}
                         fullWidth={false}
@@ -343,8 +279,6 @@ const ApostadorDetail = () => {
                         linkTo={`/apostadores/${apostadorData.id}/profile`}
                     />
 
-                    {/* Carteira Info */}
-                    {/* {apostadorData.wallet ? ( */}
                     <IconCard
                         title="Carteira"
                         description={`Saldo: R$ ${balanceDisplay}`}
@@ -353,26 +287,10 @@ const ApostadorDetail = () => {
                         fullWidth={false}
                         hasCheckbox={false}
                         isClickable={true}
-                        onClick={openModal} // Make the wallet card clickable to open the modal
+                        onClick={openModal}
                     />
-                    {/* ) : (
-                        <IconCard
-                            title="Carteira"
-                            description="Saldo e transações"
-                            icon="wallet"
-                            inIcon
-                            fullWidth={false}
-                            hasCheckbox={false}
-                            isClickable={true}
-                            onClick={() => {
-                                console.log("openModal");
-                            }} // Make the wallet card clickable to open the modal
-                            linkTo={""}
-                        />
-                    )} */}
                 </section>
 
-                {/* Bilhetes Section */}
                 <section>
                     <Title h={2}>Bilhetes</Title>
                     <section className={styles.buttonFilterRow}>
@@ -385,17 +303,13 @@ const ApostadorDetail = () => {
                                 func={() => router.push(`/apostadores/${apostadorId}/novoBilhete`)}
                                 isSelected={false}
                             />
-                            {/* Add other buttons here if necessary */}
                         </div>
                     </section>
-
-                    {/* Bets List */}
                     <section>
-                        <TicketList userId={String(apostadorId)} />
+                        <TicketList userId={apostadorId} />
                     </section>
                 </section>
 
-                {/* Action Buttons */}
                 <section className={styles.actions}>
                     <SimpleButton
                         btnTitle="Editar Apostador"

@@ -8,6 +8,7 @@ import styles from "./apostadores.module.scss"; // Ensure this CSS module exists
 import { useEffect, useState } from "react";
 import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import { useUserStore } from "../../../../store/useUserStore"; // Ensure correct path
+import { useDataStore } from "../../../../store/useDataStore";
 import { BsSearch, BsXLg } from "react-icons/bs";
 import ConfirmModal from "components/confirmModal/ConfirmModal";
 import { Apostador } from "../../../types/apostador"; // Define this type accordingly
@@ -15,12 +16,18 @@ import { Role } from "../../../types/roles";
 
 const ApostadoresPage = () => {
     const user = useUserStore((state) => state.user);
-    const [apostadores, setApostadores] = useState<Apostador[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+
+    const { apostadores, loading, error, fetchApostadores, deleteApostador } = useDataStore();
+
+    // const [apostadores, setApostadores] = useState<Apostador[]>([]);
+    // const [loading, setLoading] = useState<boolean>(true);
+    // const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [debouncedSearch, setDebouncedSearch] = useState<string>("");
     const [sortOption, setSortOption] = useState<string>("name_asc");
+    // Manage current page for pagination
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1); // To be set based on API response
 
     // Debounce the search input to prevent excessive API calls
     useEffect(() => {
@@ -34,82 +41,99 @@ const ApostadoresPage = () => {
         };
     }, [searchQuery]);
 
-    // Manage current page for pagination
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [totalPages, setTotalPages] = useState<number>(1); // To be set based on API response
+    // useEffect(() => {
+    //     const fetchApostadores = async () => {
+    //         setLoading(true);
+    //         setError(null);
+
+    //         // Map sortOption to sortField and sortOrder
+    //         let sortField = "username";
+    //         let sortOrder: "asc" | "desc" = "asc";
+
+    //         switch (sortOption) {
+    //             case "name_asc":
+    //                 sortField = "username";
+    //                 sortOrder = "asc";
+    //                 break;
+    //             case "name_desc":
+    //                 sortField = "username";
+    //                 sortOrder = "desc";
+    //                 break;
+    //             case "date_newest":
+    //                 sortField = "created_on";
+    //                 sortOrder = "desc";
+    //                 break;
+    //             case "date_oldest":
+    //                 sortField = "created_on";
+    //                 sortOrder = "asc";
+    //                 break;
+    //             default:
+    //                 break;
+    //         }
+
+    //         try {
+    //             const response = await fetch(
+    //                 `/api/users?search=${encodeURIComponent(
+    //                     debouncedSearch
+    //                 )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${currentPage}&limit=10`,
+    //                 {
+    //                     method: "GET",
+    //                     headers: {
+    //                         "Content-Type": "application/json",
+    //                     },
+    //                 }
+    //             );
+
+    //             if (!response.ok) {
+    //                 const errorData = await response.json();
+    //                 throw new Error(errorData.error || "Erro ao buscar apostadores.");
+    //             }
+
+    //             const data = await response.json();
+    //             console.log("API response data:", data); // Should log { apostadores: [...], totalPages: 1 }
+
+    //             let fetchedApostadores: Apostador[] = [];
+
+    //             if (Array.isArray(data.apostadores)) {
+    //                 fetchedApostadores = data.apostadores;
+    //             } else {
+    //                 console.error("Unexpected data format:", data);
+    //                 throw new Error("Formato de dados inesperado.");
+    //             }
+
+    //             setApostadores(fetchedApostadores);
+    //             setTotalPages(data.totalPages || 1);
+    //         } catch (err: any) {
+    //             console.error("Error fetching apostadores:", err);
+    //             setError(err.message || "Erro desconhecido.");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+
+    //     fetchApostadores();
+    // }, [debouncedSearch, sortOption, currentPage]);
 
     useEffect(() => {
-        const fetchApostadores = async () => {
-            setLoading(true);
-            setError(null);
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+            setCurrentPage(1);
+        }, 500);
 
-            // Map sortOption to sortField and sortOrder
-            let sortField = "username";
-            let sortOrder: "asc" | "desc" = "asc";
-
-            switch (sortOption) {
-                case "name_asc":
-                    sortField = "username";
-                    sortOrder = "asc";
-                    break;
-                case "name_desc":
-                    sortField = "username";
-                    sortOrder = "desc";
-                    break;
-                case "date_newest":
-                    sortField = "created_on";
-                    sortOrder = "desc";
-                    break;
-                case "date_oldest":
-                    sortField = "created_on";
-                    sortOrder = "asc";
-                    break;
-                default:
-                    break;
-            }
-
-            try {
-                const response = await fetch(
-                    `/api/users?search=${encodeURIComponent(
-                        debouncedSearch
-                    )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${currentPage}&limit=10`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || "Erro ao buscar apostadores.");
-                }
-
-                const data = await response.json();
-                console.log("API response data:", data); // Should log { apostadores: [...], totalPages: 1 }
-
-                let fetchedApostadores: Apostador[] = [];
-
-                if (Array.isArray(data.apostadores)) {
-                    fetchedApostadores = data.apostadores;
-                } else {
-                    console.error("Unexpected data format:", data);
-                    throw new Error("Formato de dados inesperado.");
-                }
-
-                setApostadores(fetchedApostadores);
-                setTotalPages(data.totalPages || 1);
-            } catch (err: any) {
-                console.error("Error fetching apostadores:", err);
-                setError(err.message || "Erro desconhecido.");
-            } finally {
-                setLoading(false);
-            }
+        return () => {
+            clearTimeout(handler);
         };
+    }, [searchQuery]);
 
-        fetchApostadores();
-    }, [debouncedSearch, sortOption, currentPage]);
+    useEffect(() => {
+        // Fetch apostadores from the store
+        // The store handles fetching and sets error/loading/apostadores
+        fetchApostadores(debouncedSearch, sortOption, currentPage).then(() => {
+            // Assuming the response sets totalPages in store if needed
+            // If your API returns totalPages, consider storing it in the store as well
+            // For now, let's just keep totalPages = 1 or handle it dynamically.
+        });
+    }, [debouncedSearch, sortOption, currentPage, fetchApostadores]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);
@@ -146,31 +170,37 @@ const ApostadoresPage = () => {
         setIsModalOpen(false);
     };
 
+    // const confirmDelete = async () => {
+    //     if (!apostadorToDelete) return;
+
+    //     try {
+    //         const response = await fetch(`/api/users/${apostadorToDelete}`, {
+    //             method: "DELETE",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //             },
+    //         });
+
+    //         if (response.ok) {
+    //             // Remove the deleted apostador from the state
+    //             setApostadores(apostadores.filter((a) => a.id !== apostadorToDelete));
+    //             alert("Apostador deletado com sucesso.");
+    //         } else {
+    //             const errorData = await response.json();
+    //             throw new Error(errorData.error || "Erro ao deletar apostador.");
+    //         }
+    //     } catch (err: any) {
+    //         console.error("Error deleting apostador:", err);
+    //         alert(err.message || "Erro desconhecido ao deletar apostador.");
+    //     } finally {
+    //         closeModal();
+    //     }
+    // };
+
     const confirmDelete = async () => {
         if (!apostadorToDelete) return;
-
-        try {
-            const response = await fetch(`/api/users/${apostadorToDelete}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-
-            if (response.ok) {
-                // Remove the deleted apostador from the state
-                setApostadores(apostadores.filter((a) => a.id !== apostadorToDelete));
-                alert("Apostador deletado com sucesso.");
-            } else {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Erro ao deletar apostador.");
-            }
-        } catch (err: any) {
-            console.error("Error deleting apostador:", err);
-            alert(err.message || "Erro desconhecido ao deletar apostador.");
-        } finally {
-            closeModal();
-        }
+        await deleteApostador(apostadorToDelete);
+        closeModal();
     };
 
     console.log("apostadores: ", apostadores);
@@ -265,20 +295,19 @@ const ApostadoresPage = () => {
                     <p>Nenhum apostador encontrado.</p>
                 ) : (
                     <div className={styles.cardContainer}>
-                        {apostadores.map((apostador) => (
+                        {apostadores.map((apostador: any) => (
                             <IconCard
                                 key={apostador.id}
                                 title={apostador.username}
                                 description={`Telefone: ${apostador.phone}`}
                                 icon="user"
-                                linkTo={`/apostadores/${apostador.id}`} // Adjust the link as necessary
+                                linkTo={`/apostadores/${apostador.id}`}
                                 isClickable={true}
                                 extraInfo={`Criado em: ${new Date(
                                     apostador.created_on
                                 ).toLocaleDateString()}`}
-                                searchTerm={debouncedSearch} // Pass the search term for highlighting
+                                searchTerm={debouncedSearch}
                             >
-                                {/* Render Delete Button if the user has permission */}
                                 {(user?.role === "admin" || user?.role === "usuario") && (
                                     <SimpleButton
                                         btnTitle="Deletar"

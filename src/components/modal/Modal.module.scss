@@ -1,7 +1,7 @@
 // components/Modal.module.scss
 
 $modal-background-color: rgba(0, 0, 0, 0.6); // Dark transparent background
-$modal-content-background: #fff;
+
 $modal-border-radius: 8px;
 $modal-max-width: 500px;
 $modal-padding: 1.5rem;
@@ -25,7 +25,7 @@ $modal-animation-duration: 0.3s;
 }
 
 .modalContent {
-    background-color: $modal-content-background;
+    background-color: var(--color-dark-dark);
     border-radius: $modal-border-radius;
     padding: $modal-padding;
     position: relative;

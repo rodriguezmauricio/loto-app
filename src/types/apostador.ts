@@ -9,6 +9,7 @@ export interface Wallet {
 export interface Apostador {
     id: string;
     username: string;
+    name: string;
     phone?: string;
     pix?: string | null; // Allows string, null, or undefined
     role: "admin" | "vendedor" | "usuario";

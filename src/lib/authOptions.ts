@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../prisma/client";
 import bcrypt from "bcrypt";
 
+// Secret key for JWT (ensure this is set in your environment variables)
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
+
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
@@ -13,7 +16,7 @@ export const authOptions: NextAuthOptions = {
                 username: { label: "Username", type: "text", placeholder: "username" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
                 if (!credentials?.username || !credentials?.password) {
                     throw new Error("Missing username or password");
                 }
@@ -55,15 +58,19 @@ export const authOptions: NextAuthOptions = {
                 (session.user as any).role = token.role as string;
                 (session.user as any).username = token.username as string;
                 (session.user as any).bancaName = token.bancaName as string;
+                (session.user as any).adminId = token.adminId as string;
+                (session.user as any).sellerId = token.sellerId as string;
             }
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
-                token.role = user.role;
                 token.username = user.username;
+                token.role = user.role;
                 token.bancaName = user.bancaName;
+                token.adminId = user.adminId;
+                token.sellerId = user.sellerId;
             }
             return token;
         },
@@ -74,6 +81,9 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/login",
         error: "/login",
+    },
+    jwt: {
+        secret: JWT_SECRET,
     },
     secret: process.env.NEXTAUTH_SECRET, // Ensure this is set in your .env file
 };

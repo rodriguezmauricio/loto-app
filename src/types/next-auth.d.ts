@@ -7,19 +7,36 @@ declare module "next-auth" {
         user: {
             id: string;
             username: string;
-            role: string; // Override role type
+            role: string | null;
+            bancaName: string | null | undefined;
+            adminId?: string | null;
+            sellerId?: string | null;
+            email: string | null | undefined;
+            name: string | null | undefined;
         } & DefaultSession["user"];
     }
 
     interface User extends DefaultUser {
         id: string;
         username: string;
-        role: string;
-        // Add other fields if necessary
+        role: string | null;
+        bancaName: string | null | undefined;
+        adminId?: string | null;
+        sellerId?: string | null;
+        email: string | null | undefined;
+        name: string | null | undefined;
     }
+}
 
+declare module "next-auth/jwt" {
     interface JWT {
         id: string;
-        role: string;
+        username: string;
+        role: string | null;
+        bancaName: string | null | undefined;
+        adminId?: string | null;
+        sellerId?: string | null;
+        email: string | null | undefined;
+        name: string | null | undefined;
     }
 }

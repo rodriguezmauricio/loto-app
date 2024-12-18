@@ -1,118 +1,120 @@
 .sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+    position: sticky;
+    top: 0;
+    height: 100vh;
 }
 
 .logoMenuContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--logo-menu-container);
-  background-color: var(--color-dark-mid);
+    padding-top: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--logo-menu-container);
+    background-color: var(--color-dark-mid);
 }
 
 .logo {
-  padding: 0 15px 0 15px;
+    padding: 0 15px 0 15px;
 }
 
 .mobileMenuContainer {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  margin-right: 10px;
-  cursor: pointer;
-  transition: all 0.2s;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .menuDivisions {
-  display: flex;
-  flex-direction: column;
-  padding: 5px 0;
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0;
 }
 
 .navContainer {
-  background-color: var(--color-dark-mid);
+    background-color: var(--color-dark-mid);
 }
 
 .divider {
-  height: 2px;
-  background-color: var(--color-dark-dark);
-  margin: 0 15px 0 15px;
+    height: 2px;
+    background-color: var(--color-dark-dark);
+    margin: 0 15px 0 15px;
 }
 
 .menuLink {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 15px;
-  padding: 10px;
-  transition: all 0.2s;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    transition: all 0.2s;
 }
 
 .menuLink:hover {
-  background-color: var(--color-dark-dark);
-  /* border-left: 5px solid var(--accent-main); */
+    background-color: var(--color-dark-dark);
+    /* border-left: 5px solid var(--accent-main); */
 }
 
 .icon {
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-light-dark);
-  transition: all 0.2s;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-light-dark);
+    transition: all 0.2s;
 }
 
 .menuLink:hover > .icon {
-  color: var(--accent-main);
+    color: var(--accent-main);
 }
 
 .linkText {
-  display: block;
+    display: block;
 }
 
 @media (max-width: 768px) {
-  .sticky {
-    height: fit-content;
-    z-index: 100;
-    top: 0;
-  }
+    .sticky {
+        height: fit-content;
+        z-index: 100;
+        top: 0;
+    }
 
-  .logoMenuContainer {
-    height: 50px;
-    display: flex;
-  }
+    .logoMenuContainer {
+        height: 50px;
+        display: flex;
+    }
 
-  .mobileMenuContainer {
-    display: flex;
-    margin-right: 20px;
-  }
+    .mobileMenuContainer {
+        display: flex;
+        margin-right: 20px;
+    }
 
-  .navContainer {
-    /* display: none; */
-    background-color: var(--color-dark-mid);
-    position: fixed;
-    top: 50px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 80%;
-    height: 100vh;
-    z-index: 9999; /* Set a high z-index value */
-    transition: all 0.5s ease-in-out;
-  }
+    .navContainer {
+        /* display: none; */
+        background-color: var(--color-dark-mid);
+        position: fixed;
+        top: 50px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 80%;
+        height: 100vh;
+        z-index: 9999; /* Set a high z-index value */
+        transition: all 0.5s ease-in-out;
+    }
 
-  .hideOnSmallScreen {
-    display: none;
-  }
+    .hideOnSmallScreen {
+        display: none;
+    }
 
-  .logo {
-    transition: all 0.5s;
-  }
+    .logo {
+        transition: all 0.5s;
+    }
 
-  .menuDivisions {
-    display: flex;
-    flex-direction: column;
-  }
+    .menuDivisions {
+        display: flex;
+        flex-direction: column;
+    }
 }

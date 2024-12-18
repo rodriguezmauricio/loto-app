@@ -16,12 +16,14 @@ function LoginPage() {
     const [error, setError] = useState<string | null>(null);
     const setUser = useUserStore((state) => state.setUser); // Zustand store to set user
     const router = useRouter();
-    const user = useUserStore((state) => state.user);
     const { data: session, status } = useSession();
 
     useEffect(() => {
         if (session?.user) {
+            console.log("Session User:", session.user); // Debugging
             setUser(session.user as any); // Cast to 'any' if necessary
+        } else {
+            setUser(null);
         }
     }, [session, setUser]);
 

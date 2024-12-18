@@ -15,17 +15,23 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
     const router = useRouter();
     const setUser = useUserStore((state) => state.setUser);
 
-    useEffect(() => {
-        if (status === "authenticated" && session) {
-            setUser({
-                id: session.user.id,
-                username: session.user.username,
-                role: session.user.role,
-            });
-        } else if (status === "unauthenticated") {
-            setUser(null);
-        }
-    }, [status, session, setUser]);
+    // useEffect(() => {
+    //     if (status === "authenticated" && session) {
+    //         setUser({
+    //             id: session.user.id,
+    //             username: session.user.username,
+    //             role: session.user.role,
+    //             bancaName: session.user.bancaName,
+    //             email: session.user.email,
+    //             name: session.user.name,
+    //             image: session.user.image,
+    //             adminId: session.user.adminId,
+    //             sellerId: session.user.sellerId,
+    //         });
+    //     } else if (status === "unauthenticated") {
+    //         setUser(null);
+    //     }
+    // }, [status, session, setUser]);
 
     if (status === "loading") {
         return (

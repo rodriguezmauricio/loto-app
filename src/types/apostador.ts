@@ -18,3 +18,23 @@ export interface Apostador {
     created_on: string; // ISO date string
     wallet?: Wallet | null;
 }
+
+export interface Aposta {
+    id: string;
+    numeroBilhete: number;
+    modalidade: string;
+    loteria: string;
+    numbers: number[];
+    acertos: number;
+    premio: number;
+    apostador: string;
+    quantidadeDezenas: number;
+    resultado: string | null;
+    data: string;
+    hora: string;
+    lote: string;
+    consultor: string;
+    tipoBilhete: string;
+    valorBilhete: number;
+    // ... other fields as necessary
+}

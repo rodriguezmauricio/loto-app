@@ -54,6 +54,7 @@ const ApostadorDetail = () => {
             fetchApostadores()
                 .then(() => {
                     const fetched = getApostadorById(apostadorId);
+                    console.log("Fetched Apostador:", fetched); // Log fetched data
                     if (!fetched) {
                         setError("Apostador não encontrado.");
                     } else {
@@ -67,6 +68,7 @@ const ApostadorDetail = () => {
                     setLoading(false);
                 });
         } else {
+            console.log("Apostador found in store:", apostador); // Log existing data
             setApostadorData(apostador);
             setLoading(false);
         }
@@ -124,6 +126,8 @@ const ApostadorDetail = () => {
     }
 
     const balanceValue = apostadorData?.wallet?.balance;
+    console.log("Apostador Wallet Balance Value:", balanceValue);
+
     let balanceDisplay = "Indisponível";
 
     if (balanceValue !== null && balanceValue !== undefined) {
@@ -132,6 +136,8 @@ const ApostadorDetail = () => {
             balanceDisplay = numericBalance.toFixed(2);
         }
     }
+
+    console.log("Balance Display:", balanceDisplay);
 
     const openModal = () => {
         setUpdateError(null);
@@ -219,6 +225,8 @@ const ApostadorDetail = () => {
             alert(err.message || "Erro ao excluir apostador.");
         }
     };
+
+    console.log("Rendering Wallet IconCard with balance:", balanceDisplay);
 
     return (
         <>

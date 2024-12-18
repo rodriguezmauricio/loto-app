@@ -7,74 +7,32 @@ import SimpleButton from "components/(buttons)/simpleButton/SimpleButton";
 import Title from "components/title/Title";
 import ConfirmModal from "components/confirmModal/ConfirmModal";
 import styles from "./TicketList.module.scss"; // Ensure this CSS module exists
-
-interface Aposta {
-    id: string;
-    numeroBilhete: number;
-    modalidade: string;
-    loteria: string;
-    numbers: number[]; // Changed from numbersArr to numbers
-    acertos: number;
-    premio: number;
-    apostador: string;
-    quantidadeDezenas: number;
-    resultado: string | null; // ISO date string or null
-    data: string; // ISO date string
-    hora: string; // 'HH:mm' format
-    lote: string;
-    consultor: string;
-    tipoBilhete: string;
-    valorBilhete: number;
-    // ... other fields
-}
+import { useDataStore } from "../../../store/useDataStore"; // Adjust the path as necessary
 
 interface TicketListProps {
     userId: string;
 }
 
 const TicketList: React.FC<TicketListProps> = ({ userId }) => {
-    const [tickets, setTickets] = useState<Aposta[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const {
+        tickets,
+        loadingTickets,
+        errorTickets,
+        fetchTickets,
+        deleteTicket,
+        totalPagesTickets,
+        currentPageTickets,
+    } = useDataStore();
+
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [ticketToDelete, setTicketToDelete] = useState<string | null>(null);
 
+    // Fetch tickets when component mounts or when userId changes
     useEffect(() => {
-        const fetchTickets = async () => {
-            try {
-                const response = await fetch(`/api/apostas?userId=${userId}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include", // Include cookies if necessary
-                });
-
-                console.log(`GET /api/apostas?userId=${userId} - Status: ${response.status}`);
-
-                if (!response.ok) {
-                    // Attempt to parse error message
-                    let errorData;
-                    try {
-                        errorData = await response.json();
-                    } catch (jsonError) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    throw new Error(errorData.error || "Erro ao buscar bilhetes.");
-                }
-
-                const data: Aposta[] = await response.json();
-                setTickets(data);
-                setLoading(false);
-            } catch (err: any) {
-                console.error("Error fetching tickets:", err);
-                setError(err.message || "Erro desconhecido.");
-                setLoading(false);
-            }
-        };
-
-        fetchTickets();
-    }, [userId]);
+        if (userId) {
+            fetchTickets(userId, 1, 10); // Start with page 1 and limit 10
+        }
+    }, [userId, fetchTickets]);
 
     const openModal = (id: string) => {
         setTicketToDelete(id);
@@ -88,43 +46,28 @@ const TicketList: React.FC<TicketListProps> = ({ userId }) => {
 
     const confirmDelete = async () => {
         if (!ticketToDelete) return;
+        await deleteTicket(ticketToDelete);
+        closeModal();
+    };
 
-        try {
-            const response = await fetch(`/api/apostas/${ticketToDelete}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    // Include authentication headers if required
-                    // NextAuth.js handles auth via cookies by default
-                },
-                credentials: "include", // Include cookies if necessary
-            });
-
-            console.log(`DELETE /api/apostas/${ticketToDelete} - Status: ${response.status}`);
-
-            if (response.ok) {
-                // Remove the deleted ticket from the state
-                setTickets(tickets.filter((ticket) => ticket.id !== ticketToDelete));
-                // Optionally, use a toast notification for better UX
-                alert("Bilhete deletado com sucesso.");
-            } else {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Erro ao deletar bilhete.");
-            }
-        } catch (err: any) {
-            console.error("Error deleting ticket:", err);
-            alert(err.message || "Erro desconhecido ao deletar bilhete.");
-        } finally {
-            closeModal();
+    const handlePreviousPage = () => {
+        if (currentPageTickets > 1) {
+            fetchTickets(userId, currentPageTickets - 1, 10);
         }
     };
 
-    if (loading) {
+    const handleNextPage = () => {
+        if (currentPageTickets < totalPagesTickets) {
+            fetchTickets(userId, currentPageTickets + 1, 10);
+        }
+    };
+
+    if (loadingTickets) {
         return <p>Carregando bilhetes...</p>;
     }
 
-    if (error) {
-        return <p className={styles.error}>{error}</p>;
+    if (errorTickets) {
+        return <p className={styles.error}>{errorTickets}</p>;
     }
 
     if (tickets.length === 0) {
@@ -194,11 +137,30 @@ const TicketList: React.FC<TicketListProps> = ({ userId }) => {
                                 isSelected={false}
                                 className={styles.deleteButton}
                             />
-                            {/* You can add more actions like Editar, Visualizar, etc. */}
                         </div>
                     </li>
                 ))}
             </ul>
+            {/* Pagination Controls */}
+            <div className={styles.pagination}>
+                <button
+                    onClick={handlePreviousPage}
+                    disabled={currentPageTickets === 1}
+                    className={styles.paginationButton}
+                >
+                    Anterior
+                </button>
+                <span>
+                    Página {currentPageTickets} de {totalPagesTickets}
+                </span>
+                <button
+                    onClick={handleNextPage}
+                    disabled={currentPageTickets === totalPagesTickets}
+                    className={styles.paginationButton}
+                >
+                    Próxima
+                </button>
+            </div>
             <ConfirmModal
                 isOpen={isModalOpen}
                 onRequestClose={closeModal}

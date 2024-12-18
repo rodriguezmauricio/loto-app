@@ -1,82 +1,12 @@
 // src/store/useDataStore.ts
 
 import { create } from "zustand";
-import { Apostador } from "../src/types/apostador"; // Corrected path
-
-// Define other interfaces based on your Prisma schema
-interface AppUser {
-    id: string;
-    username: string;
-    role: "admin" | "vendedor" | "usuario";
-    admin_id?: string | null;
-    seller_id?: string | null;
-    bancaName?: string | null;
-    email?: string | null;
-    name?: string | null;
-    phone?: string | null;
-    pix?: string | null;
-}
-
-interface Bet {
-    id: string;
-    numbers: number[];
-    modalidade: string;
-    acertos: number;
-    premio: number;
-    consultor: string;
-    apostador: string;
-    quantidadeDeDezenas: number;
-    resultado: string; // ISO string
-    data: string; // ISO string
-    hora: string;
-    lote: string;
-    tipoBilhete: string;
-    valorBilhete: number;
-    createdAt: string; // ISO string date
-    userId: string;
-    vendedorId?: string | null;
-    loteria?: string | null;
-    user: AppUser;
-    vendedor?: AppUser;
-}
-
-interface Result {
-    id: string;
-    modalidade: string;
-    winningNumbers: number[];
-    createdAt: string; // ISO date string
-    premio: number;
-    createdBy: string;
-    loteria?: string | null;
-    resultDate?: string | null; // ISO date
-}
-
-interface Wallet {
-    id: string;
-    userId: string;
-    balance: number;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface Transaction {
-    id: string;
-    walletId: string;
-    type: string;
-    amount: number;
-    description?: string;
-    createdAt: string;
-}
-
-interface Prize {
-    id: string;
-    amount: number;
-    awarded_at: string;
-    userId: string;
-}
+import { devtools } from "zustand/middleware"; // Zustand Devtools middleware
+import { Apostador, Aposta } from "../src/types/apostador"; // Ensure correct paths
+import { User, Bet, Result, Wallet, Transaction, Prize } from "../src/types/roles"; // Import other necessary types
 
 interface FetchedData {
-    users?: AppUser[];
+    users?: User[];
     bets?: Bet[];
     results?: Result[];
     wallets?: Wallet[];
@@ -84,176 +14,377 @@ interface FetchedData {
     prizes?: Prize[];
 }
 
-// Merged store interface
 interface DataStore {
-    // Global arrays
-    users: AppUser[];
+    // **Global State**
+    users: User[];
     bets: Bet[];
     results: Result[];
     wallets: Wallet[];
     transactions: Transaction[];
     prizes: Prize[];
 
-    // Apostadores state
+    // **Apostadores State**
     apostadores: Apostador[];
     loading: boolean;
     error: string | null;
     totalPages: number;
     currentPage: number;
 
+    // **Tickets State**
+    tickets: Aposta[];
+    loadingTickets: boolean;
+    errorTickets: string | null;
+    totalPagesTickets: number;
+    currentPageTickets: number;
+
+    // Wallet State
+    walletBalance: number;
+    loadingWallet: boolean;
+    errorWallet: string | null;
+
+    // Wallet Methods
+    fetchWalletBalance: (userId: string) => Promise<void>;
+
+    // **Set Data Method**
     setData: (data: Partial<FetchedData>) => void;
 
-    // Bet methods
-    updateBet: (updatedBet: Bet) => void;
-    addBet: (newBet: Bet) => void;
-    removeBet: (id: string) => void;
-
-    // Result methods
-    updateResult: (updatedResult: Result) => void;
-    addResult: (newResult: Result) => void;
-    removeResult: (id: string) => void;
-
-    // Apostadores methods
-    fetchApostadores: (search?: string, sort?: string, page?: number) => Promise<void>;
+    // **Apostadores Methods**
+    fetchApostadores: (
+        search?: string,
+        sort?: string,
+        page?: number,
+        limit?: number
+    ) => Promise<void>;
     deleteApostador: (id: string) => Promise<void>;
     getApostadorById: (id: string) => Apostador | null;
+
+    // **Tickets Methods**
+    fetchTickets: (userId: string, page?: number, limit?: number) => Promise<void>;
+    deleteTicket: (id: string) => Promise<void>;
 }
 
-export const useDataStore = create<DataStore>((set, get) => ({
-    users: [],
-    bets: [],
-    results: [],
-    wallets: [],
-    transactions: [],
-    prizes: [],
+export const useDataStore = create<DataStore>()(
+    devtools(
+        (set, get) => ({
+            // **Global State Initialization**
+            users: [],
+            bets: [],
+            results: [],
+            wallets: [],
+            transactions: [],
+            prizes: [],
 
-    apostadores: [],
-    loading: false,
-    error: null,
-    totalPages: 1,
-    currentPage: 1,
+            // **Apostadores State Initialization**
+            apostadores: [],
+            loading: false,
+            error: null,
+            totalPages: 1,
+            currentPage: 1,
 
-    setData: (data) =>
-        set((state) => ({
-            users: data.users ?? state.users,
-            bets: data.bets ?? state.bets,
-            results: data.results ?? state.results,
-            wallets: data.wallets ?? state.wallets,
-            transactions: data.transactions ?? state.transactions,
-            prizes: data.prizes ?? state.prizes,
-        })),
+            // **Tickets State Initialization**
+            tickets: [],
+            loadingTickets: false,
+            errorTickets: null,
+            totalPagesTickets: 1,
+            currentPageTickets: 1,
 
-    // Bet methods
-    updateBet: (updatedBet) =>
-        set((state) => ({
-            bets: state.bets.map((b) => (b.id === updatedBet.id ? updatedBet : b)),
-        })),
-    addBet: (newBet) =>
-        set((state) => ({
-            bets: [...state.bets, newBet],
-        })),
-    removeBet: (id) =>
-        set((state) => ({
-            bets: state.bets.filter((b) => b.id !== id),
-        })),
+            // Wallet State Initialization
+            walletBalance: 0,
+            loadingWallet: false,
+            errorWallet: null,
 
-    // Result methods
-    updateResult: (updatedResult) =>
-        set((state) => ({
-            results: state.results.map((r) => (r.id === updatedResult.id ? updatedResult : r)),
-        })),
-    addResult: (newResult) =>
-        set((state) => ({
-            results: [...state.results, newResult],
-        })),
-    removeResult: (id) =>
-        set((state) => ({
-            results: state.results.filter((r) => r.id !== id),
-        })),
+            // **Set Data Method**
+            setData: (data: Partial<FetchedData>) =>
+                set((state) => ({
+                    users: data.users ?? state.users,
+                    bets: data.bets ?? state.bets,
+                    results: data.results ?? state.results,
+                    wallets: data.wallets ?? state.wallets,
+                    transactions: data.transactions ?? state.transactions,
+                    prizes: data.prizes ?? state.prizes,
+                })),
 
-    // Apostadores methods
-    async fetchApostadores(search = "", sort = "name_asc", page = 1, limit = 10) {
-        console.log(
-            `Fetching apostadores with search: "${search}", sort: "${sort}", page: ${page}`
-        );
-        set({ loading: true, error: null });
-        try {
-            let sortField = "username";
-            let sortOrder: "asc" | "desc" = "asc";
-            switch (sort) {
-                case "name_asc":
-                    sortField = "username";
-                    sortOrder = "asc";
-                    break;
-                case "name_desc":
-                    sortField = "username";
-                    sortOrder = "desc";
-                    break;
-                case "date_newest":
-                    sortField = "created_on";
-                    sortOrder = "desc";
-                    break;
-                case "date_oldest":
-                    sortField = "created_on";
-                    sortOrder = "asc";
-                    break;
-                default:
-                    break;
-            }
+            // **Apostadores Methods**
 
-            const response = await fetch(
-                `/api/users?search=${encodeURIComponent(
-                    search
-                )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
-            );
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Erro ao buscar apostadores.");
-            }
-            const data = await response.json();
-            if (!Array.isArray(data.apostadores)) {
-                throw new Error("Formato de dados inesperado.");
-            }
+            /**
+             * Fetches Apostadores from the API with optional search, sort, page, and limit parameters.
+             * Updates the store with fetched data, handles loading and error states.
+             */
+            async fetchApostadores(search = "", sort = "name_asc", page = 1, limit = 10) {
+                console.log(
+                    `Fetching apostadores: search="${search}", sort="${sort}", page=${page}, limit=${limit}`
+                );
+                set({ loading: true, error: null });
+                try {
+                    let sortField = "username";
+                    let sortOrder: "asc" | "desc" = "asc";
 
-            console.log("Fetched  data:", data);
-            console.log("Fetched apostadores:", data.apostadores);
-            console.log("Total Pages:", data.totalPages);
+                    // Determine sort field and order based on sort option
+                    switch (sort) {
+                        case "name_asc":
+                            sortField = "username";
+                            sortOrder = "asc";
+                            break;
+                        case "name_desc":
+                            sortField = "username";
+                            sortOrder = "desc";
+                            break;
+                        case "date_newest":
+                            sortField = "created_on";
+                            sortOrder = "desc";
+                            break;
+                        case "date_oldest":
+                            sortField = "created_on";
+                            sortOrder = "asc";
+                            break;
+                        default:
+                            break;
+                    }
 
-            set({
-                apostadores: data.apostadores,
-                totalPages: data.totalPages ?? 1,
-                error: null,
-            });
-        } catch (err: any) {
-            console.error("Error fetching apostadores:", err);
-            set({ error: err.message || "Erro desconhecido.", apostadores: [], totalPages: 1 });
-        } finally {
-            set({ loading: false });
+                    // Construct the API URL with query parameters
+                    const response = await fetch(
+                        `/api/users?search=${encodeURIComponent(
+                            search
+                        )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
+                    );
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || "Erro ao buscar apostadores.");
+                    }
+
+                    const data = await response.json();
+
+                    // Validate response structure
+                    if (!Array.isArray(data.apostadores) || typeof data.totalPages !== "number") {
+                        throw new Error("Formato de dados inesperado.");
+                    }
+
+                    console.log("Fetched apostadores:", data.apostadores);
+                    console.log("Total Pages:", data.totalPages);
+
+                    set({
+                        apostadores: data.apostadores,
+                        totalPages: data.totalPages,
+                        currentPage: data.currentPage || page,
+                        error: null,
+                    });
+                } catch (err: any) {
+                    console.error("Error fetching apostadores:", err);
+                    set({
+                        error: err.message || "Erro desconhecido.",
+                        apostadores: [],
+                        totalPages: 1,
+                    });
+                } finally {
+                    set({ loading: false });
+                }
+            },
+
+            /**
+             * Deletes an Apostador by ID via the API and updates the store.
+             * Handles success and error states.
+             */
+            async deleteApostador(id: string) {
+                console.log(`Deleting apostador with ID: ${id}`);
+                try {
+                    const response = await fetch(`/api/users/${id}`, {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                    });
+
+                    console.log(`DELETE /api/users/${id} - Status: ${response.status}`);
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || "Erro ao deletar apostador.");
+                    }
+
+                    // Remove the deleted apostador from the store
+                    const updatedApostadores = get().apostadores.filter((a) => a.id !== id);
+                    set({ apostadores: updatedApostadores });
+
+                    console.log(`Apostador with ID ${id} deleted successfully.`);
+                    alert("Apostador deletado com sucesso.");
+                } catch (err: any) {
+                    console.error("Error deleting apostador:", err);
+                    alert(err.message || "Erro desconhecido ao deletar apostador.");
+                }
+            },
+
+            /**
+             * Retrieves an Apostador by ID from the store.
+             * @param id - The ID of the Apostador.
+             * @returns Apostador object or null if not found.
+             */
+            getApostadorById(id: string): Apostador | null {
+                const apostador = get().apostadores.find((a) => a.id === id) || null;
+                return apostador;
+            },
+
+            // **Tickets Methods**
+
+            /**
+             * Fetches Tickets (Apostas) for a specific user from the API.
+             * Updates the store with fetched data, handles loading and error states.
+             * @param userId - The ID of the user whose tickets are to be fetched.
+             * @param page - (Optional) Page number for pagination.
+             * @param limit - (Optional) Number of tickets per page.
+             */
+            async fetchTickets(userId: string, page = 1, limit = 10) {
+                console.log(
+                    `Fetching tickets for userId: ${userId}, page: ${page}, limit: ${limit}`
+                );
+                set({ loadingTickets: true, errorTickets: null });
+                try {
+                    const response = await fetch(
+                        `/api/apostas?userId=${userId}&page=${page}&limit=${limit}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            credentials: "include", // Include cookies if necessary
+                        }
+                    );
+
+                    console.log(
+                        `GET /api/apostas?userId=${userId}&page=${page}&limit=${limit} - Status: ${response.status}`
+                    );
+
+                    if (!response.ok) {
+                        let errorData;
+                        try {
+                            errorData = await response.json();
+                        } catch (jsonError) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        throw new Error(errorData.error || "Erro ao buscar bilhetes.");
+                    }
+
+                    const data = await response.json();
+                    console.log("API Response:", data); // Log the entire response
+
+                    // Validate response structure
+                    if (
+                        !data ||
+                        !Array.isArray(data.bets) ||
+                        typeof data.totalItems !== "number" ||
+                        typeof data.totalPages !== "number" ||
+                        typeof data.currentPage !== "number"
+                    ) {
+                        console.error("Unexpected data format:", data);
+                        throw new Error("Formato de dados inesperado.");
+                    }
+
+                    console.log("Fetched tickets:", data.bets);
+                    console.log("Total Pages:", data.totalPages);
+
+                    set({
+                        tickets: data.bets,
+                        totalPagesTickets: data.totalPages,
+                        currentPageTickets: data.currentPage,
+                        errorTickets: null,
+                    });
+                } catch (err: any) {
+                    console.error("Error fetching tickets:", err);
+                    set({
+                        errorTickets: err.message || "Erro desconhecido.",
+                        tickets: [],
+                        totalPagesTickets: 1,
+                        currentPageTickets: 1,
+                    });
+                } finally {
+                    set({ loadingTickets: false });
+                }
+            },
+
+            /**
+             * Deletes a Ticket by ID via the API and updates the store.
+             * Handles success and error states.
+             * @param id - The ID of the Ticket to delete.
+             */
+            async deleteTicket(id: string) {
+                console.log(`Deleting ticket with ID: ${id}`);
+                try {
+                    const response = await fetch(`/api/apostas/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include", // Include cookies if necessary
+                    });
+
+                    console.log(`DELETE /api/apostas/${id} - Status: ${response.status}`);
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || "Erro ao deletar bilhete.");
+                    }
+
+                    // Remove the deleted ticket from the store
+                    const updatedTickets = get().tickets.filter((ticket) => ticket.id !== id);
+                    set({ tickets: updatedTickets });
+
+                    console.log(`Ticket with ID ${id} deleted successfully.`);
+                    alert("Bilhete deletado com sucesso.");
+                } catch (err: any) {
+                    console.error("Error deleting ticket:", err);
+                    alert(err.message || "Erro desconhecido ao deletar bilhete.");
+                }
+            },
+
+            // Wallet Methods
+            async fetchWalletBalance(userId: string) {
+                console.log(`Fetching wallet balance for userId: ${userId}`);
+                set({ loadingWallet: true, errorWallet: null });
+                try {
+                    const response = await fetch(`/api/wallet?userId=${userId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include", // Include cookies if necessary
+                    });
+
+                    console.log(`GET /api/wallet?userId=${userId} - Status: ${response.status}`);
+
+                    if (!response.ok) {
+                        let errorData;
+                        try {
+                            errorData = await response.json();
+                        } catch (jsonError) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        throw new Error(errorData.error || "Erro ao buscar saldo da carteira.");
+                    }
+
+                    const data = await response.json();
+                    console.log("Fetched wallet balance:", data);
+
+                    // Validate response structure
+                    if (!data || typeof data.balance !== "number") {
+                        console.error("Unexpected wallet data format:", data);
+                        throw new Error("Formato de dados inesperado para carteira.");
+                    }
+
+                    set({
+                        walletBalance: data.balance,
+                        errorWallet: null,
+                    });
+                } catch (err: any) {
+                    console.error("Error fetching wallet balance:", err);
+                    set({
+                        errorWallet: err.message || "Erro desconhecido.",
+                        walletBalance: 0,
+                    });
+                } finally {
+                    set({ loadingWallet: false });
+                }
+            },
+        }),
+        {
+            name: "DataStore", // Unique name for Zustand Devtools
         }
-    },
-
-    async deleteApostador(id: string) {
-        try {
-            const response = await fetch(`/api/users/${id}`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || "Erro ao deletar apostador.");
-            }
-            // Remove from store
-            const updated = get().apostadores.filter((a) => a.id !== id);
-            set({ apostadores: updated });
-            alert("Apostador deletado com sucesso.");
-        } catch (err: any) {
-            console.error("Error deleting apostador:", err);
-            alert(err.message || "Erro desconhecido ao deletar apostador.");
-        }
-    },
-
-    getApostadorById(id: string): Apostador | null {
-        const apostador = get().apostadores.find((a) => a.id === id) || null;
-        return apostador;
-    },
-}));
+    )
+);

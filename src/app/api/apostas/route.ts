@@ -52,6 +52,9 @@ export async function GET(request: Request) {
     const userRole = session.user.role as Role;
     const url = new URL(request.url);
     const userId = url.searchParams.get("userId");
+    const page = parseInt(url.searchParams.get("page") || "1", 10);
+    const limit = parseInt(url.searchParams.get("limit") || "10", 10);
+    const skip = (page - 1) * limit;
 
     if (!userId) {
         console.log("User ID is missing in the query parameters.");
@@ -65,16 +68,31 @@ export async function GET(request: Request) {
     }
 
     try {
-        const bets = await prisma.bet.findMany({
-            where: { userId: userId },
-            include: {
-                user: { select: { id: true, username: true } },
-                vendedor: { select: { id: true, username: true } },
-            },
-            orderBy: { createdAt: "desc" },
-        });
+        const [bets, totalItems] = await prisma.$transaction([
+            prisma.bet.findMany({
+                where: { userId: userId },
+                include: {
+                    user: { select: { id: true, username: true } },
+                    vendedor: { select: { id: true, username: true } },
+                },
+                orderBy: { createdAt: "desc" },
+                skip: skip,
+                take: limit,
+            }),
+            prisma.bet.count({ where: { userId: userId } }),
+        ]);
 
-        return NextResponse.json(bets, { status: 200 });
+        const totalPages = Math.ceil(totalItems / limit);
+
+        return NextResponse.json(
+            {
+                bets,
+                totalItems,
+                totalPages,
+                currentPage: page,
+            },
+            { status: 200 }
+        );
     } catch (error: any) {
         console.error("Error fetching bets:", error);
         if (error instanceof PrismaClientKnownRequestError) {

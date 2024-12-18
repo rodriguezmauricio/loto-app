@@ -126,9 +126,9 @@ export async function PATCH(
             return NextResponse.json({ error: "Wallet not found." }, { status: 404 });
         }
 
-        // Authorization logic
         const user = wallet.user;
 
+        // Authorization logic
         if (session.user.role === "admin") {
             // Admins can update wallets of users they manage
             if (user.admin_id !== session.user.id) {
@@ -169,7 +169,7 @@ export async function PATCH(
         // Convert Decimal fields to strings before sending response
         const updatedWalletData = {
             ...updatedWallet,
-            balance: updatedWallet.balance.toString(),
+            balance: updatedWallet.balance,
         };
 
         return NextResponse.json(updatedWalletData, { status: 200 });

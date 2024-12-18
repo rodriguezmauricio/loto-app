@@ -72,3 +72,10 @@ export interface Winner {
     premio: number;
     betPlacedDate: string;
 }
+
+export interface Prize {
+    id: string;
+    amount: number;
+    awarded_at: string;
+    userId: string;
+}

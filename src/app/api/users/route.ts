@@ -35,11 +35,11 @@ export async function GET(request: Request) {
         // Extract query parameters
         const url = new URL(request.url);
         const search = url.searchParams.get("search") || "";
+        const role = url.searchParams.get("role");
         const sortField = url.searchParams.get("sortField") || "username";
         const sortOrder = url.searchParams.get("sortOrder") || "asc";
         const page = parseInt(url.searchParams.get("page") || "1", 10);
         const limit = parseInt(url.searchParams.get("limit") || "10", 10);
-        const role = url.searchParams.get("role");
         const skip = (page - 1) * limit;
 
         console.log("GET /api/users - Params:", {
@@ -122,6 +122,7 @@ export async function GET(request: Request) {
                 pix: true,
                 role: true, // Include role for frontend use
                 created_on: true,
+                wallet: true,
             },
         });
 

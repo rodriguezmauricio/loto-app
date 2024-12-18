@@ -4,6 +4,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation"; // Ensure correct import for Next.js 13+
 import { useEffect } from "react";
+import LoadingSpinner from "./loadingSpinner/LoadingSpinner";
 
 interface SessionWrapperProps {
     children: React.ReactNode;
@@ -22,7 +23,14 @@ const SessionWrapper = ({ children }: SessionWrapperProps) => {
 
     // Optionally, show a loading state while checking session
     if (status === "loading") {
-        return <div>Loading...</div>;
+        return (
+            <div className="main">
+                <div className="content">
+                    {children}
+                    <LoadingSpinner />
+                </div>
+            </div>
+        );
     }
 
     return <>{children}</>;

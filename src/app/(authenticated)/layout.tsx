@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserStore } from "../../../store/useUserStore";
 import "../../app/globals.css";
+import LoadingSpinner from "components/loadingSpinner/LoadingSpinner";
 
 export default function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     const { data: session, status } = useSession();
@@ -27,7 +28,11 @@ export default function AuthenticatedLayout({ children }: { children: React.Reac
     }, [status, session, setUser]);
 
     if (status === "loading") {
-        return <p>Loading...</p>;
+        return (
+            <div className="content">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (status === "unauthenticated") {

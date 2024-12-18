@@ -61,18 +61,6 @@ a {
     text-decoration: none;
 }
 
-/* Main Content Area */
-main {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-    color: var(--color-light-light);
-    background-color: var(--color-dark-dark);
-    padding: 16px;
-}
-
 /* Container for the Entire App Layout */
 .app-layout {
     display: flex;
@@ -96,12 +84,22 @@ main {
 }
 
 /* Main Element Styling */
+
+.mainLayout {
+    flex: 1;
+    padding: 0px;
+    max-width: 1100px;
+    color: var(--color-light-light);
+    background-color: var(--color-dark-dark);
+}
+
 main {
     flex: 1;
     padding: 0px;
     max-width: 1100px;
     color: var(--color-light-light);
     background-color: var(--color-dark-dark);
+    padding: 20px;
 }
 
 /* Divider Styling */

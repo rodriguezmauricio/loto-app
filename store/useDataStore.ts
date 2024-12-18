@@ -99,6 +99,7 @@ interface DataStore {
     loading: boolean;
     error: string | null;
     totalPages: number;
+    currentPage: number;
 
     setData: (data: Partial<FetchedData>) => void;
 
@@ -130,6 +131,7 @@ export const useDataStore = create<DataStore>((set, get) => ({
     loading: false,
     error: null,
     totalPages: 1,
+    currentPage: 1,
 
     setData: (data) =>
         set((state) => ({
@@ -170,7 +172,10 @@ export const useDataStore = create<DataStore>((set, get) => ({
         })),
 
     // Apostadores methods
-    async fetchApostadores(search = "", sort = "name_asc", page = 1) {
+    async fetchApostadores(search = "", sort = "name_asc", page = 1, limit = 10) {
+        console.log(
+            `Fetching apostadores with search: "${search}", sort: "${sort}", page: ${page}`
+        );
         set({ loading: true, error: null });
         try {
             let sortField = "username";
@@ -199,7 +204,7 @@ export const useDataStore = create<DataStore>((set, get) => ({
             const response = await fetch(
                 `/api/users?search=${encodeURIComponent(
                     search
-                )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=10`
+                )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
             );
             if (!response.ok) {
                 const errorData = await response.json();
@@ -209,6 +214,10 @@ export const useDataStore = create<DataStore>((set, get) => ({
             if (!Array.isArray(data.apostadores)) {
                 throw new Error("Formato de dados inesperado.");
             }
+
+            console.log("Fetched  data:", data);
+            console.log("Fetched apostadores:", data.apostadores);
+            console.log("Total Pages:", data.totalPages);
 
             set({
                 apostadores: data.apostadores,

@@ -34,6 +34,9 @@ export const ROUTES = {
     USERS: "/users", // Added
     USER: (userId: string) => `/users/${userId}`, // Added
     EDIT_USER: (userId: string) => `/users/${userId}/edit`, // Added
+
+    //NOVIDADES
+    NOVIDADES: "/novidades",
 } as const;
 
 // Define a type for all routes to enforce type safety

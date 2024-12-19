@@ -178,14 +178,14 @@ const CadastrarResultadosPage = () => {
                     <form onSubmit={handleSubmit} className={styles.resultForm}>
                         {/* Modalidade Category Selection */}
                         <div className={styles.formGroup}>
-                            <label htmlFor="modalidadeCategory">Modalidade:</label>
+                            <label htmlFor="modalidadeCategory">Loteria:</label>
                             <select
                                 id="modalidadeCategory"
                                 value={selectedModalidadeCategory}
                                 onChange={(e) => setSelectedModalidadeCategory(e.target.value)}
                                 required
                             >
-                                <option value="">Selecione uma modalidade</option>
+                                <option value="">Selecione uma loteria</option>
                                 {Object.keys(modalidadeCategories).map((category) => (
                                     <option key={category} value={category}>
                                         {/* Optional: Map category keys to user-friendly names */}
@@ -200,7 +200,7 @@ const CadastrarResultadosPage = () => {
 
                         {/* Loteria Selection */}
                         <div className={styles.formGroup}>
-                            <label htmlFor="loteria">Loteria:</label>
+                            <label htmlFor="loteria">Modalidade:</label>
                             <select
                                 id="loteria"
                                 value={selectedLoteria}
@@ -211,7 +211,7 @@ const CadastrarResultadosPage = () => {
                                 <option value="">
                                     {selectedModalidadeCategory
                                         ? "Selecione uma loteria"
-                                        : "Selecione a modalidade primeiro"}
+                                        : "Selecione a loteria primeiro"}
                                 </option>
                                 {loterias.map((loteria) => (
                                     <option key={loteria.name} value={loteria.name}>

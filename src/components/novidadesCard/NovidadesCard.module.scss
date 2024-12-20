@@ -8,4 +8,9 @@
 .date {
     font-size: small;
     color: var(--color-light-dark);
+    background-color: var(--accent-main);
+    padding: 4px 8px 4px 8px;
+    border-radius: 3px;
+    width: fit-content;
+    margin-bottom: 5px;
 }

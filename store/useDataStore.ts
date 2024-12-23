@@ -1,9 +1,7 @@
-// src/store/useDataStore.ts
-
 import { create } from "zustand";
-import { devtools } from "zustand/middleware"; // Zustand Devtools middleware
-import { Apostador, Aposta } from "../src/types/apostador"; // Ensure correct paths
-import { User, Bet, Result, Wallet, Transaction, Prize } from "../src/types/roles"; // Import other necessary types
+import { devtools } from "zustand/middleware";
+import { Apostador, Aposta } from "../src/types/apostador";
+import { User, Bet, Result, Wallet, Transaction, Prize } from "../src/types/roles";
 
 interface FetchedData {
     users?: User[];
@@ -93,7 +91,10 @@ export const useDataStore = create<DataStore>()(
             loadingWallet: false,
             errorWallet: null,
 
-            // **Set Data Method**
+            /**
+             * setData - merges fetched data into the store if present,
+             * or keeps existing state otherwise.
+             */
             setData: (data: Partial<FetchedData>) =>
                 set((state) => ({
                     users: data.users ?? state.users,
@@ -106,15 +107,12 @@ export const useDataStore = create<DataStore>()(
 
             // **Apostadores Methods**
 
-            /**
-             * Fetches Apostadores from the API with optional search, sort, page, and limit parameters.
-             * Updates the store with fetched data, handles loading and error states.
-             */
             async fetchApostadores(search = "", sort = "name_asc", page = 1, limit = 10) {
                 console.log(
                     `Fetching apostadores: search="${search}", sort="${sort}", page=${page}, limit=${limit}`
                 );
                 set({ loading: true, error: null });
+
                 try {
                     let sortField = "username";
                     let sortOrder: "asc" | "desc" = "asc";
@@ -142,11 +140,13 @@ export const useDataStore = create<DataStore>()(
                     }
 
                     // Construct the API URL with query parameters
-                    const response = await fetch(
-                        `/api/users?search=${encodeURIComponent(
-                            search
-                        )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`
-                    );
+                    const url = `/api/users?search=${encodeURIComponent(
+                        search
+                    )}&role=usuario&sortField=${sortField}&sortOrder=${sortOrder}&page=${page}&limit=${limit}`;
+
+                    const response = await fetch(url);
+
+                    console.log(`GET ${url} - Status: ${response.status}`);
 
                     if (!response.ok) {
                         const errorData = await response.json();
@@ -181,10 +181,6 @@ export const useDataStore = create<DataStore>()(
                 }
             },
 
-            /**
-             * Deletes an Apostador by ID via the API and updates the store.
-             * Handles success and error states.
-             */
             async deleteApostador(id: string) {
                 console.log(`Deleting apostador with ID: ${id}`);
                 try {
@@ -212,11 +208,6 @@ export const useDataStore = create<DataStore>()(
                 }
             },
 
-            /**
-             * Retrieves an Apostador by ID from the store.
-             * @param id - The ID of the Apostador.
-             * @returns Apostador object or null if not found.
-             */
             getApostadorById(id: string): Apostador | null {
                 const apostador = get().apostadores.find((a) => a.id === id) || null;
                 return apostador;
@@ -224,33 +215,23 @@ export const useDataStore = create<DataStore>()(
 
             // **Tickets Methods**
 
-            /**
-             * Fetches Tickets (Apostas) for a specific user from the API.
-             * Updates the store with fetched data, handles loading and error states.
-             * @param userId - The ID of the user whose tickets are to be fetched.
-             * @param page - (Optional) Page number for pagination.
-             * @param limit - (Optional) Number of tickets per page.
-             */
             async fetchTickets(userId: string, page = 1, limit = 10) {
                 console.log(
                     `Fetching tickets for userId: ${userId}, page: ${page}, limit: ${limit}`
                 );
                 set({ loadingTickets: true, errorTickets: null });
-                try {
-                    const response = await fetch(
-                        `/api/apostas?userId=${userId}&page=${page}&limit=${limit}`,
-                        {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            credentials: "include", // Include cookies if necessary
-                        }
-                    );
 
-                    console.log(
-                        `GET /api/apostas?userId=${userId}&page=${page}&limit=${limit} - Status: ${response.status}`
-                    );
+                try {
+                    const url = `/api/apostas?userId=${userId}&page=${page}&limit=${limit}`;
+                    const response = await fetch(url, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                    });
+
+                    console.log(`GET ${url} - Status: ${response.status}`);
 
                     if (!response.ok) {
                         let errorData;
@@ -263,7 +244,7 @@ export const useDataStore = create<DataStore>()(
                     }
 
                     const data = await response.json();
-                    console.log("API Response:", data); // Log the entire response
+                    console.log("API Response:", data);
 
                     // Validate response structure
                     if (
@@ -299,11 +280,6 @@ export const useDataStore = create<DataStore>()(
                 }
             },
 
-            /**
-             * Deletes a Ticket by ID via the API and updates the store.
-             * Handles success and error states.
-             * @param id - The ID of the Ticket to delete.
-             */
             async deleteTicket(id: string) {
                 console.log(`Deleting ticket with ID: ${id}`);
                 try {
@@ -312,7 +288,7 @@ export const useDataStore = create<DataStore>()(
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        credentials: "include", // Include cookies if necessary
+                        credentials: "include",
                     });
 
                     console.log(`DELETE /api/apostas/${id} - Status: ${response.status}`);
@@ -338,16 +314,18 @@ export const useDataStore = create<DataStore>()(
             async fetchWalletBalance(userId: string) {
                 console.log(`Fetching wallet balance for userId: ${userId}`);
                 set({ loadingWallet: true, errorWallet: null });
+
                 try {
-                    const response = await fetch(`/api/wallet?userId=${userId}`, {
+                    const url = `/api/wallet?userId=${userId}`;
+                    const response = await fetch(url, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                         },
-                        credentials: "include", // Include cookies if necessary
+                        credentials: "include",
                     });
 
-                    console.log(`GET /api/wallet?userId=${userId} - Status: ${response.status}`);
+                    console.log(`GET ${url} - Status: ${response.status}`);
 
                     if (!response.ok) {
                         let errorData;

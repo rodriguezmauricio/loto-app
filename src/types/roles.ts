@@ -43,22 +43,34 @@ export interface Bet {
     id: string;
     numbers: number[];
     modalidade: string;
-    loteria: string | null; // Allow null
-    userId: string;
+    acertos: number;
     premio: number;
-    createdAt: Date;
-    vendedorId: string | null;
+    consultor: string;
+    apostador: string;
+    quantidadeDeDezenas: number;
+    resultado: string; // ISO string
+    data: string; // ISO string
+    hora: string;
+    lote: string;
+    tipoBilhete: string;
+    valorBilhete: number;
+    createdAt: string; // ISO string
+    userId: string;
+    vendedorId?: string;
+    loteria?: string;
     user: User;
+    vendedor?: User;
 }
 
 export interface Result {
     id: string;
     modalidade: string;
-    loteria: string | null;
     winningNumbers: number[];
-    createdAt: Date;
+    createdAt: string; // ISO string
     premio: number;
     createdBy: string;
+    loteria?: string;
+    resultDate?: string; // ISO string
 }
 
 export interface Winner {

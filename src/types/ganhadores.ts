@@ -1,5 +1,5 @@
 // types/ganhadores.ts
-
+import { Bet, Result } from "./roles";
 export interface WinnerBet {
     id: string;
     numbers: number[];
@@ -10,3 +10,9 @@ export interface WinnerBet {
     premio: number;
     // Add other properties as needed
 }
+
+export interface CombinedBetResult {
+    bet: Bet;
+    result?: Result;
+}
+export type { Result, Bet };

@@ -1,4 +1,5 @@
 "use client";
+import LoadingSpinner from "components/loadingSpinner/LoadingSpinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -17,7 +18,7 @@ const App: React.FC = () => {
     }, [status, router]);
 
     if (status === "loading") {
-        return <p>Carregando...</p>; // You can replace this with a loading spinner or other UI
+        return <LoadingSpinner />;
     }
 
     return null; // or a loading indicator

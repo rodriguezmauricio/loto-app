@@ -10,6 +10,10 @@ import { z } from "zod";
 // date-fns to help with day boundaries
 import { startOfDay, endOfDay } from "date-fns";
 
+/**
+ * BetWithUser includes `user` and optionally `vendedor`.
+ * Make sure your schema has the correct relation names.
+ */
 type BetWithUser = Prisma.BetGetPayload<{ include: { user: true; vendedor: true } }>;
 type PrismaResult = Prisma.ResultGetPayload<{}>;
 
@@ -21,27 +25,36 @@ const querySchema = z.object({
 });
 
 /**
- * Convert each filtered Bet to the final shape you want
+ * Convert the found bets + a single `Result` record into final shape
+ * for the client.  We display `bet.resultado` as the “bet placed date,”
+ * but that can be changed if you prefer `bet.createdAt`.
  */
 function formatWinners(bets: BetWithUser[], result: PrismaResult) {
-    // We'll rely on `result.resultDate` if present, else fallback to `result.createdAt`.
-    const resultDateToUse = result.resultDate ?? result.createdAt;
-    const sorteioDateStr = resultDateToUse.toISOString().split("T")[0];
+    // If resultDate is null, fallback to createdAt
+    const resultDate = result.resultDate ?? result.createdAt;
+    // Convert to string once
+    const sorteioDateStr = resultDate.toISOString().split("T")[0];
 
-    return bets.map((bet) => ({
-        id: bet.id,
-        numbers: bet.numbers,
-        modalidade: bet.modalidade,
-        loteria: bet.loteria ?? "Default Loteria",
-        userId: bet.userId,
-        userName: bet.user?.name || bet.user?.username || "Desconhecido",
-        sorteioDate: sorteioDateStr, // i.e. the day from `result.resultDate`
-        premio: bet.premio,
-        betPlacedDate: bet.resultado ? bet.resultado.toISOString() : bet.createdAt.toISOString(),
-    }));
+    return bets.map((bet) => {
+        const betPlacedDateObj = bet.resultado ?? bet.createdAt;
+        return {
+            id: bet.id,
+            numbers: bet.numbers,
+            modalidade: bet.modalidade,
+            loteria: bet.loteria ?? "Default Loteria",
+            userId: bet.userId,
+            userName: bet.user?.name || bet.user?.username || "Desconhecido",
+            // We'll pass the final date string to the client
+            sorteioDate: sorteioDateStr,
+            premio: bet.premio,
+            // We'll show `bet.resultado` as the “bet placed date/time”:
+            betPlacedDate: bet.createdAt.toISOString(),
+        };
+    });
 }
 
 export async function GET(request: NextRequest) {
+    // 1) Validate session and role
     const session = await getServerSession(authOptions);
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -52,7 +65,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        // 1. Parse and validate query params
+        // 2) Parse and validate query
         const url = new URL(request.url);
         const query = Object.fromEntries(url.searchParams.entries());
         const parsed = querySchema.safeParse(query);
@@ -60,11 +73,10 @@ export async function GET(request: NextRequest) {
             const errors = parsed.error.errors.map((e) => e.message);
             return NextResponse.json({ error: errors }, { status: 400 });
         }
-
         const { modalidade, loteria, startDate, endDate } = parsed.data;
 
-        // 2. Build date range for `Result.resultDate` if provided
-        const resultDateRange: any = {};
+        // 3) Build date range for `Result.resultDate`
+        const resultDateRange: Prisma.DateTimeFilter = {};
         if (startDate) {
             const sd = new Date(startDate);
             if (!isNaN(sd.getTime())) {
@@ -78,7 +90,7 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // 3. Find **all** results in [startDate, endDate], matching modalidade & loteria
+        // 4) Find all results in that date range + matching modalidade, loteria
         const manyResults = await prisma.result.findMany({
             where: {
                 modalidade,
@@ -99,146 +111,59 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // 4. For each found result, gather the matching bets
-        //    Then combine everything in an array
-        let allFilteredBets: BetWithUser[] = [];
-
-        for (const foundResult of manyResults) {
-            const winningNumbers = foundResult.winningNumbers;
-
-            // We'll gather bets whose `bet.resultado` is the *same day* as foundResult.resultDate
-            const dayStart = startOfDay(foundResult.resultDate);
-            const dayEnd = endOfDay(foundResult.resultDate);
-
-            let candidateBets: BetWithUser[] = [];
-            if (foundResult.modalidade.toUpperCase().includes("ERRE X")) {
-                // "ERRE X" => bet cannot contain ANY winningNumbers
-                candidateBets = await prisma.bet.findMany({
-                    where: {
-                        modalidade: foundResult.modalidade,
-                        loteria: foundResult.loteria,
-                        NOT: { numbers: { hasSome: winningNumbers } },
-                        resultado: {
-                            gte: dayStart,
-                            lte: dayEnd,
-                        },
-                    },
-                    include: { user: true, vendedor: true },
-                    orderBy: { createdAt: "desc" },
-                });
-            } else {
-                // Standard => bet.numbers must contain ALL winningNumbers
-                candidateBets = await prisma.bet.findMany({
-                    where: {
-                        modalidade: foundResult.modalidade,
-                        loteria: foundResult.loteria,
-                        numbers: { hasEvery: winningNumbers },
-                        resultado: {
-                            gte: dayStart,
-                            lte: dayEnd,
-                        },
-                    },
-                    include: { user: true, vendedor: true },
-                    orderBy: { createdAt: "desc" },
-                });
-            }
-
-            // 5. Role-based filtering for these candidate bets
-            let filteredBets: BetWithUser[] = [];
-            if (userRole === "admin") {
-                const adminId = session.user.id;
-                // Grab all sellers that belong to the current Admin
-                const sellers = await prisma.user.findMany({
-                    where: { admin_id: adminId, role: "vendedor" },
-                    select: { id: true },
-                });
-                const sellerIds = sellers.map((s) => s.id);
-
-                filteredBets = candidateBets.filter((b) => {
-                    const u = b.user;
-                    if (u.role !== "usuario") return false;
-                    const directByAdmin = u.admin_id === adminId;
-                    const viaSeller = u.seller_id && sellerIds.includes(u.seller_id);
-                    return directByAdmin || viaSeller;
-                });
-            } else if (userRole === "vendedor") {
-                const vendedorId = session.user.id;
-                filteredBets = candidateBets.filter((b) => {
-                    const u = b.user;
-                    if (u.role !== "usuario") return false;
-                    return u.seller_id === vendedorId;
-                });
-            }
-
-            // Combine them
-            allFilteredBets.push(...filteredBets);
-        }
-
-        // 6. If no bets found overall, return empty
-        if (allFilteredBets.length === 0) {
-            return NextResponse.json({ winners: [] }, { status: 200 });
-        }
-
-        // 7. Build final output
-        //    We have multiple results. We also want to keep track of "which result" each bet matched.
-        //    Because you want a single array, let's produce them all.
-        //    We'll just do "formatWinners" for each result, as we loop above? Or we can do it now:
-        //    BUT to know which result the bet matched, we might need more logic (like a map).
-        //    For simplicity, let's keep the code short: we already have "foundResult" above,
-        //    but we had multiple results. We must do "formatWinners" inside the loop if you want them separate.
-        //    If you want them combined, we can store a map: resultId -> foundResult
-        //    We'll do a simpler approach: store them as an array of (bet, result)
-
-        // Instead, let's store pairs: { bet, result } in an array
-        // so we can do a single "formatWinners" pass at the end.
-        // We'll keep track of them with a small changes:
-
-        // We'll need an intermediate array
+        /**
+         * We'll store pairs of (bet, result) so we can
+         * map them all to final winners array at the end.
+         */
         type BetResultPair = { bet: BetWithUser; result: PrismaResult };
         const betResultPairs: BetResultPair[] = [];
 
-        // We re-do the loop, but store pairs
-        allFilteredBets = []; // reset to fill again with a stable approach
-
+        // 5) For each foundResult, find matching bets:
+        //    - same day for `bet.resultado` as `result.resultDate`
+        //    - if ERRE X => bet can't have winningNumbers
+        //    - else => bet must have them
+        //    - no filter on `bet.createdAt`
+        //    - role-based filtering
         for (const foundResult of manyResults) {
-            // For each result, do the same find:
-            const dayStart = startOfDay(foundResult.resultDate);
-            const dayEnd = endOfDay(foundResult.resultDate);
             const winningNumbers = foundResult.winningNumbers;
 
-            let candidateBets: BetWithUser[] = [];
+            // We'll do day boundaries for `bet.resultado`.
+            const dayStart = startOfDay(foundResult.resultDate);
+            const dayEnd = endOfDay(foundResult.resultDate);
+
+            let candidateWhere: Prisma.BetWhereInput;
+
             if (foundResult.modalidade.toUpperCase().includes("ERRE X")) {
-                candidateBets = await prisma.bet.findMany({
-                    where: {
-                        modalidade: foundResult.modalidade,
-                        loteria: foundResult.loteria,
-                        NOT: { numbers: { hasSome: winningNumbers } },
-                        resultado: {
-                            gte: dayStart,
-                            lte: dayEnd,
-                        },
+                candidateWhere = {
+                    modalidade: foundResult.modalidade,
+                    loteria: foundResult.loteria,
+                    NOT: { numbers: { hasSome: winningNumbers } },
+                    resultado: {
+                        gte: dayStart,
+                        lte: dayEnd,
                     },
-                    include: { user: true, vendedor: true },
-                    orderBy: { createdAt: "desc" },
-                });
+                };
             } else {
-                candidateBets = await prisma.bet.findMany({
-                    where: {
-                        modalidade: foundResult.modalidade,
-                        loteria: foundResult.loteria,
-                        numbers: { hasEvery: winningNumbers },
-                        resultado: {
-                            gte: dayStart,
-                            lte: dayEnd,
-                        },
+                // standard
+                candidateWhere = {
+                    modalidade: foundResult.modalidade,
+                    loteria: foundResult.loteria,
+                    numbers: { hasEvery: winningNumbers },
+                    resultado: {
+                        gte: dayStart,
+                        lte: dayEnd,
                     },
-                    include: { user: true, vendedor: true },
-                    orderBy: { createdAt: "desc" },
-                });
+                };
             }
 
+            const candidateBets = await prisma.bet.findMany({
+                where: candidateWhere,
+                include: { user: true, vendedor: true },
+                orderBy: { createdAt: "desc" },
+            });
+
             // role-based filtering
-            let filteredBets: BetWithUser[] = [];
+            let filtered: BetWithUser[] = [];
             if (userRole === "admin") {
                 const adminId = session.user.id;
                 const sellers = await prisma.user.findMany({
@@ -247,7 +172,7 @@ export async function GET(request: NextRequest) {
                 });
                 const sellerIds = sellers.map((s) => s.id);
 
-                filteredBets = candidateBets.filter((b) => {
+                filtered = candidateBets.filter((b) => {
                     const u = b.user;
                     if (u.role !== "usuario") return false;
                     const directByAdmin = u.admin_id === adminId;
@@ -255,16 +180,17 @@ export async function GET(request: NextRequest) {
                     return directByAdmin || viaSeller;
                 });
             } else {
+                // userRole === 'vendedor'
                 const vendedorId = session.user.id;
-                filteredBets = candidateBets.filter((b) => {
+                filtered = candidateBets.filter((b) => {
                     const u = b.user;
                     if (u.role !== "usuario") return false;
                     return u.seller_id === vendedorId;
                 });
             }
 
-            // For each filtered bet, store the pair
-            for (const bet of filteredBets) {
+            // store the pairs
+            for (const bet of filtered) {
                 betResultPairs.push({ bet, result: foundResult });
             }
         }
@@ -273,9 +199,9 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ winners: [] }, { status: 200 });
         }
 
-        // Now produce final array
-        const winners = betResultPairs.flatMap((pair) => {
-            return formatWinners([pair.bet], pair.result);
+        // 6) Format final output
+        const winners = betResultPairs.flatMap(({ bet, result }) => {
+            return formatWinners([bet], result);
         });
 
         return NextResponse.json({ winners }, { status: 200 });

@@ -22,8 +22,7 @@ import "jspdf-autotable";
 import LoadingSpinner from "components/loadingSpinner/LoadingSpinner";
 
 /**
- * WinnerBet interface represents the shape of winner data
- * returned by the API.
+ * The shape of the data we receive from /api/ganhadores
  */
 interface WinnerBet {
     id: string;
@@ -32,23 +31,17 @@ interface WinnerBet {
     loteria: string;
     userId: string;
     userName: string;
+    // Both are ISO strings from the server
     sorteioDate: string;
     premio: number;
     betPlacedDate: string;
 }
 
-/**
- * GroupedWinners interface for grouping winners by date.
- */
 interface GroupedWinners {
-    sorteioDate: string;
+    sorteioDate: string; // the string from server
     winners: WinnerBet[];
 }
 
-/**
- * FlattenedItem is a union type that can be either a date header
- * or a winner entry, for easier rendering.
- */
 type FlattenedItem = { type: "date"; date: string } | { type: "winner"; winner: WinnerBet };
 
 const categoryMap: { [key: string]: ModalidadeKey } = {
@@ -58,25 +51,23 @@ const categoryMap: { [key: string]: ModalidadeKey } = {
 };
 
 export default function GanhadoresPage() {
-    const [category, setCategory] = useState<string>("");
+    const [category, setCategory] = useState("");
     const [modalities, setModalities] = useState<string[]>([]);
-    const [selectedModalities, setSelectedModalities] = useState<string[]>(["Todos"]);
+    const [selectedModalities, setSelectedModalities] = useState(["Todos"]);
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
     const [winners, setWinners] = useState<WinnerBet[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
 
-    // Pagination states
-    const [currentPage, setCurrentPage] = useState<number>(1);
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
     const perPage = 10;
 
-    // New state for search inputs
-    const [searchName, setSearchName] = useState<string>("");
-    const [searchLoteria, setSearchLoteria] = useState<string>("");
+    // Optional search fields
+    const [searchName, setSearchName] = useState("");
+    const [searchLoteria, setSearchLoteria] = useState("");
 
-    /**
-     * On category change, reset selected modalities and refresh possible modalities
-     */
+    // When category changes, re-init state
     useEffect(() => {
         setSelectedModalities(["Todos"]);
         setWinners([]);
@@ -87,22 +78,20 @@ export default function GanhadoresPage() {
             return;
         }
 
+        // Map category to the relevant section in tempDb
         const catKey = categoryMap[category as keyof typeof categoryMap];
         const foundCategory = tempDb.modalidades.find((mod: Modalidade) => mod[catKey]);
 
         if (foundCategory) {
             if (catKey === "Caixa" && "Caixa" in foundCategory) {
                 const caixas = foundCategory.Caixa as ModalidadeCaixa[];
-                const loteriasList = caixas.map((lot) => lot.name);
-                setModalities(loteriasList);
+                setModalities(caixas.map((lot) => lot.name));
             } else if (catKey === "Sabedoria" && "Sabedoria" in foundCategory) {
                 const sabedorias = foundCategory.Sabedoria as ModalidadeSabedoria[];
-                const loteriasList = sabedorias.map((lot) => lot.name);
-                setModalities(loteriasList);
+                setModalities(sabedorias.map((lot) => lot.name));
             } else if (catKey === "Personalizada" && "Personalizada" in foundCategory) {
                 const personalizadas = foundCategory.Personalizada as ModalidadePersonalizada[];
-                const loteriasList = personalizadas.map((lot) => lot.name);
-                setModalities(loteriasList);
+                setModalities(personalizadas.map((lot) => lot.name));
             } else {
                 setModalities([]);
             }
@@ -112,7 +101,7 @@ export default function GanhadoresPage() {
     }, [category]);
 
     /**
-     * Fetch winners from the API based on filters.
+     * Handle API fetch for winners
      */
     const handleFetchWinners = async () => {
         if (!category) {
@@ -120,7 +109,6 @@ export default function GanhadoresPage() {
             return;
         }
 
-        // Determine which modalities to fetch
         const modalitiesToFetch = selectedModalities.includes("Todos")
             ? modalities
             : selectedModalities.filter((m) => m !== "Todos");
@@ -134,37 +122,39 @@ export default function GanhadoresPage() {
         setWinners([]);
         setCurrentPage(1);
 
-        // Map category to top-level "modalidade"
         const modalidadeParam = categoryMap[category as keyof typeof categoryMap];
 
-        let finalStartDate = startDate ? startDate.toISOString().split("T")[0] : undefined;
-        let finalEndDate = endDate ? endDate.toISOString().split("T")[0] : undefined;
-
-        if (finalStartDate && !finalEndDate) {
-            // If only startDate is provided, set endDate to today
-            finalEndDate = new Date().toISOString().split("T")[0];
+        let finalStart = startDate ? startDate.toISOString().split("T")[0] : undefined;
+        let finalEnd = endDate ? endDate.toISOString().split("T")[0] : undefined;
+        if (finalStart && !finalEnd) {
+            finalEnd = new Date().toISOString().split("T")[0];
         }
 
         try {
             const allResults: WinnerBet[] = [];
 
-            // For each selected modality, fetch the winners
+            // For each sub-modality
             const fetchPromises = modalitiesToFetch.map(async (modName) => {
                 const params = new URLSearchParams();
                 params.append("modalidade", modName);
                 params.append("loteria", modalidadeParam);
+                if (finalStart) params.append("startDate", finalStart);
+                if (finalEnd) params.append("endDate", finalEnd);
 
-                if (finalStartDate) params.append("startDate", finalStartDate);
-                if (finalEndDate) params.append("endDate", finalEndDate);
+                if (searchName.trim()) {
+                    // If your route accepted userName, you'd append this
+                    params.append("userName", searchName.trim());
+                }
+                if (searchLoteria.trim()) {
+                    // If your route accepted loteria filter, you'd do it,
+                    // but note we already pass "loteria" = modalidadeParam above.
+                    // This is just an example
+                    params.append("loteriaFilter", searchLoteria.trim());
+                }
 
-                if (searchName.trim() !== "") params.append("userName", searchName.trim());
-                if (searchLoteria.trim() !== "") params.append("loteria", searchLoteria.trim());
-
-                // **FIX**: Add missing backticks around the fetch URL
                 const response = await fetch(`/api/ganhadores?${params.toString()}`, {
                     method: "GET",
                 });
-
                 const data = await response.json();
 
                 if (!response.ok) {
@@ -172,10 +162,8 @@ export default function GanhadoresPage() {
                         `Error fetching winners for ${modName}:`,
                         data.error || response.statusText
                     );
-                    // Optionally handle or toast individual errors for each modality
                     return [];
                 }
-
                 return data.winners || [];
             });
 
@@ -188,29 +176,24 @@ export default function GanhadoresPage() {
             allResults.sort((a, b) => {
                 const dateA = new Date(a.sorteioDate);
                 const dateB = new Date(b.sorteioDate);
-                if (dateA > dateB) return -1;
-                if (dateA < dateB) return 1;
-                // If dates are equal, sort by modalidade name
+                if (dateB.getTime() < dateA.getTime()) return -1;
+                if (dateB.getTime() > dateA.getTime()) return 1;
                 return a.modalidade.localeCompare(b.modalidade);
             });
 
             setWinners(allResults);
-
-            if (allResults.length > 0) {
-                toast.success("Ganhadores buscados com sucesso!");
-            } else {
-                toast.info("Nenhum ganhador encontrado.");
-            }
-        } catch (error: any) {
-            console.error("Error fetching winners:", error);
-            toast.error(error.message || "Erro ao buscar ganhadores.");
+            if (allResults.length > 0) toast.success("Ganhadores buscados com sucesso!");
+            else toast.info("Nenhum ganhador encontrado.");
+        } catch (err: any) {
+            console.error("Error fetching winners:", err);
+            toast.error(err.message || "Erro ao buscar ganhadores.");
         } finally {
             setLoading(false);
         }
     };
 
     /**
-     * Download the results as a PDF.
+     * Download PDF
      */
     const handleDownloadPDF = () => {
         if (winners.length === 0) {
@@ -226,7 +209,7 @@ export default function GanhadoresPage() {
         const tableRows: any[] = [];
 
         winners.forEach((winner) => {
-            const winnerData = [
+            const rowData = [
                 winner.userName,
                 winner.loteria,
                 winner.modalidade,
@@ -234,48 +217,33 @@ export default function GanhadoresPage() {
                 `R$ ${winner.premio.toFixed(2)}`,
                 new Date(winner.sorteioDate).toLocaleDateString("pt-BR"),
             ];
-            tableRows.push(winnerData);
+            tableRows.push(rowData);
         });
 
-        // Check if autoTable is available
         if (typeof doc.autoTable === "function") {
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
                 startY: 30,
                 styles: { fontSize: 10 },
-                headStyles: { fillColor: [59, 130, 246] }, // Blue-500
-                columnStyles: {
-                    0: { cellWidth: 40 }, // Nome
-                    1: { cellWidth: 30 }, // Loteria
-                    2: { cellWidth: 30 }, // Modalidade
-                    3: { cellWidth: 40 }, // Números
-                    4: { cellWidth: 30 }, // Prêmio
-                    5: { cellWidth: 30 }, // Data Sorteio
-                },
+                headStyles: { fillColor: [59, 130, 246] },
             });
-
             doc.save("ganhadores.pdf");
             toast.success("PDF baixado com sucesso!");
         } else {
-            toast.error("Erro ao gerar o PDF.");
-            console.error("autoTable method is not available on jsPDF instance.");
+            toast.error("Erro ao gerar o PDF (autoTable ausente).");
         }
     };
 
-    /**
-     * Group winners by their sorteioDate.
-     */
+    // Group winners
     const groupedWinners = groupWinnersByDate(winners);
-
-    // Sort the grouped winners by date descending
+    // Sort descending by date
     groupedWinners.sort((a, b) => {
-        const dateA = new Date(a.sorteioDate);
-        const dateB = new Date(b.sorteioDate);
-        return dateB.getTime() - dateA.getTime();
+        const da = new Date(a.sorteioDate).getTime();
+        const db = new Date(b.sorteioDate).getTime();
+        return db - da;
     });
 
-    // Flatten the grouped winners
     const flattened = flattenGroupedWinners(groupedWinners);
 
     // Pagination
@@ -290,9 +258,8 @@ export default function GanhadoresPage() {
             <ToastContainer />
             <main className={styles.main}>
                 <section>
-                    {/* Filter Row */}
                     <div className={styles.filterRow}>
-                        {/* Categories Group */}
+                        {/* Category Buttons */}
                         <div className={styles.categoriesGroup}>
                             <label className={styles.label}>Categorias:</label>
                             <div className={styles.categoryButtons}>
@@ -311,12 +278,12 @@ export default function GanhadoresPage() {
                             </div>
                         </div>
 
-                        {/* Modalidades Group */}
+                        {/* Modalidades */}
                         {category && (
                             <div className={styles.modalidadesGroup}>
                                 <label className={styles.label}>Modalidades:</label>
                                 <div className={styles.modalidadesOptions}>
-                                    {/* "Todos" Option */}
+                                    {/* "Todos" */}
                                     <label
                                         className={`${styles.modalidadeOption} ${
                                             selectedModalities.includes("Todos")
@@ -338,7 +305,7 @@ export default function GanhadoresPage() {
                                         />
                                         <span>Todos</span>
                                     </label>
-                                    {/* Individual Modalidades */}
+
                                     {modalities.map((mod) => (
                                         <label
                                             key={mod}
@@ -371,9 +338,8 @@ export default function GanhadoresPage() {
                             </div>
                         )}
 
-                        {/* Search Filters */}
+                        {/* Search fields */}
                         <div className={styles.searchFilters}>
-                            {/* Search by User Name */}
                             <div className={styles.searchGroup}>
                                 <label className={styles.label}>Buscar por Nome:</label>
                                 <input
@@ -385,7 +351,6 @@ export default function GanhadoresPage() {
                                 />
                             </div>
 
-                            {/* Search by Loteria */}
                             <div className={styles.searchGroup}>
                                 <label className={styles.label}>Buscar por Loteria:</label>
                                 <input
@@ -398,13 +363,13 @@ export default function GanhadoresPage() {
                             </div>
                         </div>
 
-                        {/* Date Filters */}
+                        {/* Date pickers */}
                         <div className={styles.dateFilters}>
                             <div className={styles.dateGroup}>
                                 <label className={styles.label}>Data Inicial:</label>
                                 <DatePicker
                                     selected={startDate}
-                                    onChange={(date: Date | null) => setStartDate(date)}
+                                    onChange={(date) => setStartDate(date)}
                                     locale="pt-BR"
                                     dateFormat="dd/MM/yyyy"
                                     placeholderText="Data inicial"
@@ -417,7 +382,7 @@ export default function GanhadoresPage() {
                                 <label className={styles.label}>Data Final:</label>
                                 <DatePicker
                                     selected={endDate}
-                                    onChange={(date: Date | null) => setEndDate(date)}
+                                    onChange={(date) => setEndDate(date)}
                                     locale="pt-BR"
                                     dateFormat="dd/MM/yyyy"
                                     placeholderText="Data final"
@@ -429,9 +394,8 @@ export default function GanhadoresPage() {
                         </div>
                     </div>
 
-                    {/* Fetch and Download Buttons */}
+                    {/* Buttons */}
                     <div className={styles.buttonsRow}>
-                        {/* Fetch Button */}
                         <div className={styles.fetchButtonGroup}>
                             <SimpleButton
                                 btnTitle={loading ? "Buscando..." : "Buscar Ganhadores"}
@@ -445,7 +409,6 @@ export default function GanhadoresPage() {
                             />
                         </div>
 
-                        {/* Download PDF Button */}
                         <div className={styles.downloadButtonGroup}>
                             <SimpleButton
                                 btnTitle="Baixar PDF"
@@ -466,22 +429,7 @@ export default function GanhadoresPage() {
                             <LoadingSpinner />
                         ) : winners.length > 0 ? (
                             <>
-                                <div className={styles.grid}>
-                                    {paginatedWinners.map((item) =>
-                                        item.type === "date" ? (
-                                            <div key={item.date} className={styles.dateSection}>
-                                                <h3 className={styles.dateHeader}>
-                                                    Data do Sorteio: {item.date}
-                                                </h3>
-                                            </div>
-                                        ) : (
-                                            <GanhadorCard
-                                                key={item.winner.id}
-                                                winner={item.winner}
-                                            />
-                                        )
-                                    )}
-                                </div>
+                                <div className={styles.grid}>{renderedContent}</div>
 
                                 {/* Pagination */}
                                 {totalPages > 1 && (
@@ -525,28 +473,18 @@ export default function GanhadoresPage() {
         </>
     );
 
-    /**
-     * Build rendered content for the current page of winners.
-     */
     function buildRenderedContent(paginatedWinners: FlattenedItem[]) {
-        return (
-            <>
-                {paginatedWinners.map((item) =>
-                    item.type === "date" ? (
-                        <div key={item.date} className={styles.dateSection}>
-                            <h3 className={styles.dateHeader}>Data do Sorteio: {item.date}</h3>
-                        </div>
-                    ) : (
-                        <GanhadorCard key={item.winner.id} winner={item.winner} />
-                    )
-                )}
-            </>
+        return paginatedWinners.map((item) =>
+            item.type === "date" ? (
+                <div key={item.date} className={styles.dateSection}>
+                    <h3 className={styles.dateHeader}>Data do Sorteio: {item.date}</h3>
+                </div>
+            ) : (
+                <GanhadorCard key={item.winner.id} winner={item.winner} />
+            )
         );
     }
 
-    /**
-     * Handle checkbox changes for "Todos" and individual modalities.
-     */
     function handleCheckboxChange(
         modality: string,
         selectedModalities: string[],
@@ -560,12 +498,10 @@ export default function GanhadoresPage() {
             }
             return;
         }
-
         if (selectedModalities.includes("Todos")) {
             setSelectedModalities([modality]);
             return;
         }
-
         if (selectedModalities.includes(modality)) {
             setSelectedModalities(selectedModalities.filter((m) => m !== modality));
         } else {
@@ -573,9 +509,6 @@ export default function GanhadoresPage() {
         }
     }
 
-    /**
-     * Group winners by their sorteioDate.
-     */
     function groupWinnersByDate(winners: WinnerBet[]): GroupedWinners[] {
         const grouped: { [key: string]: WinnerBet[] } = {};
         for (const w of winners) {
@@ -590,9 +523,6 @@ export default function GanhadoresPage() {
         }));
     }
 
-    /**
-     * Flatten grouped winners into a list with date headers and winner items.
-     */
     function flattenGroupedWinners(groups: GroupedWinners[]): FlattenedItem[] {
         const result: FlattenedItem[] = [];
         for (const g of groups) {

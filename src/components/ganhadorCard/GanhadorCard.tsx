@@ -10,9 +10,9 @@ interface WinnerBet {
     loteria: string;
     userId: string;
     userName: string;
-    sorteioDate: string;
+    sorteioDate: string; // ISO string
     premio: number;
-    betPlacedDate: string;
+    betPlacedDate: string; // ISO string
 }
 
 interface GanhadorCardProps {
@@ -20,6 +20,10 @@ interface GanhadorCardProps {
 }
 
 const GanhadorCard: React.FC<GanhadorCardProps> = ({ winner }) => {
+    // Parse the ISO strings into real Dates for display
+    const dateSorteio = new Date(winner.sorteioDate);
+    const dateAposta = new Date(winner.betPlacedDate);
+
     return (
         <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -48,10 +52,10 @@ const GanhadorCard: React.FC<GanhadorCardProps> = ({ winner }) => {
             </div>
             <div className={styles.cardFooter}>
                 <span className={styles.sorteioDate}>
-                    Sorteio: {new Date(winner.sorteioDate).toLocaleDateString("pt-BR")}
+                    Sorteio: {dateSorteio.toLocaleDateString("pt-BR")}
                 </span>
                 <span className={styles.betPlacedDate}>
-                    Apostado em: {new Date(winner.betPlacedDate).toLocaleString("pt-BR")}
+                    Apostado em: {dateAposta.toLocaleString("pt-BR")}
                 </span>
             </div>
         </div>

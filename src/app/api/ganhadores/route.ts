@@ -128,8 +128,8 @@ export async function GET(request: NextRequest) {
             const winningNumbers = foundResult.winningNumbers;
 
             // We'll do day boundaries for `bet.resultado`.
-            const dayStart = startOfDay(foundResult.resultDate);
-            const dayEnd = endOfDay(foundResult.resultDate);
+            const dayStart = startOfDay(foundResult.resultDate!);
+            const dayEnd = endOfDay(foundResult.resultDate!);
 
             let candidateWhere: Prisma.BetWhereInput;
 
